@@ -10,3 +10,5 @@ Common repository for fetchers & checkers
 [platform-badge]: https://img.shields.io/badge/platform-osx%20|%20linux-orange.svg
 [pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
 [python-badge]: https://img.shields.io/badge/python-v3.6+-blue.svg
+[pre-commit]: https://github.com/pre-commit/pre-commit
+[python]: https://www.python.org/downloads/
