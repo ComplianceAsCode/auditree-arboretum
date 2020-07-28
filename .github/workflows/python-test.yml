@@ -23,6 +23,4 @@ jobs:
         make code-lint
     - name: Run unit tests with coverage
       run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "A. Name"
         make test

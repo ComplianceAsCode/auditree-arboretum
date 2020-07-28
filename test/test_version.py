@@ -1,5 +1,4 @@
-# -*- mode:makefile; coding:utf-8 -*-
-
+# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,29 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Arboretum version test."""
 
-develop:
-	pip install -q -e .[dev] --upgrade --upgrade-strategy eager
-	pre-commit install
-	pre-commit autoupdate
+import unittest
 
-install:
-	pip install -q --upgrade pip setuptools
-	pip install -q . --upgrade --upgrade-strategy eager
+import arboretum
 
-uninstall:
-	pip uninstall auditree-arboretum
 
-code-format:
-	pre-commit run yapf --all-files
+class VersionTest(unittest.TestCase):
+    """Arboretum version test."""
 
-code-lint:
-	pre-commit run flake8 --all-files
-
-test::
-	pytest --cov arboretum test -v
-
-docs:
-	# Build the API docs from the source code - overwrites those files, which are ignored by git
-	sphinx-apidoc -o doc-source arboretum
-	sphinx-build doc-source doc
+    def test_version(self):
+        """Ensure that version has three parts."""
+        self.assertEquals(len(arboretum.__version__.split('.')), 3)

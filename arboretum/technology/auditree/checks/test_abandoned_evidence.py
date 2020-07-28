@@ -147,7 +147,7 @@ class AbandonedEvidenceCheck(ComplianceCheck):
 
         :returns: the report(s) generated for this check.
         """
-        return ['auditree/abandoned_evidence.md']
+        return ['abandoned_evidence.md']
 
     def get_notification_message(self):
         """

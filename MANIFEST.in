@@ -1,0 +1,4 @@
+graft arboretum/provider/*/templates
+graft arboretum/technology/*/templates
+graft arboretum/provider/*/reports/report_templates
+graft arboretum/technology/*/reports/report_templates
