@@ -1,0 +1,7 @@
+{
+  "arboretum.technology.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["tech.auditree"]
+    }
+  }
+}

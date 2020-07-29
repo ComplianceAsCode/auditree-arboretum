@@ -17,7 +17,7 @@
 import json
 from datetime import datetime, timedelta
 
-from auditree_arboretum.common.utils import parse_seconds
+from arboretum.common.utils import parse_seconds
 
 from compliance.check import ComplianceCheck
 from compliance.evidence import DAY, ReportEvidence
@@ -147,7 +147,7 @@ class AbandonedEvidenceCheck(ComplianceCheck):
 
         :returns: the report(s) generated for this check.
         """
-        return ['abandoned_evidence.md']
+        return ['auditree/abandoned_evidence.md']
 
     def get_notification_message(self):
         """

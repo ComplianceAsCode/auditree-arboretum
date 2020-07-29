@@ -1,0 +1,24 @@
+{
+  "runbooks": {
+    "enabled": false
+  },
+  "locker": {
+    "repo_url": "https://github.com/my-org/my-evidence-locker-repo"
+  },
+  "notify": {
+    "slack": {}
+  },
+  "org": {
+    "name": "Auditree",
+    "auditree": {
+      "abandoned_evidence": {
+        "threshold": 604800,
+        "exceptions": {
+          "raw/foo/bar.json":
+          "Evidence moved to a new location in locker but this is historical evidence we want to keep."
+        },
+        "ignore_history": true
+      }
+    }
+  }
+}
