@@ -118,7 +118,7 @@ the current check execution.  The default threshold is 30 days beyond the time t
 
 * Import statement:
 
-   ```
+   ```python
    from arboretum.technology.auditree.checks.test_abandoned_evidence import AbandonedEvidenceCheck
    ```
 
