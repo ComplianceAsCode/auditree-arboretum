@@ -1,0 +1,57 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+{#
+Copyright (c) 2020 IBM Corp. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+
+# {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
+
+This report displays differences between the configuration used by the fetcher
+execution and the configuration used by the check execution.  Fetchers and checks
+are executed as separate processes but the expectation is that both processes
+are executed using the same configuration settings as defined by a project's
+configuration JSON file.  If discrepancies are found and reported here then a
+serious problem occurred during execution.
+
+## Remediation
+
+All discrepancies reported here need to be fully investigated and accounted for.
+Since the official execution of fetchers and checks is handled by a CI/CD tool
+like Travis, the execution environment should be a closed "eco-system" and there
+should be no reason for a difference in execution configuration between the
+fetchers and the checks.  In the event of a problem reported here, check your
+CI/CD build logs for more details.
+
+{% if test.total_issues_count(results) == 0 %}
+**No execution configuration discrepancies to report**
+{% else %}
+
+{% if test.failures_for_check_count(results) > 0 %}
+{% for k in all_failures.keys() -%}
+## {{ k }}
+
+{% for config_name, config_content in all_failures[k][0].items() %}
+### {{ config_name }}
+
+```
+{% for line in config_content %}
+{{ line|safe }}
+{%- endfor %}
+```
+
+{% endfor %}
+
+{%- endfor -%}
+{% endif -%}
+{% endif %}

@@ -86,7 +86,7 @@ Follow these steps to integrate auditree-arboretum fetchers and checks into your
   For example to use the Abandoned Evidence fetcher from the `auditree` technology, add
   the following to your `fetch_auditree_technology.py`:
 
-  ```
+  ```python
   from arboretum.technology.auditree.fetchers.fetch_abandoned_evidence import AbandonedEvidenceFetcher
   ```
 
