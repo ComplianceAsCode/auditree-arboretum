@@ -58,6 +58,23 @@ updated in over that `threshold` value otherwise the default is 30 days.  TTL is
    ```python
    from arboretum.technology.auditree.fetchers.fetch_abandoned_evidence import AbandonedEvidenceFetcher
    ```
+### Compliance Configuration
+
+* Class: [ComplianceConfigFetcher][fetch-compliance-config]
+* Purpose: Writes the current configuration stored in the ComplianceConfig object to the evidence locker.
+* Behavior: Stores the configuration used to execute the compliance fetchers to the evidence locker and sets a time to
+live (TTL) to 2 hours.  This fetcher will refresh the configuration evidence on every execution of the fetchers.
+* Expected configuration elements:
+   * None
+* Expected configuration:
+   * None
+* Expected credentials:
+   * None
+* Import statement:
+
+   ```python
+   from arboretum.technology.auditree.fetchers.fetch_compliance_config import ComplianceConfigFetcher
+   ```
 
 ## Checks
 
@@ -121,8 +138,30 @@ the current check execution.  The default threshold is 30 days beyond the time t
    ```python
    from arboretum.technology.auditree.checks.test_abandoned_evidence import AbandonedEvidenceCheck
    ```
+### Compliance Configuration
 
+* Class: [ComplianceConfigCheck][check-compliance-config]
+* Purpose: Compare the configuration captured as evidence with the current configuration in the ComplianceConfig object
+being used to execute the checks.
+* Behavior: For every difference found between the evidence and the current configuration a failure is generated and
+reported on.
+* Evidence depended upon:
+   * Compliance tooling configuration settings
+      * `raw/auditree/compliance_config.json`
+      * Gathered by the `auditree` provider [ComplianceConfigFetcher][fetch-compliance-config]
+* Expected configuration elements:
+   * None
+* Expected configuration (optional):
+   * None
+
+* Import statement:
+
+   ```python
+   from auditree_central.provider.auditree.checks.test_compliance_config import ComplianceConfigCheck
+   ```
 
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
 [fetch-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/technology/auditree/fetchers/fetch_abandoned_evidence.py
+[fetch-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/technology/auditree/fetchers/fetch_compliance_config.py
 [check-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/technology/auditree/checks/test_abandoned_evidence.py
+[check-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/technology/auditree/checks/test_compliance_config.py

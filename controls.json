@@ -3,5 +3,10 @@
     "auditree_evidence": {
       "auditree_control": ["tech.auditree"]
     }
+  },
+  "arboretum.technology.auditree.checks.test_compliance_config.ComplianceConfigCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["tech.auditree"]
+    }
   }
 }
