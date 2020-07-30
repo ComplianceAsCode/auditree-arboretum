@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Arboretum - Checking your compliance & security posture, continuously."""
+"""Common constants."""
 
-__version__ = '0.2.0'
+# PyPI RSS feed base URL
+PYPI_RSS_BASE_URL = 'https://pypi.org/rss/project'

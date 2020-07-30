@@ -17,23 +17,31 @@ limitations under the License.
 
 # {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
 
-This report displays any evidence in the evidence locker that has not been updated in over {{ test.formatted_threshold }}.
+This report displays any evidence in the evidence locker that has not been updated
+in over {{ test.formatted_threshold }}.
 {%- if test.title == 'Latest Abandoned Evidence' -%}
-This report display only changes to abandoned evidence since the last time new abandoned evidence was discovered.  In other
-words, when abandoned evidence is **initially** discovered it is displayed here.  On subsequent executions of the abandoned
-evidence check, the results are suppressed if the abandoned evidence is the same as the previous execution of the check to
-reduce the "noise" in this report.
+This report display only changes to abandoned evidence since the last time new
+abandoned evidence was discovered.  In other words, when abandoned evidence is
+**initially** discovered it is displayed here.  On subsequent executions of the
+abandoned evidence check, the results are suppressed if the abandoned evidence
+is the same as the previous execution of the check to reduce the "noise" in this
+report.
 {% endif -%}
 
-## Remediation
+<details>
+<summary>Remediation...</summary>
 
-The purpose of this report is to highlight that evidence has not been refreshed in quite some time within the evidence locker.
-It _could_ mean that a fetcher or check is malfunctioning or it _could_ mean that the evidence being flagged as abandoned is no
-longer in use and should be considered for removal from the evidence locker.
+The purpose of this report is to highlight that evidence has not been refreshed
+in quite some time within the evidence locker.  It _could_ mean that a fetcher
+or check is malfunctioning or it _could_ mean that the evidence being flagged as
+abandoned is no longer in use and should be considered for removal from the evidence
+locker.
 
-It is also possible to add abandoned evidence to an exceptions list in your configuration of this check/report thereby reducing
-the severity of the notification.  Doing this allows you to keep abandoned evidence around for a period of time while deferring
-the removal of that abandoned evidence to later point in time.
+It is also possible to add abandoned evidence to an exceptions list in your
+configuration of this check/report thereby reducing the severity of the notification.
+Doing this allows you to keep abandoned evidence around for a period of time while
+deferring the removal of that abandoned evidence to later point in time.
+</details>
 
 {% if test.total_issues_count(results) == 0 %}
 **No abandoned evidence to report**
@@ -42,10 +50,13 @@ the removal of that abandoned evidence to later point in time.
 {% for section_heading, failures in all_failures.items() -%}
 ## {{ section_heading }}
 
-The following evidence have not been updated in over {{ test.formatted_threshold }} and have been identified as abandoned.
-Consider validating why this evidence was marked as abandoned.  If it was due to a failing fetcher and check then resolve
-that failure.  If it was due to the evidence no longer being useful then consider [pruning the evidence from the evidence
-locker](https://github.com/ComplianceAsCode/auditree-prune) or adding the evidence to the abandoned evidence exceptions list.
+The following evidence have not been updated in over {{ test.formatted_threshold }}
+and have been identified as abandoned.
+Consider validating why this evidence was marked as abandoned.  If it was due to a
+failing fetcher and check then resolve that failure.  If it was due to the evidence
+no longer being useful then consider [pruning the evidence from the evidence
+locker](https://github.com/ComplianceAsCode/auditree-prune) or adding the evidence
+to the abandoned evidence exceptions list.
 {% for failure in failures %}
 - [`{{ failure['ae_path'] }}`]({{ test.config.get('locker.repo_url') }}/blob/master/{{ failure['ae_path'] }})
    - **Last updated:** {{ failure['last_update'] }}
@@ -57,8 +68,9 @@ locker](https://github.com/ComplianceAsCode/auditree-prune) or adding the eviden
 {% for section_heading, warnings in all_warnings.items() %}
 ## {{ section_heading }}
 
-The following evidence have not been updated in over {{ test.formatted_threshold }} and have been identified as abandoned
-evidence exceptions.  Have a look at the reason for an evidence being included on the exceptions list and consider whether
+The following evidence have not been updated in over {{ test.formatted_threshold }}
+and have been identified as abandoned evidence exceptions.  Have a look at the
+reason for an evidence being included on the exceptions list and consider whether
 it makes sense to [prune that evidence from the evidence locker](https://github.com/ComplianceAsCode/auditree-prune).
 
 {% for warning in warnings %}

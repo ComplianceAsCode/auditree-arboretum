@@ -1,3 +1,7 @@
+# 0.2.0
+
+- [NEW] Add Python packages fetcher and check.
+
 # 0.1.0
 
 - [NEW] Add compliance configuration fetcher and check.
