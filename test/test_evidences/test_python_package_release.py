@@ -16,7 +16,7 @@
 
 import unittest
 
-from arboretum.technology.auditree.evidences.python_package_release import (
+from arboretum.auditree.evidences.python_package_release import (
     PackageReleaseEvidence
 )
 

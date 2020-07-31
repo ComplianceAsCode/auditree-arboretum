@@ -1,17 +1,17 @@
 {
-  "arboretum.technology.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": {
+  "arboretum.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": {
     "auditree_evidence": {
-      "auditree_control": ["tech.auditree"]
+      "auditree_control": ["arboretum.auditree"]
     }
   },
-  "arboretum.technology.auditree.checks.test_compliance_config.ComplianceConfigCheck": {
+  "arboretum.auditree.checks.test_compliance_config.ComplianceConfigCheck": {
     "auditree_evidence": {
-      "auditree_control": ["tech.auditree"]
+      "auditree_control": ["arboretum.auditree"]
     }
   },
-  "arboretum.technology.auditree.checks.test_python_packages.PythonPackageCheck": {
+  "arboretum.auditree.checks.test_python_packages.PythonPackageCheck": {
     "auditree_evidence": {
-      "auditree_control": ["tech.auditree"]
+      "auditree_control": ["arboretum.auditree"]
     }
   }
 }

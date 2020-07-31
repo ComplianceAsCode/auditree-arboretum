@@ -15,6 +15,22 @@ reports built upon the [Auditree compliance automation framework][auditree-frame
 
 ## Repo content
 
+### Functionality categorization
+
+Arboretum fetchers, checks, and Harvest reports are organized into functional
+grouping categories.  The following categories have either been contributed to
+or will be contributed to in the near future.  We anticipate that this list will
+grow as arboretum matures.
+
+- [Ansible](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/ansible)
+- [Auditree](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/auditree)
+- [Chef](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/chef)
+- [IBM Cloud](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/ibm_cloud)
+- [Kubernetes](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/kubernetes)
+- [Object Storage](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/object_storage)
+- [Pager Duty](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/pager_duty)
+- [Splunk](https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/splunk)
+
 ### Fetchers
 
 Please read the framework documentation for [fetcher design principles][] before
@@ -53,8 +69,8 @@ identified by checks.  These violations are in the form of failures and warnings
 ### Harvest Reports
 
 Harvest reports are hosted with the fetchers/checks that collect the evidence for
-the reports process. Within `auditree-arboretum` this means the code lives in the
-appropriate provider or technology directory. For more details check out
+the reports process. Within `auditree-arboretum` this means the harvest report code
+lives in `reports` folders throughout this repository. For more details check out
 [harvest report development][harvest-rpt-dev] in the [harvest][harvest] README.
 
 ## Usage
@@ -72,30 +88,30 @@ Follow these steps to integrate auditree-arboretum fetchers and checks into your
 
 * Add this `auditree-arboretum` package as a dependency in your Python project.
 * The following steps can be taken to import individual arboretum fetchers and checks.
-  * For a fetcher, add a `fetch_<category>_<technology|provider>.py` module, if one
-  does not already exist, in your project's `fetchers` path where the `<category>` is
-  either the provider or technology of that fetcher.  Having a separate common "category"
-  module guards against name collisions across providers and technologies.
-  * For a check, add a `test_<category>_<technology|provider>.py` module, if one
-  does not already exist, in your project's `checks` path where the `<category>` is
-  either the provider or technology of that check.  Having a separate common "category"
-  module guards against name collisions across providers and technologies.
+  * For a fetcher, add a `fetch_<category>_common.py` module, if one does not already
+  exist, in your project's `fetchers` path where the `<category>` is
+  the respective category folder within this repo of that fetcher.  Having a separate
+  common "category" module guards against name collisions across categories.
+  * For a check, add a `test_<category>_common.py` module, if one does not already exist,
+  in your project's `checks` path where the `<category>` is the respective category folder
+  within this repo of that check.  Having a separate common "category" module guards
+  against name collisions across providers and technologies.
   * Import the desired fetcher or check class and the `auditree-framework` will handle
   the rest.
 
-  For example to use the Abandoned Evidence fetcher from the `auditree` technology, add
-  the following to your `fetch_auditree_technology.py`:
+  For example to use the Abandoned Evidence fetcher from the `auditree` category, add
+  the following to your `fetch_auditree_common.py`:
 
   ```python
-  from arboretum.technology.auditree.fetchers.fetch_abandoned_evidence import AbandonedEvidenceFetcher
+  from arboretum.auditree.fetchers.fetch_abandoned_evidence import AbandonedEvidenceFetcher
   ```
 
 * `auditree-arboretum` fetchers and checks are designed to execute as part of a downstream
 Python project, so you may need to setup your project's configuration in order for the
-fetchers and checks to execute as desired.  Each provider and technology folder in this
-repository includes a README.md that documents each fetcher's and check's configuration.
+fetchers and checks to execute as desired.  Each category folder in this repository
+includes a README.md that documents each fetcher's and check's configuration.
   * In general `auditree-arboretum` fetchers and checks expect an `org` field with content
-  that capture each fetcher's and check's configuration settings.
+  that captures each fetcher's and check's configuration settings.
 
   For example:
 
@@ -123,9 +139,9 @@ set which is useful for organizing check notifications and targeted check execut
 
   ```json
   {
-    "arboretum.technology.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": {
+    "arboretum.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": {
       "auditree_evidence": {
-        "auditree_control": ["tech.auditree"]
+        "auditree_control": ["arboretum.auditree"]
       }
     }
   }
