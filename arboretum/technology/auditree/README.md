@@ -2,7 +2,8 @@
 
 The fetchers and checks contained within this `auditree` technology folder are
 common tests that can be configured and executed for the purpose of generating
-compliance reports and notifications using the [auditree-framework][].
+compliance reports and notifications using the [auditree-framework][].  They
+validate the configuration and ensure smooth execution of an auditree instance.
 See [auditree-framework documentation](https://complianceascode.github.io/auditree-framework/)
 for more details.
 
@@ -70,8 +71,9 @@ over that `threshold` value otherwise the default is 30 days.  TTL is set to 1 d
 * Purpose: Writes the current configuration stored in the ComplianceConfig object
 to the evidence locker.
 * Behavior: Stores the configuration used to execute the compliance fetchers to
-the evidence locker and sets a time to live (TTL) to 2 hours.  This fetcher will
-refresh the configuration evidence on every execution of the fetchers.
+the evidence locker and sets a time to live (TTL) to 2 hours.  This fetcher
+ignores TTL and will refresh the configuration evidence on every execution of
+the fetchers.
 * Expected configuration elements:
    * None
 * Expected configuration:
@@ -88,10 +90,10 @@ refresh the configuration evidence on every execution of the fetchers.
 
 * Class: [PythonPackageFetcher][fetch-python-packages]
 * Purpose: Writes the current Python package dependency list to evidence.
-* Behavior: Stores the current Python package dependency list as evidence as well
-as the latest release information for `auditree-arboretum` and `auditree-framework`
-is also retrieved and stored as evidence.  The time to live (TTL) is set to 1 day
-for all evidences.
+* Behavior: Stores the current Python package dependency list as evidence and
+the latest release information for `auditree-arboretum`, `auditree-framework`
+and `auditree-harvest` are also retrieved and stored as evidence.  The time to
+live (TTL) is set to 1 day for all evidences.
 * Expected configuration elements:
    * None
 * Expected configuration:
@@ -198,17 +200,18 @@ configuration a failure is generated and reported on.
 * Class: [PythonPackageCheck][check-python-packages]
 * Purpose: Compare the most recent Python package evidence with the evidence
 from the most recent historical version of that evidence found in the locker and
-checks that the `auditree-arboretum` and `auditree-framework` packages are at
-their most current release level.
+checks that the `auditree-arboretum`, `auditree-framework` and `auditree-harvest`
+packages are at their most current release level.
 * Behavior: For every difference found between the two versions of evidence a
 warning is generated and reported on.  Warnings are also generated when the
-`auditree-arboretum` or `auditree-framework` packages being used are not at the
-current release version.
+`auditree-arboretum`, `auditree-framework`, or `auditree-harvest` packages being
+used are not at the current release version.
 * Evidence depended upon:
    * The executing environment's Python package list
       * `raw/auditree/python_packages.json`
       * `raw/auditree/auditree_arboretum_releases.xml`
       * `raw/auditree/auditree_framework_releases.xml`
+      * `raw/auditree/auditree_harvest_releases.xml`
       * Gathered by the `technology.auditree` [PythonPackageFetcher][fetch-python-packages]
 * Expected configuration elements:
    * None

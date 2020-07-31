@@ -105,6 +105,10 @@ class PythonPackageCheck(ComplianceCheck):
         """Check auditree-framework version matches latest release."""
         self._test_versions(packages, releases, 'auditree-framework')
 
+    def test_auditree_harvest_version(self, packages, releases):
+        """Check auditree-harvest version matches latest release."""
+        self._test_versions(packages, releases, 'auditree-harvest')
+
     def _test_versions(self, packages, releases, package):
         latest = PackageReleaseEvidence.from_evidence(releases).latest_release
         version_used = json.loads(packages.content).get(package)
@@ -135,7 +139,7 @@ class PythonPackageCheck(ComplianceCheck):
 
     def msg_auditree_arboretum_version(self):
         """
-        Python Packages auditree-central check notifier.
+        Python Packages auditree-arboretum check notifier.
 
         :returns: notification dictionary
         """
@@ -143,8 +147,16 @@ class PythonPackageCheck(ComplianceCheck):
 
     def msg_auditree_framework_version(self):
         """
-        Python Packages compliance-tool check notifier.
+        Python Packages auditree-framework check notifier.
 
         :returns: notification dictionary
         """
         return {'subtitle': 'auditree-framework version', 'body': None}
+
+    def msg_auditree_harvest_version(self):
+        """
+        Python Packages auditree-harvest check notifier.
+
+        :returns: notification dictionary
+        """
+        return {'subtitle': 'auditree-harvest version', 'body': None}

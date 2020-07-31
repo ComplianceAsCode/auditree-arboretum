@@ -71,14 +71,19 @@ class PythonPackageFetcher(ComplianceFetcher):
         return json.dumps(packages)
 
     @store_raw_evidence('auditree/auditree_arboretum_releases.xml')
-    def fetch_auditree_arboretum_versions(self):
+    def fetch_auditree_arboretum_releases(self):
         """Fetch the auditree-arboretum package releases."""
         return self._fetch_pypi_releases('auditree-arboretum')
 
     @store_raw_evidence('auditree/auditree_framework_releases.xml')
-    def fetch_auditree_framework_versions(self):
+    def fetch_auditree_framework_releases(self):
         """Fetch the auditree-framework package releases."""
         return self._fetch_pypi_releases('auditree-framework')
+
+    @store_raw_evidence('auditree/auditree_harvest_releases.xml')
+    def fetch_auditree_harvest_releases(self):
+        """Fetch the auditree-harvest package releases."""
+        return self._fetch_pypi_releases('auditree-harvest')
 
     def _fetch_pypi_releases(self, package_name):
         resp = self.session().get(f'{package_name}/releases.xml')
