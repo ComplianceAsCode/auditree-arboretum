@@ -1,3 +1,14 @@
+# 0.3.0
+
+- [BREAKING] Move `auditree` fetchers and checks up to arboretum.auditree.
+- [NEW] Add folder hierarchy for Ansible fetchers, checks, and harvest reports.
+- [NEW] Add folder hierarchy for Chef fetchers, checks, and harvest reports.
+- [NEW] Add folder hierarchy for IBM Cloud fetchers, checks, and harvest reports.
+- [NEW] Add folder hierarchy for Kubernetes fetchers, checks, and harvest reports.
+- [NEW] Add folder hierarchy for Object Storage fetchers, checks, and harvest reports.
+- [NEW] Add folder hierarchy for Pager Duty fetchers, checks, and harvest reports.
+- [NEW] Add folder hierarchy for Splunk fetchers, checks, and harvest reports.
+
 # 0.2.0
 
 - [NEW] Add Python packages fetcher and check.
