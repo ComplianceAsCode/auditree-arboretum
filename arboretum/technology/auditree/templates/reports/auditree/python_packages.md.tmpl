@@ -1,0 +1,71 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+{#
+Copyright (c) 2020 IBM Corp. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+
+# {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
+
+This report displays differences in the compliance automation execution Python
+package environment since the previous execution.
+
+<details>
+<summary>More details...</summary>
+
+Any **package version changes**
+are largely informational.  They _can_ be used to debug why things worked
+previously but aren't working today.  The compliance automation framework execution
+environment depends on other of Python libraries.  These libraries can have new
+releases and it's not outside the realm of possibility that a new release of a
+dependency could cause a problem.  This report provides information that helps to
+guard against that.  This report also checks whether the versions of the
+[auditree-arboretum](https://github.com/ComplianceAsCode/auditree-arboretum),
+the [auditree-framework](https://github.com/ComplianceAsCode/auditree-framework)
+and the [auditree-harvest](https://github.com/ComplianceAsCode/auditree-harvest)
+packages are the most recent versions available, as is the expected behavior.
+</details>
+
+<details>
+<summary>Remediation...</summary>
+
+Package version change warnings are informational but can be used in part
+to debug why things worked previously but currently don't.  However, if the
+`auditree-arboretum`, `auditree-framework`, or the `auditree-harvest` packages
+are flagged as a **latest version violation** then that needs to be explained.
+It is expected that the most recent versions of each of those packages are used
+during fetcher, check and report execution.
+</details>
+
+{% if test.total_issues_count(results) == 0 -%}
+**No python package version differences to report**
+{% else -%}
+{% if test.warnings_for_check_count(results) > 0 -%}
+{% for warning, instances in all_warnings.items() %}
+
+## {{ warning }}
+{% if warning == 'Latest Version Violation'-%}
+Checks that ensure that the `auditree-arboretum`, `auditree-framework` and
+`auditree-harvest` packages are up to date have uncovered issues.  These warnings
+should be investigated because the expectation is that these packages should be
+current and up to date.
+{% else -%}
+These findings are largely informational.  They can be used to debug issues with
+the execution environment.
+{% endif -%}
+{% for instance in instances %}
+* {{ instance }}
+{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endif -%}

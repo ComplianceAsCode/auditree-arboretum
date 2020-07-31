@@ -18,13 +18,19 @@ limitations under the License.
 # {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
 
 This report displays differences between the configuration used by the fetcher
-execution and the configuration used by the check execution.  Fetchers and checks
-are executed as separate processes but the expectation is that both processes
-are executed using the same configuration settings as defined by a project's
-configuration JSON file.  If discrepancies are found and reported here then a
-serious problem occurred during execution.
+execution and the configuration used by the check execution.
 
-## Remediation
+<details>
+<summary>More details...</summary>
+
+Fetchers and checks are executed as separate processes but the expectation is
+that both processes are executed using the same configuration settings as defined
+by a project's configuration JSON file.  If discrepancies are found and reported
+here then a serious problem occurred during execution.
+</details>
+
+<details>
+<summary>Remediation...</summary>
 
 All discrepancies reported here need to be fully investigated and accounted for.
 Since the official execution of fetchers and checks is handled by a CI/CD tool
@@ -32,6 +38,7 @@ like Travis, the execution environment should be a closed "eco-system" and there
 should be no reason for a difference in execution configuration between the
 fetchers and the checks.  In the event of a problem reported here, check your
 CI/CD build logs for more details.
+</details>
 
 {% if test.total_issues_count(results) == 0 %}
 **No execution configuration discrepancies to report**

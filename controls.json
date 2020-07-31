@@ -8,5 +8,10 @@
     "auditree_evidence": {
       "auditree_control": ["tech.auditree"]
     }
+  },
+  "arboretum.technology.auditree.checks.test_python_packages.PythonPackageCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["tech.auditree"]
+    }
   }
 }
