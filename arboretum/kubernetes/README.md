@@ -73,6 +73,7 @@ list of clusters.  TTL is set to 1 day.
   }
    ```
 
+
 * Required credentials:
   * A token of a Kubernetes service account is required.
     * `<cluster label>_token`: a token string for the cluster label value from
