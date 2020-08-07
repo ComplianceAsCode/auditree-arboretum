@@ -14,6 +14,10 @@
 # limitations under the License.
 """Common utility functions."""
 
+import subprocess
+
+from arboretum.common.errors import CommandExecutionError
+
 from compliance.evidence import DAY, HOUR
 
 
@@ -34,3 +38,25 @@ def parse_seconds(seconds):
             formatted.append(f'{q} {unit}')
         seconds = r
     return ', '.join(formatted)
+
+
+def run_command(cmd, secrets=None):
+    """Run commands in a system."""
+    if type(cmd) == str:
+        cmd = cmd.split(' ')
+    p = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True
+    )
+    stdout, stderr = p.communicate()
+
+    if p.returncode != 0:
+        secrets = secrets or []
+        for s in secrets:
+            cmd = cmd.replace(s, '***')
+            stdout = stdout.replace(s, '***')
+            stderr = stderr.replace(s, '***')
+        raise CommandExecutionError(cmd, stdout, stderr, p.returncode)
+    return stdout
