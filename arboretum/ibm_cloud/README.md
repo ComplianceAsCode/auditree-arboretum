@@ -2,7 +2,7 @@
 
 The fetchers and checks contained within this `ibm_cloud` category folder are
 common tests that can be configured and executed for the purpose of generating
-compliance reports and notifications using the [auditree-framework][].  They
+compliance reports and notifications using the [auditree-framework](https://github.com/ComplianceAsCode/auditree-framework).  They
 validate the configuration and ensure smooth execution of an auditree instance.
 See [auditree-framework documentation](https://complianceascode.github.io/auditree-framework/)
 for more details.
