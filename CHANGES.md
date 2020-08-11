@@ -1,3 +1,9 @@
+# UNRELEASED
+
+- [NEW] Add Github repository metadata fetcher.
+- [NEW] Add Github repository recent commits fetcher.
+- [NEW] Add Github repository branch protection fetcher.
+
 # 0.3.0
 
 - [BREAKING] Move `auditree` fetchers and checks up to arboretum.auditree.
