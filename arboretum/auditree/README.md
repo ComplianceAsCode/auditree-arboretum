@@ -27,13 +27,13 @@ locker.
 evidence locker.  If the optional `threshold` configuration setting is applied
 then abandoned evidence is identified as evidence that has not been updated in
 over that `threshold` value otherwise the default is 30 days.  TTL is set to 1 day.
-* Expected configuration elements:
-   * org.auditree.abandoned\_evidence.threshold
+* Configuration elements:
+   * `org.auditree.abandoned_evidence.threshold`
       * Optional
       * Integer
       * Provide value in seconds
-      * Use if looking to override the default of 30 days otherwise do not include.
-   * org.auditree.abandoned\_evidence.exceptions
+      * Use if looking to override the default of 30 days.  Otherwise do not include.
+   * `org.auditree.abandoned_evidence.exceptions`
       * Optional
       * Dictionary where the key/value pairs are the path to the evidence (key)
       and the reason for excluding it from the abandoned evidence list (value).
@@ -41,7 +41,7 @@ over that `threshold` value otherwise the default is 30 days.  TTL is set to 1 d
       * Use if looking to exclude evidence files from being deemed abandoned and
       included as failures.  All "exceptions" will still appear on the report and
       will be treated as warnings rather than failures.
-* Expected configuration (optional):
+* Example (optional) configuration:
 
    ```json
    {
@@ -58,13 +58,13 @@ over that `threshold` value otherwise the default is 30 days.  TTL is set to 1 d
      }
    }
    ```
-* Expected credentials:
-   * None
+
 * Import statement:
 
    ```python
    from arboretum.auditree.fetchers.fetch_abandoned_evidence import AbandonedEvidenceFetcher
    ```
+
 ### Compliance Configuration
 
 * Class: [ComplianceConfigFetcher][fetch-compliance-config]
@@ -74,16 +74,208 @@ to the evidence locker.
 the evidence locker and sets a time to live (TTL) to 2 hours.  This fetcher
 ignores TTL and will refresh the configuration evidence on every execution of
 the fetchers.
-* Expected configuration elements:
-   * None
-* Expected configuration:
-   * None
-* Expected credentials:
-   * None
 * Import statement:
 
    ```python
    from arboretum.auditree.fetchers.fetch_compliance_config import ComplianceConfigFetcher
+   ```
+
+### Repository Integrity (Metadata)
+
+* Class: [GithubRepoMetaDataFetcher][fetch-repo-metadata]
+* Purpose: Writes Github repository metadata details evidence to the evidence
+locker.  This fetcher class is only meant for use with Github or Github
+Enterprise repositories.
+* Behavior: For each Github repository specified, an evidence file is stored in
+the locker containing that repository's metadata details.  If no repositories
+are specified the fetcher defaults to retrieving the evidence locker repository
+metadata detail.  TTL is set to 1 day.
+* Configuration elements:
+   * `org.auditree.repo_integrity.repos`
+      * Optional
+      * List of Github repository URLs (string).
+      * Use if looking to specify multiple repos or to override the evidence
+      locker repo default.  Otherwise do not include.
+* Example (optional) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "repo_integrity": {
+           "repos": [
+             "https://github.com/org-foo/repo-foo",
+             "https://github.com/org-bar/repo-bar"
+           ]
+         }
+       }
+     }
+   }
+   ```
+
+* Required credentials:
+   * `github` or `github_enterprise` credentials with admin permissions to the
+   repository are required for this fetcher to successfully retrieve evidence.
+      * `username`: The Github user used to run the fetcher.
+      * `token`: The Github user access token used to run the fetcher.
+   * Example credentials file entry:
+
+      ```ini
+      [github]
+      username=gh-user-name
+      token=gh-access-token
+      ```
+
+      or
+
+      ```ini
+      [github_enterprise]
+      username=ghe-user-name
+      token=ghe-access-token
+      ```
+
+   * NOTE: These credentials are also needed for basic configuration of the
+   Auditree framework.  The expectation is that the same credentials are used
+   for all Github interactions.
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.fetchers.github.fetch_repo_metadata import GithubRepoMetaDataFetcher
+   ```
+
+### Repository Integrity (Recent Commits)
+
+* Class: [GithubRepoCommitsFetcher][fetch-recent-commits]
+* Purpose: Writes the most recent Github repository branch commit details
+to the evidence locker.  This fetcher class is only meant for use with Github
+or Github Enterprise repositories.
+* Behavior: For each Github repository and branch specified, an evidence file
+is stored in the locker containing that repository branch's most recent (last 2
+days) commit details.  If no repositories are specified the fetcher defaults to
+retrieving the evidence locker `master` branch commit detail.  TTL is set to 1
+day.
+* Configuration elements:
+   * `org.auditree.repo_integrity.branches`
+      * Optional
+      * Dictionary:
+         * Key: Github repository URL (string)
+         * Value: List of branches (string) for that repository.
+      * Use if looking to specify multiple repos/branches or to override the
+      evidence locker repo and `master` branch default.  Otherwise do not include.
+* Example (optional) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "repo_integrity": {
+           "branches": {
+             "https://github.com/org-foo/repo-foo": ["main", "develop"],
+             "https://github.com/org-bar/repo-bar": ["main"]
+           }
+         }
+       }
+     }
+   }
+   ```
+
+* Required credentials:
+   * `github` or `github_enterprise` credentials with admin permissions to the
+   repository are required for this fetcher to successfully retrieve evidence.
+      * `username`: The Github user used to run the fetcher.
+      * `token`: The Github user access token used to run the fetcher.
+   * Example credentials file entry:
+
+      ```ini
+      [github]
+      username=gh-user-name
+      token=gh-access-token
+      ```
+
+      or
+
+      ```ini
+      [github_enterprise]
+      username=ghe-user-name
+      token=ghe-access-token
+      ```
+
+   * NOTE: These credentials are also needed for basic configuration of the
+   Auditree framework.  The expectation is that the same credentials are used
+   for all Github interactions.
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.fetchers.github.fetch_recent_commits import GithubRepoCommitsFetcher
+   ```
+
+### Repository Integrity (Branch Protection)
+
+* Class: [GithubRepoBranchProtectionFetcher][fetch-branch-protection]
+* Purpose: Writes the Github repository branch protection details to the
+evidence locker.  This fetcher class is only meant for use with Github or
+Github Enterprise repositories.
+* Behavior: For each Github repository and branch specified, an evidence file
+is stored in the locker containing that repository branch's branch protection
+details.  If no repositories are specified the fetcher defaults to retrieving
+the evidence locker `master` branch branch protection detail.  TTL is set to 1
+day.
+* Configuration elements:
+   * `org.auditree.repo_integrity.branches`
+      * Optional
+      * Dictionary:
+         * Key: Github repository URL (string)
+         * Value: List of branches (string) for that repository.
+      * Use if looking to specify multiple repos/branches or to override the
+      evidence locker repo and `master` branch default.  Otherwise do not include.
+* Example (optional) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "repo_integrity": {
+           "branches": {
+             "https://github.com/org-foo/repo-foo": ["main", "develop"],
+             "https://github.com/org-bar/repo-bar": ["main"]
+           }
+         }
+       }
+     }
+   }
+   ```
+
+* Required credentials:
+   * `github` or `github_enterprise` credentials with admin permissions to the
+   repository are required for this fetcher to successfully retrieve evidence.
+      * `username`: The Github user used to run the fetcher.
+      * `token`: The Github user access token used to run the fetcher.
+   * Example credentials file entry:
+
+      ```ini
+      [github]
+      username=gh-user-name
+      token=gh-access-token
+      ```
+
+      or
+
+      ```ini
+      [github_enterprise]
+      username=ghe-user-name
+      token=ghe-access-token
+      ```
+
+   * NOTE: These credentials are also needed for basic configuration of the
+   Auditree framework.  The expectation is that the same credentials are used
+   for all Github interactions.
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.fetchers.github.fetch_branch_protection import GithubRepoBranchProtectionFetcher
    ```
 
 ### Python Packages
@@ -94,12 +286,6 @@ the fetchers.
 the latest release information for `auditree-arboretum`, `auditree-framework`
 and `auditree-harvest` are also retrieved and stored as evidence.  The time to
 live (TTL) is set to 1 day for all evidences.
-* Expected configuration elements:
-   * None
-* Expected configuration:
-   * None
-* Expected credentials:
-   * None
 * Import statement:
 
    ```python
@@ -128,13 +314,13 @@ execution.  The default threshold is 30 days beyond the time to live (TTL) setti
    store "abandoned evidence" evidence in the locker then the tooling performs
    a sweep of the evidence locker metadata to assess evidence that has not been
    updated in the timeframe specified.
-* Expected configuration elements:
-   * org.auditree.abandoned\_evidence.threshold
+* Configuration elements:
+   * `org.auditree.abandoned_evidence.threshold`
       * Optional
       * Integer
       * Provide value in seconds
-      * Use if looking to override the default of 30 days otherwise do not include.
-   * org.auditree.abandoned\_evidence.exceptions
+      * Use if looking to override the default of 30 days.  Otherwise do not include.
+   * `org.auditree.abandoned_evidence.exceptions`
       * Optional
       * Dictionary where the key/value pairs are the path to the evidence (key)
       and the reason for excluding it from the abandoned evidence list (value).
@@ -142,14 +328,14 @@ execution.  The default threshold is 30 days beyond the time to live (TTL) setti
       * Use if looking to exclude evidence files from being deemed abandoned
       and included as failures.  All "exceptions" will still appear on the
       report and will be treated as warnings rather than failures.
-   * org.auditree.abandoned\_evidence.ignore\_history
+   * `org.auditree.abandoned_evidence.ignore_history`
       * Optional
       * Boolean
       * Set to `true`
       * Use if collecting `raw/auditree/abandoned_evidence.json` in the evidence
       locker but intend to run the check without referencing the evidence history
       (more rigid alerts).  Otherwise do not include.
-* Expected configuration (optional):
+* Example (optional) configuration:
 
    ```json
    {
@@ -173,6 +359,7 @@ execution.  The default threshold is 30 days beyond the time to live (TTL) setti
    ```python
    from arboretum.auditree.checks.test_abandoned_evidence import AbandonedEvidenceCheck
    ```
+
 ### Compliance Configuration
 
 * Class: [ComplianceConfigCheck][check-compliance-config]
@@ -184,11 +371,6 @@ configuration a failure is generated and reported on.
    * Compliance tooling configuration settings
       * `raw/auditree/compliance_config.json`
       * Gathered by the `auditree` provider [ComplianceConfigFetcher][fetch-compliance-config]
-* Expected configuration elements:
-   * None
-* Expected configuration (optional):
-   * None
-
 * Import statement:
 
    ```python
@@ -213,11 +395,6 @@ used are not at the current release version.
       * `raw/auditree/auditree_framework_releases.xml`
       * `raw/auditree/auditree_harvest_releases.xml`
       * Gathered by the `technology.auditree` [PythonPackageFetcher][fetch-python-packages]
-* Expected configuration elements:
-   * None
-* Expected configuration (optional):
-   * None
-
 * Import statement:
 
    ```python
@@ -228,6 +405,9 @@ used are not at the current release version.
 [fetch-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_abandoned_evidence.py
 [fetch-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_compliance_config.py
 [fetch-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_python_packages.py
+[fetch-repo-metadata]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_repo_metadata.py
+[fetch-recent-commits]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_recent_commits.py
+[fetch-branch-protection]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_branch_protection.py
 [check-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_abandoned_evidence.py
 [check-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_compliance_config.py
 [check-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_python_packages.py
