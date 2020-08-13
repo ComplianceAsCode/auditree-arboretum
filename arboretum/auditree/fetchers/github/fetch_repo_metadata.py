@@ -18,7 +18,9 @@ import json
 import os
 from urllib.parse import urlparse
 
-from compliance.evidence import DAY, RawEvidence, raw_evidence
+from arboretum.auditree.evidences.repo_metadata import RepoMetadataEvidence
+
+from compliance.evidence import DAY, raw_evidence
 from compliance.fetch import ComplianceFetcher
 from compliance.utils.services.github import Github
 
@@ -45,7 +47,7 @@ class GithubRepoMetaDataFetcher(ComplianceFetcher):
                 current_url = base_url
             self.config.add_evidences(
                 [
-                    RawEvidence(
+                    RepoMetadataEvidence(
                         path[1],
                         path[0],
                         DAY,
