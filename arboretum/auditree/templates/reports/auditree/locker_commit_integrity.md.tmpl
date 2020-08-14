@@ -1,0 +1,56 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+{#
+Copyright (c) 2020 IBM Corp. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+
+# {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
+
+This report provides evidence locker signed commit violations.
+
+<details>
+<summary>More details...</summary>
+
+Possible issues identified in this report can be:
+
+- Required signing of commits is not turned on in evidence locker branch protection.
+- Individual recent commits have not been signed in the evidence locker.
+</details>
+
+<details>
+<summary>Remediation...</summary>
+
+- If the branch protection option for requiring signed commits is not turned on
+then a commit can be pushed to the remote locker without a verified signature.
+This means that the evidence locker is susceptible to fraudulent commits.  Enable
+the option and investigate if it was turned off for whatever reason.
+- If the branch protection option for requiring signed commits is enabled then
+a commit cannot be pushed to the evidence locker without a verified signature.
+If an unsigned commit appears on this report, investigate whether the option has
+been disabled in branch protection and for what reason.  Looking at the audit
+log of the remote evidence locker may also help.
+</details>
+
+## Failures
+{% if test.failures_for_check_count(results) == 0 -%}
+**No evidence locker recent commit integrity failures to report.**
+{% else -%}
+{% for topic in all_failures.keys()|sort %}
+
+### {{ topic }}
+{% for failure in all_failures[topic] %}
+* {{ failure|safe }}
+{%- endfor -%}
+{%- endfor -%}
+{%- endif %}

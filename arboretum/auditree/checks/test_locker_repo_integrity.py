@@ -71,8 +71,12 @@ class LockerRepoIntegrityCheck(ComplianceCheck):
             elif 'bitbucket' in parsed.hostname:
                 service = 'bb'
             repo = parsed.path.strip('/')
-            name_prefix = repo.lower().replace('/', '_').replace('-', '_')
-            path = f'raw/auditree/{service}_{name_prefix}_repo_metadata.json'
+            filename = [
+                service,
+                repo.lower().replace('/', '_').replace('-', '_'),
+                'repo_metadata.json'
+            ]
+            path = f'raw/auditree/{"_".join(filename)}'
             with evidences(self, path) as raw:
                 evidence_found = True
                 previous_dt = datetime.utcnow() - timedelta(days=1)
@@ -140,13 +144,14 @@ class LockerRepoIntegrityCheck(ComplianceCheck):
                 service = 'bb'
             repo = parsed.path.strip('/')
             for branch in branches:
-                name_prefix_parts = [
+                filename = [
+                    service,
                     repo.lower().replace('/', '_').replace('-', '_'),
-                    branch.lower().replace('-', '_')
+                    branch.lower().replace('-', '_'),
+                    'branch_protection.json'
                 ]
-                name_prefix = '_'.join(name_prefix_parts)
-                filename = f'{service}_{name_prefix}_branch_protection.json'
-                with evidences(self, f'raw/auditree/{filename}') as raw:
+                path = f'raw/auditree/{"_".join(filename)}'
+                with evidences(self, path) as raw:
                     evidence = RepoBranchProtectionEvidence.from_evidence(raw)
                     if not evidence.admin_enforce:
                         self.add_failures(
