@@ -18,7 +18,11 @@ import json
 import os
 from urllib.parse import urlparse
 
-from compliance.evidence import DAY, RawEvidence, raw_evidence
+from arboretum.auditree.evidences.repo_branch_protection import (
+    RepoBranchProtectionEvidence
+)
+
+from compliance.evidence import DAY, raw_evidence
 from compliance.fetch import ComplianceFetcher
 from compliance.utils.services.github import Github
 
@@ -50,7 +54,7 @@ class GithubRepoBranchProtectionFetcher(ComplianceFetcher):
                     current_url = base_url
                 self.config.add_evidences(
                     [
-                        RawEvidence(
+                        RepoBranchProtectionEvidence(
                             path[1],
                             path[0],
                             DAY,

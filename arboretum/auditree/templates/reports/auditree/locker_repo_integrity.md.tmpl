@@ -1,0 +1,79 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+{#
+Copyright (c) 2020 IBM Corp. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+
+# {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
+
+This report provides possible evidence locker security concerns.
+
+<details>
+<summary>More details...</summary>
+
+Possible issues found identified in this report can be:
+
+- Evidence locker metadata evidence history is unavailable.
+- Evidence locker size has shrunk in size.
+- Evidence locker repository details have changed since the last time the report
+was generated.
+- Evidence locker branch protection is not turned on for administrators.
+</details>
+
+<details>
+<summary>Remediation...</summary>
+
+- Unavailable evidence locker metadata history could be an indication that the
+evidence locker has been tampered with.  **This could also be the case if the
+evidence locker is brand new**.  In this case it is safe to ignore this finding
+otherwise it should be investigated and resolved as appropriate.
+- An evidence locker shrinking in size _could_ be an indicator that the evidence
+locker has been tampered with but it could also just be a coincidence.  The
+expectation is that the evidence locker would continue to grow in size but it's
+not outside the realm of possibility that it _could_ shrink.  Investigate the
+finding.  If it turns out that the evidence locker was not in fact tampered with
+then you can ignore this finding.
+- Evidence locker repository details are not expected to change so when they do
+this could be an indicator that the evidence locker has been tampered with.
+Investigate this finding and resolve as appropriate.
+- Administrators of the evidence locker are not exempt from repository branch
+protection policies.  This finding is an indicator that the evidence locker has
+been tampered with.  Investigate this finding and resolve as appropriate.
+</details>
+
+## Failures
+{% if test.failures_for_check_count(results) == 0 -%}
+**No evidence locker integrity failures to report.**
+{% else -%}
+{% for topic in all_failures.keys()|sort %}
+
+### {{ topic }}
+{% for failure in all_failures[topic] %}
+* {{ failure|safe }}
+{%- endfor -%}
+{%- endfor -%}
+{%- endif %}
+
+## Warnings
+{% if test.warnings_for_check_count(results) == 0 -%}
+**No evidence locker integrity warnings to report.**
+{% else -%}
+{% for topic in all_warnings.keys()|sort %}
+
+### {{ topic }}
+{% for warning in all_warnings[topic] %}
+* {{ warning }}
+{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}

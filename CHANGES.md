@@ -3,6 +3,7 @@
 - [NEW] Add Github repository metadata fetcher.
 - [NEW] Add Github repository recent commits fetcher.
 - [NEW] Add Github repository branch protection fetcher.
+- [NEW] Add Evidence locker integrity checks.
 
 # 0.3.0
 

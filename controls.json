@@ -13,5 +13,10 @@
     "auditree_evidence": {
       "auditree_control": ["arboretum.auditree"]
     }
+  },
+  "arboretum.auditree.checks.test_locker_repo_integrity.LockerRepoIntegrityCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["arboretum.auditree"]
+    }
   }
 }

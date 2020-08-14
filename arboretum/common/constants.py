@@ -16,3 +16,19 @@
 
 # PyPI RSS feed base URL
 PYPI_RSS_BASE_URL = 'https://pypi.org/rss/project'
+
+# Repository metadata fields to ignore.  Used for repo integrity.
+IGNORE_REPO_METADATA = {
+    'gh': [
+        'pushed_at',
+        'size',
+        'updated_at',
+        'stargazers_count',
+        'subscribers_count',
+        'watchers',
+        'watchers_count',
+        'open_issues',
+        'open_issues_count',
+        'temp_clone_token'
+    ]
+}
