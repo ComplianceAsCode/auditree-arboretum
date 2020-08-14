@@ -27,7 +27,7 @@ class RepoMetadataEvidence(RawEvidence):
 
     @property
     def repo_size(self):
-        """Provide the repo size as a property."""
+        """Provide the repo size."""
         if self.content:
             rs_factory = {
                 'gh': self._get_gh_repo_size,
@@ -40,7 +40,7 @@ class RepoMetadataEvidence(RawEvidence):
 
     @property
     def filtered_content(self):
-        """Provide evidence content minus the ignored fields as a property."""
+        """Provide evidence content minus the ignored fields as JSON."""
         if self.content:
             if not hasattr(self, '_filtered_content'):
                 metadata = json.loads(self.content)

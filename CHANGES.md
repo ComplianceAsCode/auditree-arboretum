@@ -1,9 +1,10 @@
-# UNRELEASED
+# 0.4.0
 
 - [NEW] Add Github repository metadata fetcher.
 - [NEW] Add Github repository recent commits fetcher.
 - [NEW] Add Github repository branch protection fetcher.
-- [NEW] Add Evidence locker integrity checks.
+- [NEW] Add Evidence locker repository integrity checks.
+- [NEW] Add Evidence locker recent commits integrity checks.
 
 # 0.3.0
 

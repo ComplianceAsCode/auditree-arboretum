@@ -19,7 +19,9 @@ import os
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
-from compliance.evidence import DAY, RawEvidence, raw_evidence
+from arboretum.auditree.evidences.repo_commit import RepoCommitEvidence
+
+from compliance.evidence import DAY, raw_evidence
 from compliance.fetch import ComplianceFetcher
 from compliance.utils.services.github import Github
 
@@ -51,7 +53,7 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
                     current_url = base_url
                 self.config.add_evidences(
                     [
-                        RawEvidence(
+                        RepoCommitEvidence(
                             path[1],
                             path[0],
                             DAY,

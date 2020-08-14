@@ -24,7 +24,7 @@ class RepoBranchProtectionEvidence(RawEvidence):
 
     @property
     def admin_enforce(self):
-        """Provide branch protection status for admins as a property."""
+        """Provide branch protection enforcement status for admins."""
         if self.content:
             ae_factory = {
                 'gh': self._get_gh_admin_enforce,
@@ -35,12 +35,42 @@ class RepoBranchProtectionEvidence(RawEvidence):
                 self._admin_enforce = ae_factory[self.name[:2]]()
             return self._admin_enforce
 
+    @property
+    def signed_commits_required(self):
+        """Provide signed commits requirement status."""
+        if self.content:
+            sc_factory = {
+                'gh': self._get_gh_signed_commits_required,
+                'gl': self._get_gl_signed_commits_required,
+                'bb': self._get_bb_signed_commits_required
+            }
+            if not hasattr(self, '_signed_commits_required'):
+                self._signed_commits_required = sc_factory[self.name[:2]]()
+            return self._signed_commits_required
+
+    @property
+    def as_a_dict(self):
+        """Provide branch protection content as a dictionary."""
+        if self.content:
+            if not hasattr(self, '_as_a_dict'):
+                self._as_a_dict = json.loads(self.content)
+            return self._as_a_dict
+
     def _get_gh_admin_enforce(self):
-        as_dict = json.loads(self.content)
-        return as_dict.get('enforce_admins', {}).get('enabled', False)
+        return self.as_a_dict.get('enforce_admins', {}).get('enabled', False)
 
     def _get_gl_admin_enforce(self):
         raise NotImplementedError('Support for Gitlab coming soon...')
 
     def _get_bb_admin_enforce(self):
+        raise NotImplementedError('Support for Bitbucket coming soon...')
+
+    def _get_gh_signed_commits_required(self):
+        sigs = self.as_a_dict.get('required_signatures', {})
+        return sigs.get('enabled', False)
+
+    def _get_gl_signed_commits_required(self):
+        raise NotImplementedError('Support for Gitlab coming soon...')
+
+    def _get_bb_signed_commits_required(self):
         raise NotImplementedError('Support for Bitbucket coming soon...')

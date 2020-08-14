@@ -18,5 +18,10 @@
     "auditree_evidence": {
       "auditree_control": ["arboretum.auditree"]
     }
+  },
+  "arboretum.auditree.checks.test_locker_commit_integrity.LockerCommitIntegrityCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["arboretum.auditree"]
+    }
   }
 }
