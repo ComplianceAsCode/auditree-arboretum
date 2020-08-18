@@ -26,14 +26,6 @@ from compliance.fetch import ComplianceFetcher
 class ClusterListFetcher(ComplianceFetcher):
     """Fetch the list of IBM Cloud clusters."""
 
-    @classmethod
-    def setUpClass(cls):
-        """Initialize the fetcher object with configuration settings."""
-        cls.logger = cls.locker.logger.getChild(
-            'ibm_cloud.cluster_list_fetcher'
-        )
-        return cls
-
     @store_raw_evidence('ibm_cloud/cluster_list.json')
     def fetch_cluster_list(self):
         """Fetch IBM Cloud cluster list."""
