@@ -33,5 +33,5 @@ class ClusterListFetcher(ComplianceFetcher):
     @store_raw_evidence('kubernetes/cluster_list.json')
     def fetch_cluster_list(self):
         """Fetch BOM (Bill of Materials) as cluster list."""
-        bom = self.config.get('org.kubernetes.cluster_list.config.bom')
+        bom = self.config.get('org.kubernetes.cluster_list.bom')
         return json.dumps(bom)

@@ -40,7 +40,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
     def fetch_cluster_resource(self):
         """Fetch cluster resources of listed clusters."""
         cluster_list_types = self.config.get(
-            'org.kubernetes.cluster_resource.config.cluster_list_types'
+            'org.kubernetes.cluster_resource.cluster_list_types'
         )
 
         resources = {}
@@ -67,7 +67,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
 
     def _fetch_bom_resource(self):
         resource_types = self.config.get(
-            'org.kubernetes.cluster_resource.config.target_resource_types',
+            'org.kubernetes.cluster_resource.target_resource_types',
             ClusterResourceFetcher.RESOURCE_TYPE_DEFAULT
         )
 
@@ -94,7 +94,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
 
     def _fetch_ibm_cloud_resource(self):
         resource_types = self.config.get(
-            'org.ibm_cloud.cluster_resource.config.target_resource_types',
+            'org.ibm_cloud.cluster_resource.target_resource_types',
             ClusterResourceFetcher.RESOURCE_TYPE_DEFAULT
         )
         cluster_list = {}
