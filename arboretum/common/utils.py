@@ -66,7 +66,7 @@ def run_command(cmd, secrets=None):
     if p.returncode != 0:
         secrets = secrets or []
         for s in secrets:
-            cmd = cmd.replace(s, '***')
+            cmd = ' '.join(cmd).replace(s, '***')
             stdout = stdout.replace(s, '***')
             stderr = stderr.replace(s, '***')
         raise CommandExecutionError(cmd, stdout, stderr, p.returncode)
