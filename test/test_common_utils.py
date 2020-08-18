@@ -16,7 +16,8 @@
 
 import unittest
 
-from arboretum.common.utils import parse_seconds
+from arboretum.common.exceptions import CommandExecutionError
+from arboretum.common.utils import parse_seconds, run_command
 
 
 class CommonUtilsTest(unittest.TestCase):
@@ -42,3 +43,36 @@ class CommonUtilsTest(unittest.TestCase):
         self.assertEqual(
             parse_seconds(123456), '1 day, 10 hours, 17 minutes, 36 seconds'
         )
+
+    def test_run_command_strings(self):
+        """Ensure that the function works.
+
+        It should accept either a space-separated string or a list of string.
+        """
+        self.assertEqual(run_command('echo -n hello'), ('hello', ''))
+        self.assertEqual(run_command(['echo', '-n', 'hello']), ('hello', ''))
+
+    def test_run_command_error_args(self):
+        """Ensure that the function raises exception for wrong params."""
+        self.assertRaises(TypeError, run_command, 1)
+        self.assertRaises(TypeError, run_command, (1, 2))
+        self.assertRaises(TypeError, run_command, {'a': 'b'})
+        self.assertRaises(TypeError, run_command, None)
+        # following errors will be come from subprocess.Popen
+        self.assertRaises(IndexError, run_command, [])
+        self.assertRaises(TypeError, run_command, [1, 2])
+
+    def test_run_command_secret_masking(self):
+        """Ensure that the specified secret text is masked."""
+        with self.assertRaises(CommandExecutionError) as cm:
+            run_command('file --MYSECRET', secrets=['MYSECRET'])
+        self.assertTrue('MYSECRET' not in cm.exception.stderr)
+        self.assertTrue('***' in cm.exception.stderr)
+        with self.assertRaises(CommandExecutionError) as cm:
+            run_command(
+                'file --MYSECRETMYCONFIDENTIAL',
+                secrets=['MYSECRET', 'MYCONFIDENTIAL']
+            )
+        self.assertTrue('MYSECRET' not in cm.exception.stderr)
+        self.assertTrue('MYCONFIDENTIAL' not in cm.exception.stderr)
+        self.assertTrue('******' in cm.exception.stderr)
