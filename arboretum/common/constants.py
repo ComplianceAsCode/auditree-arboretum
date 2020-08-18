@@ -32,3 +32,6 @@ IGNORE_REPO_METADATA = {
         'temp_clone_token'
     ]
 }
+
+# Evidence locker metadata datetime format
+LOCKER_DTTM_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
