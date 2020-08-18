@@ -1,3 +1,9 @@
+# UNRELEASED
+
+- [NEW] Add Github repository file/folder recent commits fetcher.
+- [IMPROVED] Github repository recent commits fetcher now fetches since evidence last update.
+- [CHANGED] Evidence fetched by Github repository recent commits fetcher, TTL now set to 2 days.
+
 # 0.4.0
 
 - [NEW] Add Github repository metadata fetcher.

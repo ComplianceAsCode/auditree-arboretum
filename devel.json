@@ -9,15 +9,14 @@
     "slack": {}
   },
   "org": {
-    "name": "Auditree",
+    "name": "MY-ORG",
     "auditree": {
-      "abandoned_evidence": {
-        "threshold": 604800,
-        "exceptions": {
-          "raw/foo/bar.json":
-          "Evidence moved to a new location in locker but this is historical evidence we want to keep."
-        },
-        "ignore_history": true
+      "repo_integrity": {
+        "filepaths": {
+          "https://github.com/ComplianceAsCode/auditree-arboretum": {
+            "main": ["arboretum/common/constants.py"]
+          }
+        }
       }
     }
   }

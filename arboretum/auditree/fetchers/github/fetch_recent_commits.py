@@ -16,10 +16,11 @@
 
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from urllib.parse import urlparse
 
 from arboretum.auditree.evidences.repo_commit import RepoCommitEvidence
+from arboretum.common.constants import LOCKER_DTTM_FORMAT
 
 from compliance.evidence import DAY, raw_evidence
 from compliance.fetch import ComplianceFetcher
@@ -56,7 +57,7 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
                         RepoCommitEvidence(
                             path[1],
                             path[0],
-                            DAY,
+                            DAY * 2,
                             (
                                 f'Github recent commits for {repo} repo '
                                 f'{branch} branch'
@@ -67,10 +68,13 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
                 joined_path = os.path.join(*path)
                 with raw_evidence(self.locker, joined_path) as evidence:
                     if evidence:
-                        period = evidence.ttl * 2
-                        if period < DAY:
-                            period = DAY
-                        since = datetime.utcnow() - timedelta(seconds=period)
+                        meta = self.locker.get_evidence_metadata(evidence.path)
+                        if meta is None:
+                            meta = {}
+                        now = datetime.utcnow().strftime(LOCKER_DTTM_FORMAT)
+                        since = datetime.strptime(
+                            meta.get('last_update', now), LOCKER_DTTM_FORMAT
+                        )
                         evidence.set_content(
                             json.dumps(
                                 github.get_commit_details(repo, since, branch)

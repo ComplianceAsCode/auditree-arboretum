@@ -114,7 +114,7 @@ metadata detail.  TTL is set to 1 day.
    ```
 
 * Required credentials:
-   * `github` or `github_enterprise` credentials with admin permissions to the
+   * `github` or `github_enterprise` credentials with read permissions to the
    repository are required for this fetcher to successfully retrieve evidence.
       * `username`: The Github user used to run the fetcher.
       * `token`: The Github user access token used to run the fetcher.
@@ -151,10 +151,10 @@ metadata detail.  TTL is set to 1 day.
 to the evidence locker.  This fetcher class is only meant for use with Github
 or Github Enterprise repositories.
 * Behavior: For each Github repository and branch specified, an evidence file
-is stored in the locker containing that repository branch's most recent (last 2
-days) commit details.  If no repositories are specified the fetcher defaults to
-retrieving the evidence locker `master` branch commit detail.  TTL is set to 1
-day.
+is stored in the locker containing that repository branch's most recent (since
+the last time the evidence was fetched) commit details.  If no repositories
+are specified the fetcher defaults to retrieving the evidence locker `master`
+branch commit detail.  TTL is set to 2 days.
 * Configuration elements:
    * `org.auditree.repo_integrity.branches`
       * Optional
@@ -181,7 +181,7 @@ day.
    ```
 
 * Required credentials:
-   * `github` or `github_enterprise` credentials with admin permissions to the
+   * `github` or `github_enterprise` credentials with read permissions to the
    repository are required for this fetcher to successfully retrieve evidence.
       * `username`: The Github user used to run the fetcher.
       * `token`: The Github user access token used to run the fetcher.
@@ -209,6 +209,78 @@ day.
 
    ```python
    from arboretum.auditree.fetchers.github.fetch_recent_commits import GithubRepoCommitsFetcher
+   ```
+
+### Repository Integrity (Recent File Path Commits)
+
+* Class: [GithubFilePathCommitsFetcher][fetch-filepath-commits]
+* Purpose: Writes the most recent Github repository branch file path commit
+details to the evidence locker.  This fetcher class is only meant for use with
+Github or Github Enterprise repositories.
+* Behavior: For each Github repository, branch and file path specified, an
+evidence file is stored in the locker containing that repository branch file
+path's most recent (since the last time the evidence was collected) commit
+details.  A file path can be a relative path to a file or a folder within the
+repository.  TTL is set to 1 day.
+* Configuration elements:
+   * `org.auditree.repo_integrity.filepaths`
+      * Required
+      * Dictionary:
+         * Key: Github repository URL (string)
+         * Value: Dictionary of branches and file paths within the branch.
+            * Key: Branch name (string)
+            * Value: List of file paths (string) for that repository/branch.
+* Example (required) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "repo_integrity": {
+           "filepaths": {
+             "https://github.com/org-foo/repo-foo": {
+               "main": ["foo", "bar/baz.json"],
+               "develop": ["README.md"]
+             },
+             "https://github.com/org-bar/repo-bar": {
+               "main": ["README.md", "foo/bar/baz.py"]
+             }
+           }
+         }
+       }
+     }
+   }
+   ```
+
+* Required credentials:
+   * `github` or `github_enterprise` credentials with read permissions to the
+   repository are required for this fetcher to successfully retrieve evidence.
+      * `username`: The Github user used to run the fetcher.
+      * `token`: The Github user access token used to run the fetcher.
+   * Example credentials file entry:
+
+      ```ini
+      [github]
+      username=gh-user-name
+      token=gh-access-token
+      ```
+
+      or
+
+      ```ini
+      [github_enterprise]
+      username=ghe-user-name
+      token=ghe-access-token
+      ```
+
+   * NOTE: These credentials are also needed for basic configuration of the
+   Auditree framework.  The expectation is that the same credentials are used
+   for all Github interactions.
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.fetchers.github.fetch_filepath_commits import GithubFilePathCommitsFetcher
    ```
 
 ### Repository Integrity (Branch Protection)
@@ -523,6 +595,7 @@ the current evidence locker URL.
 [fetch-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_python_packages.py
 [fetch-repo-metadata]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_repo_metadata.py
 [fetch-recent-commits]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_recent_commits.py
+[fetch-filepath-commits]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_filepath_commits.py
 [fetch-branch-protection]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_branch_protection.py
 [check-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_abandoned_evidence.py
 [check-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_compliance_config.py
