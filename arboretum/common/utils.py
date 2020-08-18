@@ -48,8 +48,13 @@ def run_command(cmd, secrets=None):
     :param secrets: a text which should be masked in log text.
     :returns: standard output of the command.
     """
-    if type(cmd) == str:
+    if isinstance(cmd, str):
         cmd = cmd.split(' ')
+    elif not isinstance(cmd, list):
+        raise TypeError(
+            'given command line was neither '
+            f'a space-separated string nor list of string: {cmd}'
+        )
     p = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
