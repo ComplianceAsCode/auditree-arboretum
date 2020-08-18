@@ -39,7 +39,7 @@ class ClusterListFetcher(ComplianceFetcher):
 
         logger = self.locker.logger.getChild('ibm_cloud.cluster_list_fetcher')
         # get credential for the account
-        api_key = getattr(self.config.creds['ibm_cloud'], account + '_api_key')
+        api_key = getattr(self.config.creds['ibm_cloud'], f'{account}_api_key')
 
         # login
         run_command(
