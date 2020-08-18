@@ -34,6 +34,7 @@ class ClusterListFetcher(ComplianceFetcher):
 
     def _get_cluster_list(self, account):
 
+        logger = self.locker.logger.getChild('ibm_cloud.cluster_list_fetcher')
         # get credential for the account
         api_key = getattr(self.config.creds['ibm_cloud'], account + '_api_key')
 
@@ -49,13 +50,13 @@ class ClusterListFetcher(ComplianceFetcher):
         try:
             cluster_list, _ = run_command(cmd)
         except CommandExecutionError as e:
-            if e.returncode == 2:  # "2" means no plugin error
-                self.logger.warning(
-                    'Failed to execute "ibmcloud cs" command'
-                    ' - trying to install the cs plugin'
+            if e.returncode == 2:  # RC: 2 == no plugin
+                logger.warning(
+                    'Kubernetes service plugin missing.  '
+                    'Attempting to install plugin...'
                 )
                 run_command('ibmcloud plugin install kubernetes-service')
                 cluster_list, _ = run_command(cmd)
             else:
-                raise e
+                raise
         return json.loads(cluster_list)
