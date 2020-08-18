@@ -41,7 +41,13 @@ def parse_seconds(seconds):
 
 
 def run_command(cmd, secrets=None):
-    """Run commands in a system."""
+    """
+    Execute system command.
+
+    :param cmd: a space-separated string or a list of string
+    :param secrets: a text which should be masked in log text.
+    :returns: standard output of the command.
+    """
     if type(cmd) == str:
         cmd = cmd.split(' ')
     p = subprocess.Popen(
