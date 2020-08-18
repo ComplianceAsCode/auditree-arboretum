@@ -22,48 +22,47 @@ how to include the fetchers and checks from this library in your downstream proj
 
 * Class: [ClusterListFetcher][fetch-cluster-list]
 * Purpose: Write the list of IBM Cloud clusters to the evidence locker.
-* Behavior: Log in to IBM Cloud using `ibmcloud login` command, and save the result of `ibmcloud cs cluster ls` command.
-* Expected configuration elements:
-  * org.ibm_cloud.cluster_list.config
-    * List of objects representing the IKS accounts
+* Behavior: Log in to IBM Cloud and save the list of clusters bound with specified account.
+* Configuration elements:
+  * `org.ibm_cloud.cluster_list.account`
+    * Required
+    * List of accounts (string) 
     * Each object must have the following values
-      * `account` - a list containing names identifying the IKS account, this will map to an IAM token provided in the credentials file
-* Expected configuration example:
-   ```json
-   {
-     "org": {
-       "ibm_cloud": {
-         "cluster_list": {
-           "config": {
-               "account": ["myaccount1"]
-           }
-         }
-       }
-     }
-   }
-   ```
-* <a name="expected_credentials"></a>Expected credentials:
-  * `ibm_cloud` credentials with read/view permissions are needed for this fetcher to successfully
-   retrieve the evidence.
-    * One IKS API key is required per account specified in the configuration.  See above.  Each account provided in the configuration must preceed `_api_key`.  For example, if we have specified accounts "acct_a", "acct_b", and "acct_c" your configuration should look like:
+      * `account` - a list containing names identifying the IBM Cloud account, this will map to an IAM token provided in the credentials file
+* Example configuration:
+
+  ```json
+  {
+    "org": {
+      "ibm_cloud": {
+        "cluster_list": {
+          "config": {
+              "account": ["myaccount1"]
+          }
+        }
+      }
+    }
+  }
+  ```
+
+* Required credentials:
+  * `ibm_cloud` credentials with read/view permissions are needed for this fetcher to successfully retrieve the evidence.
+    * `XXX_api_key`: API key string for account `XXX`.
+    * Example credential file entry:
 
       ```ini
       [ibm_cloud]
       acct_a_api_key=your-iks-api-key-for-acct-a
       acct_b_api_key=your-iks-api-key-for-acct-b
-      acct_c_api_key=your-iks-api-key-for-acct-c
       ```
 
-    * Expected Travis environment variable settings to generate credentials:
-      * `IBM_CLOUD_ACCT_A_API_KEY`
-      * `IBM_CLOUD_ACCT_B_API_KEY`
-      * `IBM_CLOUD_ACCT_C_API_KEY`
+    * NOTE 1: This fetcher requires [IBM Cloud CLI][ibm-cloud-cli] is installed. Its Kubernetes plugin will be automatically installed when the plugin is not installed.
+    * NOTE 2: [API Keys can be generated using the ibmcloud CLI][ic-api-key-create]. E.g.
 
-  * NOTE: [API Keys can be generated using the ibmcloud CLI][ic-api-key-create]. E.g.
+        ```sh
+        ibmcloud iam api-key-create your-iks-api-key-for-acct-x
+        ```
 
-      ```sh
-      ibmcloud iam api-key-create your-iks-api-key-for-acct-x
-      ```
 * Import statement:
 
    ```python
@@ -77,3 +76,4 @@ Checks coming soon...
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
 [ic-api-key-create]: https://cloud.ibm.com/docs/cli/reference/ibmcloud?topic=cloud-cli-ibmcloud_commands_iam#ibmcloud_iam_api_key_create
 [fetch-cluster-list]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/ibm_cloud/fetchers/fetch_cluster_list.py
+[ibm-cloud-cli]: https://cloud.ibm.com/docs/cli
