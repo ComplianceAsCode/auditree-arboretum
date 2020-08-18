@@ -59,4 +59,4 @@ def run_command(cmd, secrets=None):
             stdout = stdout.replace(s, '***')
             stderr = stderr.replace(s, '***')
         raise CommandExecutionError(cmd, stdout, stderr, p.returncode)
-    return stdout
+    return stdout, stderr

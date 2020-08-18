@@ -83,7 +83,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
                     f'kubectl --kubeconfig {c["kubeconfig"]}'
                     f' get {r} -A -o json'
                 )
-                out = run_command(cmd)
+                out, _ = run_command(cmd)
                 cluster_resources.extend(json.loads(out)['items'])
             resources[c['account']] = [
                 {
@@ -139,7 +139,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
                 resource_list = []
                 for resource in resource_types:
                     try:
-                        output = run_command(
+                        output, _ = run_command(
                             f'kubectl get {resource} -A -o json'
                         )
                         resource_list.extend(json.loads(output)['items'])

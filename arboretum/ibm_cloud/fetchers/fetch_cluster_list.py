@@ -56,7 +56,7 @@ class ClusterListFetcher(ComplianceFetcher):
         cluster_list = None
         cmd = 'ibmcloud cs cluster ls --json'
         try:
-            cluster_list = run_command(cmd)
+            cluster_list, _ = run_command(cmd)
         except CommandExecutionError as e:
             if e.returncode == 2:  # "2" means no plugin error
                 self.logger.warning(
@@ -64,7 +64,7 @@ class ClusterListFetcher(ComplianceFetcher):
                     ' - trying to install the cs plugin'
                 )
                 run_command('ibmcloud plugin install kubernetes-service')
-                cluster_list = run_command(cmd)
+                cluster_list, _ = run_command(cmd)
             else:
                 raise e
         return json.loads(cluster_list)
