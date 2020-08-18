@@ -16,7 +16,7 @@
 
 import json
 
-from arboretum.common.errors import CommandExecutionError
+from arboretum.common.exceptions import CommandExecutionError
 from arboretum.common.utils import run_command
 
 from compliance.evidence import store_raw_evidence

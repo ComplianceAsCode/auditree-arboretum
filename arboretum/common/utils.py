@@ -16,7 +16,7 @@
 
 import subprocess
 
-from arboretum.common.errors import CommandExecutionError
+from arboretum.common.exceptions import CommandExecutionError
 
 from compliance.evidence import DAY, HOUR
 
