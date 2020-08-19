@@ -47,7 +47,9 @@ class CommonUtilsTest(unittest.TestCase):
     def test_run_command(self):
         """Ensure that run_command works."""
         self.assertEqual(run_command(['echo', '-n', 'hello']), ('hello', ''))
-        self.assertEqual(run_command(['cat'], input='hello'), ('hello', ''))
+        self.assertEqual(
+            run_command(['cat'], input_text='hello'), ('hello', '')
+        )
         self.assertRaises(
             TimeoutExpired, run_command, ['sleep', '100'], timeout=3
         )
