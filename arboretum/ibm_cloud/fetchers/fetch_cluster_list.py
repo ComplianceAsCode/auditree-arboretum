@@ -71,4 +71,7 @@ class ClusterListFetcher(ComplianceFetcher):
                 cluster_list, _ = run_command(cmd)
             else:
                 raise
+        finally:
+            run_command(['ibmcloud', 'logout'])
+
         return json.loads(cluster_list)

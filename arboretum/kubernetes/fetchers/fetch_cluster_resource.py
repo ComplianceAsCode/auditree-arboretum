@@ -61,8 +61,6 @@ class ClusterResourceFetcher(ComplianceFetcher):
                     cltype,
                     str(e)
                 )
-            continue
-
         return json.dumps(resources)
 
     def _fetch_bom_resource(self):
@@ -110,7 +108,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
         resources = {}
         for account in cluster_list:
             api_key = getattr(
-                self.config.creds['ibm_cloud'], account + '_api_key'
+                self.config.creds['ibm_cloud'], f'{account}_api_key'
             )
             # login
             try:
