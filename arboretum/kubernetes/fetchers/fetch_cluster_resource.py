@@ -121,57 +121,61 @@ class ClusterResourceFetcher(ComplianceFetcher):
                     mask_secrets(str(e), [api_key])
                 )
                 continue
-            resources[account] = []
-            for cluster in cluster_list[account]:
-                # get configuration
-                cmd = [
-                    'ibmcloud',
-                    'cs',
-                    'cluster',
-                    'config',
-                    '-s',
-                    '-c',
-                    cluster['name']
-                ]
-                try:
-                    run_command(cmd)
-                except CalledProcessError as e:
-                    if e.returncode == 2:  # RC: 2 == no plugin
-                        self.logger.warning(
-                            'Kubernetes service plugin missing.  '
-                            'Attempting to install plugin...'
-                        )
-                        run_command(
-                            [
-                                'ibmcloud',
-                                'plugin',
-                                'install',
-                                'kubernetes-service'
-                            ]
-                        )
-                        run_command(cmd)
-                    else:
-                        raise
-
-                # login using "oc" command if the target is openshift
-                if cluster['type'] == 'openshift':
-                    run_command(['oc', 'login', '-u', 'apikey', '-p', api_key])
-
-                # get resources
-                resource_list = []
-                for resource in resource_types:
+            try:
+                resources[account] = []
+                for cluster in cluster_list[account]:
+                    # get configuration to access the target cluster
+                    cmd = [
+                        'ibmcloud',
+                        'cs',
+                        'cluster',
+                        'config',
+                        '-s',
+                        '-c',
+                        cluster['name']
+                    ]
                     try:
-                        output, _ = run_command(['kubectl', 'get', resource,
-                                                 '-A', '-o', 'json']
-                                                )
-                        resource_list.extend(json.loads(output)['items'])
-                    except RuntimeError:
-                        self.logger.warning(
-                            'Failed to get %s resource in cluster %s',
-                            resource,
-                            cluster['name']
+                        run_command(cmd)
+                    except CalledProcessError as e:
+                        if e.returncode == 2:  # RC: 2 == no plugin
+                            self.logger.warning(
+                                'Kubernetes service plugin missing.  '
+                                'Attempting to install plugin...'
+                            )
+                            run_command(
+                                [
+                                    'ibmcloud',
+                                    'plugin',
+                                    'install',
+                                    'kubernetes-service'
+                                ]
+                            )
+                            run_command(cmd)
+                        else:
+                            raise
+                    # login using "oc" command if the target is openshift
+                    if cluster['type'] == 'openshift':
+                        run_command(
+                            ['oc', 'login', '-u', 'apikey', '-p', api_key]
                         )
-                cluster['resources'] = resource_list
-                resources[account].append(cluster)
+                    # get resources
+                    resource_list = []
+                    for resource in resource_types:
+                        try:
+                            output, _ = run_command(['kubectl', 'get',
+                                                     resource,
+                                                     '-A', '-o', 'json']
+                                                    )
+                            resource_list.extend(json.loads(output)['items'])
+                        except RuntimeError:
+                            self.logger.warning(
+                                'Failed to get %s resource in cluster %s',
+                                resource,
+                                cluster['name']
+                            )
+                    cluster['resources'] = resource_list
+                    resources[account].append(cluster)
+            finally:
+                run_command(['ibmcloud', 'logout'])
 
         return resources
