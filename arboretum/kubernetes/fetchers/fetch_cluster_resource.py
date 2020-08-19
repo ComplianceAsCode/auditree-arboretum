@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Kubernetes cluster resource fetcher."""
+"""Cluster resource fetcher for various types of clusters."""
 
 import json
 from subprocess import CalledProcessError
@@ -110,7 +110,6 @@ class ClusterResourceFetcher(ComplianceFetcher):
             api_key = getattr(
                 self.config.creds['ibm_cloud'], f'{account}_api_key'
             )
-            # login
             try:
                 run_command(
                     ['ibmcloud', 'login', '--no-region', '--apikey', api_key]
