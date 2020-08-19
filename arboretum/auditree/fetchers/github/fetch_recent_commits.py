@@ -52,12 +52,17 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
                 if base_url != current_url:
                     github = Github(self.config.creds, base_url)
                     current_url = base_url
+                ttl = DAY
+                # To ensure signed commits check picks up locker commits
+                if (repo_url == self.locker.repo_url
+                        and branch == self.locker.branch):
+                    ttl = DAY * 2
                 self.config.add_evidences(
                     [
                         RepoCommitEvidence(
                             path[1],
                             path[0],
-                            DAY * 2,
+                            ttl,
                             (
                                 f'Github recent commits for {repo} repo '
                                 f'{branch} branch'

@@ -1,0 +1,47 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+{#
+Copyright (c) 2020 IBM Corp. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+
+# {{ test.title }} Report {{ now.strftime('%Y-%m-%d') }}
+
+This report flags all recent commits made to the following repository branches
+and file paths:
+
+| Repository | Branch | File Path |
+|------------|--------|-----------|
+{%- for repo, branches in test.config.get('org.auditree.repo_integrity.filepaths').items() -%}
+{%- for branch, filepaths in branches.items() -%}
+{% for filepath in filepaths %}
+| `{{ repo }}` | `{{ branch }}` | `{{ filepath }}` |
+{%- endfor -%}
+{%- endfor -%}
+{%- endfor -%}
+
+{% if test.total_issues_count(results) == 0 -%}
+**No new commits to report.**
+{% else -%}
+{% for topic in all_warnings.keys()|sort %}
+
+## {{ topic }}
+{% for warning in all_warnings[topic] %}
+- [{{ warning['sha'] }}]({{ warning['url'] }})
+   - Repository: `{{ warning['repo'] }}`
+   - Branch: `{{ warning['branch'] }}`
+   - Committed By: `{{ warning['author'] }}`
+   - Committed At: `{{ warning['datetime'] }}`
+{%- endfor -%}
+{%- endfor -%}
+{%- endif %}

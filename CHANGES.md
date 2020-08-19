@@ -1,8 +1,11 @@
-# UNRELEASED
+# 0.5.0
 
-- [NEW] Add Github repository file/folder recent commits fetcher.
-- [IMPROVED] Github repository recent commits fetcher now fetches since evidence last update.
-- [CHANGED] Evidence fetched by Github repository recent commits fetcher, TTL now set to 2 days.
+- [NEW] Add repository/branch new commits check.
+- [NEW] Add repository/branch/filepath new commits check.
+- [NEW] Add Github repository/branch/filepath recent commits fetcher.
+- [IMPROVED] Github repository/branch recent commits fetcher now fetches since evidence last update.
+- [CHANGED] Github repo recent commits evidence: TTL set to 2 days for locker, 1 day all other repos.
+- [FIXED] Links to the `auditree-framework` in README.md files are correct now.
 
 # 0.4.0
 
