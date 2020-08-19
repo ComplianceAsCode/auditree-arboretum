@@ -15,9 +15,9 @@
 """Arboretum common utilities tests."""
 
 import unittest
+from subprocess import CalledProcessError, TimeoutExpired
 
-from arboretum.common.exceptions import CommandExecutionError
-from arboretum.common.utils import parse_seconds, run_command
+from arboretum.common.utils import mask_secrets, parse_seconds, run_command
 
 
 class CommonUtilsTest(unittest.TestCase):
@@ -44,35 +44,24 @@ class CommonUtilsTest(unittest.TestCase):
             parse_seconds(123456), '1 day, 10 hours, 17 minutes, 36 seconds'
         )
 
-    def test_run_command_strings(self):
-        """Ensure that the function works.
-
-        It should accept either a space-separated string or a list of string.
-        """
-        self.assertEqual(run_command('echo -n hello'), ('hello', ''))
+    def test_run_command(self):
+        """Ensure that run_command works."""
         self.assertEqual(run_command(['echo', '-n', 'hello']), ('hello', ''))
+        self.assertEqual(run_command(['cat'], input='hello'), ('hello', ''))
+        self.assertRaises(
+            TimeoutExpired, run_command, ['sleep', '100'], timeout=3
+        )
+        self.assertRaises(
+            CalledProcessError, run_command, ['file', '--XXXXXXX']
+        )
 
-    def test_run_command_error_args(self):
-        """Ensure that the function raises exception for wrong params."""
-        self.assertRaises(TypeError, run_command, 1)
-        self.assertRaises(TypeError, run_command, (1, 2))
-        self.assertRaises(TypeError, run_command, {'a': 'b'})
-        self.assertRaises(TypeError, run_command, None)
-        # following errors will be come from subprocess.Popen
-        self.assertRaises(IndexError, run_command, [])
-        self.assertRaises(TypeError, run_command, [1, 2])
-
-    def test_run_command_secret_masking(self):
+    def test_mask_secrets(self):
         """Ensure that the specified secret text is masked."""
-        with self.assertRaises(CommandExecutionError) as cm:
-            run_command('file --MYSECRET', secrets=['MYSECRET'])
-        self.assertTrue('MYSECRET' not in cm.exception.stderr)
-        self.assertTrue('***' in cm.exception.stderr)
-        with self.assertRaises(CommandExecutionError) as cm:
-            run_command(
-                'file --MYSECRETMYCONFIDENTIAL',
-                secrets=['MYSECRET', 'MYCONFIDENTIAL']
-            )
-        self.assertTrue('MYSECRET' not in cm.exception.stderr)
-        self.assertTrue('MYCONFIDENTIAL' not in cm.exception.stderr)
-        self.assertTrue('******' in cm.exception.stderr)
+        self.assertEqual(
+            mask_secrets('hello MYSECRET MYKEY', ['MYSECRET', 'MYKEY']),
+            'hello *** ***'
+        )
+        self.assertEqual(
+            mask_secrets('hello MYMYKEYMYMY', ['MYSECRET', 'MYKEY']),
+            'hello MY***MYMY'
+        )

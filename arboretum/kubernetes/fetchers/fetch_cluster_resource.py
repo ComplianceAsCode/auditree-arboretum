@@ -15,9 +15,9 @@
 """Kubernetes cluster resource fetcher."""
 
 import json
+from subprocess import CalledProcessError
 
-from arboretum.common.exceptions import CommandExecutionError
-from arboretum.common.utils import run_command
+from arboretum.common.utils import mask_secrets, run_command
 
 from compliance.evidence import evidences, store_raw_evidence
 from compliance.fetch import ComplianceFetcher
@@ -79,10 +79,16 @@ class ClusterResourceFetcher(ComplianceFetcher):
         for c in bom:
             cluster_resources = []
             for r in resource_types:
-                cmd = (
-                    f'kubectl --kubeconfig {c["kubeconfig"]}'
-                    f' get {r} -A -o json'
-                )
+                cmd = [
+                    'kubectl',
+                    '--kubeconfig',
+                    c['kubeconfig'],
+                    'get',
+                    r,
+                    '-A',
+                    '-o',
+                    'json'
+                ]
                 out, _ = run_command(cmd)
                 cluster_resources.extend(json.loads(out)['items'])
             resources[c['account']] = [
@@ -107,41 +113,60 @@ class ClusterResourceFetcher(ComplianceFetcher):
                 self.config.creds['ibm_cloud'], account + '_api_key'
             )
             # login
-            run_command(
-                f'ibmcloud login --no-region --apikey {api_key}',
-                secrets=[api_key]
-            )
+            try:
+                run_command(
+                    ['ibmcloud', 'login', '--no-region', '--apikey', api_key]
+                )
+            except CalledProcessError as e:
+                self.logger.error(
+                    'Failed to login with account %s: %s',
+                    account,
+                    mask_secrets(str(e), [api_key])
+                )
+                continue
             resources[account] = []
             for cluster in cluster_list[account]:
                 # get configuration
-                cmd = f'ibmcloud cs cluster config -s -c {cluster["name"]}'
+                cmd = [
+                    'ibmcloud',
+                    'cs',
+                    'cluster',
+                    'config',
+                    '-s',
+                    '-c',
+                    cluster['name']
+                ]
                 try:
                     run_command(cmd)
-                except CommandExecutionError as e:
-                    if e.returncode == 2:  # 2 means no plugin error
+                except CalledProcessError as e:
+                    if e.returncode == 2:  # RC: 2 == no plugin
                         self.logger.warning(
-                            'Failed to execute '
-                            '"ibmcloud cs" command. '
-                            'trying to install the cs plugin.'
+                            'Kubernetes service plugin missing.  '
+                            'Attempting to install plugin...'
                         )
                         run_command(
-                            'ibmcloud plugin install kubernetes-service'
+                            [
+                                'ibmcloud',
+                                'plugin',
+                                'install',
+                                'kubernetes-service'
+                            ]
                         )
                         run_command(cmd)
                     else:
-                        raise e
+                        raise
 
                 # login using "oc" command if the target is openshift
                 if cluster['type'] == 'openshift':
-                    run_command(f'oc login -u apikey -p {api_key}')
+                    run_command(['oc', 'login', '-u', 'apikey', '-p', api_key])
 
                 # get resources
                 resource_list = []
                 for resource in resource_types:
                     try:
-                        output, _ = run_command(
-                            f'kubectl get {resource} -A -o json'
-                        )
+                        output, _ = run_command(['kubectl', 'get', resource,
+                                                 '-A', '-o', 'json']
+                                                )
                         resource_list.extend(json.loads(output)['items'])
                     except RuntimeError:
                         self.logger.warning(

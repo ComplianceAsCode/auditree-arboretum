@@ -15,9 +15,9 @@
 """IBM Cloud cluster list fetcher."""
 
 import json
+import subprocess
 
-from arboretum.common.exceptions import CommandExecutionError
-from arboretum.common.utils import run_command
+from arboretum.common.utils import mask_secrets, run_command
 
 from compliance.evidence import store_raw_evidence
 from compliance.fetch import ComplianceFetcher
@@ -42,23 +42,32 @@ class ClusterListFetcher(ComplianceFetcher):
         api_key = getattr(self.config.creds['ibm_cloud'], f'{account}_api_key')
 
         # login
-        run_command(
-            f'ibmcloud login --no-region --apikey {api_key}',
-            secrets=[api_key]
-        )
+        try:
+            run_command(
+                ['ibmcloud', 'login', '--no-region', '--apikey', api_key]
+            )
+        except Exception as e:
+            logger.error(
+                'Failed to login with account %s: %s',
+                account,
+                mask_secrets(str(e), [api_key])
+            )
+            return None
 
         # get cluster list
         cluster_list = None
-        cmd = 'ibmcloud cs cluster ls --json'
+        cmd = ['ibmcloud', 'cs', 'cluster', 'ls', '--json']
         try:
             cluster_list, _ = run_command(cmd)
-        except CommandExecutionError as e:
+        except subprocess.CalledProcessError as e:
             if e.returncode == 2:  # RC: 2 == no plugin
                 logger.warning(
                     'Kubernetes service plugin missing.  '
                     'Attempting to install plugin...'
                 )
-                run_command('ibmcloud plugin install kubernetes-service')
+                run_command(
+                    ['ibmcloud', 'plugin', 'install', 'kubernetes-service']
+                )
                 cluster_list, _ = run_command(cmd)
             else:
                 raise
