@@ -16,8 +16,6 @@
 
 import subprocess
 
-from arboretum.common.exceptions import CommandExecutionError
-
 from compliance.evidence import DAY, HOUR
 
 
@@ -40,34 +38,50 @@ def parse_seconds(seconds):
     return ', '.join(formatted)
 
 
-def run_command(cmd, secrets=None):
+def mask_secrets(text, secrets):
+    """
+    Replace secret words in a text with `***`.
+
+    :param str text: a string which may contain secret words.
+    :param list[str] secrets: secret word list.
+    :returns: masked text.
+    """
+    for s in secrets:
+        text = text.replace(s, '***')
+    return text
+
+
+def run_command(cmd, input_text=None, timeout=None):
     """
     Execute system command.
 
-    :param cmd: a space-separated string or a list of string
-    :param secrets: a text which should be masked in log text.
-    :returns: standard output of the command.
+    This is a wrapper for `subprocess.run()`.
+
+    Example 1: `run_command(['echo', '-n', 'hello'])` returns `('hello','')`.
+
+    Example 2: `run_command(['cat'], input='hello')` returns `('hello','')`.
+
+    Use `subprocess.run()` if other complicated parameters (e.g., encoding)
+    should be specified.
+
+    :param list[str] cmd: command line arguments
+    :param str input_text: text for standard input of command
+    :param int timeout: timeout for command in seconds
+    :raises subprocess.CalledProcessError: if the command finishes with
+                                           non-zero returncode.
+    :raises subprocess.TimeoutExpires: if timeout expires.
+    :raises TypeError: if some of `cmd` element is not a `str`.
+    :raises IndexError: if length of `cmd` is zero.
+    :returns: a tuple of standard output and standard error of the command.
     """
-    if isinstance(cmd, str):
-        cmd = cmd.split(' ')
-    elif not isinstance(cmd, list):
-        raise TypeError(
-            'given command line was neither '
-            f'a space-separated string nor list of string: {cmd}'
-        )
-    p = subprocess.Popen(
+    cp = subprocess.run(
         cmd,
+        input=input_text,
+        text=True,
+        timeout=timeout,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        universal_newlines=True
+        check=True,
+        shell=False
     )
-    stdout, stderr = p.communicate()
-
-    if p.returncode != 0:
-        secrets = secrets or []
-        for s in secrets:
-            cmd = ' '.join(cmd).replace(s, '***')
-            stdout = stdout.replace(s, '***')
-            stderr = stderr.replace(s, '***')
-        raise CommandExecutionError(cmd, stdout, stderr, p.returncode)
-    return stdout, stderr
+    return cp.stdout, cp.stderr
