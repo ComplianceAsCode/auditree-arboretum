@@ -23,5 +23,15 @@
     "auditree_evidence": {
       "auditree_control": ["arboretum.auditree"]
     }
+  },
+  "arboretum.auditree.checks.test_repo_branch_commits.RepoBranchNewCommitsCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["arboretum.auditree"]
+    }
+  },
+  "arboretum.auditree.checks.test_filepath_commits.FilepathNewCommitsCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["arboretum.auditree"]
+    }
   }
 }

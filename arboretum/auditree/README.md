@@ -4,8 +4,7 @@ The fetchers and checks contained within this `auditree` category folder are
 common tests that can be configured and executed for the purpose of generating
 compliance reports and notifications using the [auditree-framework][].  They
 validate the configuration and ensure smooth execution of an auditree instance.
-See [auditree-framework documentation](https://complianceascode.github.io/auditree-framework/)
-for more details.
+See [auditree-framework documentation][] for more details.
 
 These tests are normally executed by a CI/CD system like
 [Travis CI](https://travis-ci.com/) as part of another project that uses this
@@ -13,8 +12,8 @@ library package as a dependency.
 
 ## Usage as a library
 
-See [usage][usage] for specifics on including this library as a dependency and
-how to include the fetchers and checks from this library in your downstream project.
+See [usage][] for specifics on including this library as a dependency and how
+to include the fetchers and checks from this library in your downstream project.
 
 ## Fetchers
 
@@ -154,7 +153,8 @@ or Github Enterprise repositories.
 is stored in the locker containing that repository branch's most recent (since
 the last time the evidence was fetched) commit details.  If no repositories
 are specified the fetcher defaults to retrieving the evidence locker `master`
-branch commit detail.  TTL is set to 2 days.
+branch commit detail.  TTL is set to 2 days for the evidence locker and 1 day
+for all other repositories/branches.
 * Configuration elements:
    * `org.auditree.repo_integrity.branches`
       * Optional
@@ -499,14 +499,14 @@ locker URL.
 * Configuration elements:
    * `org.auditree.locker_integrity.repos`
       * Optional
-      * List of Github repository URLs (string).
+      * List of repository URLs (string).
       * Use if looking to specify multiple repos or to override either the
       `repo_integrity` config or the the evidence locker repo default.  Otherwise
       do not include.
    * `org.auditree.locker_integrity.branches`
       * Optional
       * Dictionary:
-         * Key: Github repository URL (string)
+         * Key: Repository URL (string)
          * Value: List of branches (string) for that repository.
       * Use if looking to specify multiple repos/branches or to override either the
       `repo_integrity` config or the the evidence locker repo and `master` branch
@@ -561,7 +561,7 @@ the current evidence locker URL.
    * `org.auditree.locker_integrity.branches`
       * Optional
       * Dictionary:
-         * Key: Github repository URL (string)
+         * Key: Repository URL (string)
          * Value: List of branches (string) for that repository.
       * Use if looking to specify multiple repos/branches or to override either the
       `repo_integrity` config or the the evidence locker repo and `master` branch
@@ -589,6 +589,106 @@ the current evidence locker URL.
    from arboretum.auditree.checks.test_locker_commit_integrity import LockerCommitIntegrityCheck
    ```
 
+### New Commits - Repository/Branch
+
+* Class: [RepoBranchNewCommitsCheck][check-repo-branch-new-commits]
+* Purpose: Ensure that stable repository branches are not receiving any new commits.
+* Behavior: A warning is issued for each repository and branch specified, when
+commits are found since the last time the check ran.  The expectation
+is that stable/frozen repositories will not be getting new commits.  This check
+validates that.
+* Evidence depended upon:
+   * Recent commits made to repository branches.
+      * `raw/auditree/<gh|gl|bb>_<org>_<repo>_<branch>_recent_commits.json`
+      * Gathered by the `auditree` [GithubRepoCommitsFetcher][fetch-recent-commits]
+      * NOTE:  Only `gh` (Github) is currently supported by this check.  Gitlab
+      and Bitbucket support coming soon...
+* Configuration elements:
+   * `org.auditree.repo_integrity.branches`
+      * Required
+      * Dictionary:
+         * Key: Repository URL (string)
+         * Value: List of branches (string) for that repository.
+      * NOTE: If the current locker repo/branch for the execution environment
+      is included as part of this configuration element, it will be ignored by
+      the check.
+* Example (required) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "repo_integrity": {
+           "branches": {
+             "https://github.com/org-foo/repo-foo": ["main", "develop"],
+             "https://github.com/org-bar/repo-bar": ["main"]
+           }
+         }
+       }
+     }
+   }
+   ```
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.checks.test_repo_branch_commits import RepoBranchNewCommitsCheck
+   ```
+
+### New Commits - Repository/Branch/Filepath
+
+* Class: [FilepathNewCommitsCheck][check-filepath-new-commits]
+* Purpose: Ensure that stable file folders and files in repository branches are
+not receiving any new commits.
+* Behavior: A warning is issued for each repository, branch and file path
+specified, when commits are found since the last time the check ran.  The
+expectation is that stable/frozen repository branch folders/files will not be
+getting new commits.  This check validates that.
+* Evidence depended upon:
+   * Recent commits made to file folders or files in repository branches.
+      * `raw/auditree/<gh|gl|bb>_<org>_<repo>_<branch>_<filepath>_recent_commits.json`
+      * Gathered by the `auditree`
+      [GithubFilePathCommitsFetcher][fetch-filepath-commits]
+      * NOTE:  Only `gh` (Github) is currently supported by this check.  Gitlab
+      and Bitbucket support coming soon...
+* Configuration elements:
+   * `org.auditree.repo_integrity.filepaths`
+      * Required
+      * Dictionary:
+         * Key: Repository URL (string)
+         * Value: Dictionary of branches and file paths within the branch.
+            * Key: Branch name (string)
+            * Value: List of file paths (string) for that repository/branch.
+* Example (required) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "repo_integrity": {
+           "filepaths": {
+             "https://github.com/org-foo/repo-foo": {
+               "main": ["foo", "bar/baz.json"],
+               "develop": ["README.md"]
+             },
+             "https://github.com/org-bar/repo-bar": {
+               "main": ["README.md", "foo/bar/baz.py"]
+             }
+           }
+         }
+       }
+     }
+   }
+   ```
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.checks.test_filepath_commits import FilepathNewCommitsCheck
+   ```
+
+[auditree-framework]: https://github.com/ComplianceAsCode/auditree-framework
+[auditree-framework documentation]: https://complianceascode.github.io/auditree-framework/
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
 [fetch-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_abandoned_evidence.py
 [fetch-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_compliance_config.py
@@ -602,3 +702,5 @@ the current evidence locker URL.
 [check-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_python_packages.py
 [check-locker-integrity]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_locker_repo_integrity.py
 [check-locker-commit-integrity]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_locker_commit_integrity.py
+[check-repo-branch-new-commits]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_repo_branch_commits.py
+[check-filepath-new-commits]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_filepath_commits.py

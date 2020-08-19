@@ -23,21 +23,42 @@ class RepoCommitEvidence(RawEvidence):
     """Repository commit raw evidence class."""
 
     @property
-    def commit_signed_status(self):
+    def signed_status(self):
         """Provide verified/signed status for each commit as a list."""
         if self.content:
-            rs_factory = {
-                'gh': self._get_gh_commit_signed_status,
-                'gl': self._get_gl_commit_signed_status,
-                'bb': self._get_bb_commit_signed_status
+            ss_factory = {
+                'gh': self._get_gh_signed_status,
+                'gl': self._get_gl_signed_status,
+                'bb': self._get_bb_signed_status
             }
-            if not hasattr(self, '_commit_signed_status'):
-                self._commit_signed_status = rs_factory[self.name[:2]]()
-            return self._commit_signed_status
+            if not hasattr(self, '_signed_status'):
+                self._signed_status = ss_factory[self.name[:2]]()
+            return self._signed_status
 
-    def _get_gh_commit_signed_status(self):
+    @property
+    def author_info(self):
+        """Provide author name and date/time for each commit as a list."""
+        if self.content:
+            ai_factory = {
+                'gh': self._get_gh_author_info,
+                'gl': self._get_gl_author_info,
+                'bb': self._get_bb_author_info
+            }
+            if not hasattr(self, '_author_info'):
+                self._author_info = ai_factory[self.name[:2]]()
+            return self._author_info
+
+    @property
+    def as_a_list(self):
+        """Provide recent commits content as a list."""
+        if self.content:
+            if not hasattr(self, '_as_a_list'):
+                self._as_a_list = json.loads(self.content)
+            return self._as_a_list
+
+    def _get_gh_signed_status(self):
         commits = []
-        for commit in json.loads(self.content):
+        for commit in self.as_a_list:
             commits.append(
                 {
                     'sha': commit['sha'],
@@ -47,8 +68,27 @@ class RepoCommitEvidence(RawEvidence):
             )
         return commits
 
-    def _get_gl_commit_signed_status(self):
+    def _get_gl_signed_status(self):
         raise NotImplementedError('Support for Gitlab coming soon...')
 
-    def _get_bb_commit_signed_status(self):
+    def _get_bb_signed_status(self):
+        raise NotImplementedError('Support for Bitbucket coming soon...')
+
+    def _get_gh_author_info(self):
+        commits = []
+        for commit in self.as_a_list:
+            commits.append(
+                {
+                    'sha': commit['sha'],
+                    'url': commit['html_url'],
+                    'author': commit['commit']['author']['name'],
+                    'datetime': commit['commit']['author']['date']
+                }
+            )
+        return commits
+
+    def _get_gl_author_info(self):
+        raise NotImplementedError('Support for Gitlab coming soon...')
+
+    def _get_bb_author_info(self):
         raise NotImplementedError('Support for Bitbucket coming soon...')

@@ -78,8 +78,8 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
                 ]
                 path = f'raw/auditree/{"_".join(filename)}'
                 with evidences(self, path) as raw:
-                    evidence = RepoCommitEvidence.from_evidence(raw)
-                    for commit in evidence.commit_signed_status:
+                    commits = RepoCommitEvidence.from_evidence(raw)
+                    for commit in commits.signed_status:
                         if not commit['signed']:
                             self.add_failures(
                                 'Locker Recent Commits - (Unsigned)',

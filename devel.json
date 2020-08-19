@@ -12,9 +12,15 @@
     "name": "MY-ORG",
     "auditree": {
       "repo_integrity": {
+        "branches": {
+          "https://github.com/ComplianceAsCode/auditree-arboretum": ["main"]
+        },
         "filepaths": {
           "https://github.com/ComplianceAsCode/auditree-arboretum": {
-            "main": ["arboretum/common/constants.py"]
+            "main": [
+              "arboretum/common/constants.py",
+              "arboretum/auditree"
+            ]
           }
         }
       }
