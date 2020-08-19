@@ -52,8 +52,8 @@ how to include the fetchers and checks from this library in your downstream proj
 
       ```ini
       [ibm_cloud]
-      acct_a_api_key=your-iks-api-key-for-acct-a
-      acct_b_api_key=your-iks-api-key-for-acct-b
+      acct_a_api_key=your-ibm-cloud-api-key-for-acct-a
+      acct_b_api_key=your-ibm-cloud-api-key-for-acct-b
       ```
 
     * NOTE 1: This fetcher requires [IBM Cloud CLI][ibm-cloud-cli] is installed. Its Kubernetes plugin will be automatically installed when the plugin is not installed.
