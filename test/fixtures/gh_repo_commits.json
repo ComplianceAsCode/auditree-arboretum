@@ -1,0 +1,17 @@
+[
+  {
+    "author": {},
+    "commit": {
+      "author": {
+        "name": "The Dude",
+        "date": "2020-08-20T12:12:12Z"
+      },
+      "verification": {
+        "verified": true
+      }
+    },
+    "sha": "a123456789",
+    "html_url": "https://the-commit-url",
+    "other_stuff": {}
+  }
+]
