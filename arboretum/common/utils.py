@@ -14,8 +14,6 @@
 # limitations under the License.
 """Common utility functions."""
 
-import subprocess
-
 from compliance.evidence import DAY, HOUR
 
 
@@ -49,39 +47,3 @@ def mask_secrets(text, secrets):
     for s in secrets:
         text = text.replace(s, '***')
     return text
-
-
-def run_command(cmd, input_text=None, timeout=None):
-    """
-    Execute system command.
-
-    This is a wrapper for `subprocess.run()`.
-
-    Example 1: `run_command(['echo', '-n', 'hello'])` returns `('hello','')`.
-
-    Example 2: `run_command(['cat'], input='hello')` returns `('hello','')`.
-
-    Use `subprocess.run()` if other complicated parameters (e.g., encoding)
-    should be specified.
-
-    :param list[str] cmd: command line arguments
-    :param str input_text: text for standard input of command
-    :param int timeout: timeout for command in seconds
-    :raises subprocess.CalledProcessError: if the command finishes with
-                                           non-zero returncode.
-    :raises subprocess.TimeoutExpires: if timeout expires.
-    :raises TypeError: if some of `cmd` element is not a `str`.
-    :raises IndexError: if length of `cmd` is zero.
-    :returns: a tuple of standard output and standard error of the command.
-    """
-    cp = subprocess.run(
-        cmd,
-        input=input_text,
-        text=True,
-        timeout=timeout,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=True,
-        shell=False
-    )
-    return cp.stdout, cp.stderr
