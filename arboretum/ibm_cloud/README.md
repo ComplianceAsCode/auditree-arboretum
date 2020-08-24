@@ -56,12 +56,21 @@ how to include the fetchers and checks from this library in your downstream proj
       acct_b_api_key=your-ibm-cloud-api-key-for-acct-b
       ```
 
-    * NOTE 1: This fetcher requires [IBM Cloud CLI][ibm-cloud-cli] is installed. Its Kubernetes plugin will be automatically installed when the plugin is not installed.
+    * NOTE (1): In order to function properly this fetcher requires that the [IBM Cloud CLI][ibm-cloud-cli] and the
+      Kubernetes service plugin be installed. Ensure that something similar to the following is part of your CI/CD execution script:
+
+      ```sh
+      echo "Installing IBM Cloud developer tool..."
+      curl -sL http://ibm.biz/idt-installer | bash
+      echo "Installing the IBM Cloud Kubernetes plugin..."
+      ibmcloud plugin install kubernetes-service
+      ```
+
     * NOTE (2): [API keys can be generated][ic-api-key-create] using the IBM Cloud CLI. Perform something similar to:
 
-        ```sh
-        ibmcloud iam api-key-create your-iks-api-key-for-acct-x
-        ```
+      ```sh
+      ibmcloud iam api-key-create your-iks-api-key-for-acct-x
+      ```
 
 * Import statement:
 
