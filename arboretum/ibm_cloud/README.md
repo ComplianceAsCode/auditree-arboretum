@@ -24,22 +24,18 @@ how to include the fetchers and checks from this library in your downstream proj
 * Purpose: Write the list of IBM Cloud clusters to the evidence locker.
 * Behavior: Log in to IBM Cloud and save the list of clusters bound with specified account.
 * Configuration elements:
-  * `org.ibm_cloud.cluster_list.account`
+  * `org.ibm_cloud.accounts`
     * Required
-    * List of accounts (string) 
-    * Each object must have the following values
-      * `account` - a list containing names identifying the IBM Cloud account, this will map to an IAM token provided in the credentials file
-* Example configuration:
+    * List of accounts (string)
+    * Each account is an arbitrary name describing the IBM Cloud account. It is used to match to the token provided in the
+      credentials file in order for the fetcher to retrieve content from IBM Cloud for that account.
+* Example (required) configuration:
 
   ```json
   {
     "org": {
       "ibm_cloud": {
-        "cluster_list": {
-          "config": {
-              "account": ["myaccount1"]
-          }
-        }
+        "accounts": ["myaccount1"]
       }
     }
   }

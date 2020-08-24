@@ -29,7 +29,7 @@ class ClusterListFetcher(ComplianceFetcher):
     @store_raw_evidence('ibm_cloud/cluster_list.json')
     def fetch_cluster_list(self):
         """Fetch IBM Cloud cluster list."""
-        accounts = self.config.get('org.ibm_cloud.cluster_list.account')
+        accounts = self.config.get('org.ibm_cloud.accounts')
         cluster_list = {}
         for account in accounts:
             cluster_list[account] = self._get_cluster_list(account)
