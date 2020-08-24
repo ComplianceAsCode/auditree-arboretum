@@ -57,7 +57,7 @@ how to include the fetchers and checks from this library in your downstream proj
       ```
 
     * NOTE 1: This fetcher requires [IBM Cloud CLI][ibm-cloud-cli] is installed. Its Kubernetes plugin will be automatically installed when the plugin is not installed.
-    * NOTE 2: [API Keys can be generated using the ibmcloud CLI][ic-api-key-create]. E.g.
+    * NOTE (2): [API keys can be generated][ic-api-key-create] using the IBM Cloud CLI. Perform something similar to:
 
         ```sh
         ibmcloud iam api-key-create your-iks-api-key-for-acct-x
