@@ -14,13 +14,22 @@
 # limitations under the License.
 """Cluster resource fetcher for various types of clusters."""
 
+import io
 import json
+import os
+import pathlib
 import subprocess
-
-from arboretum.common.utils import mask_secrets
+import tempfile
+import zipfile
 
 from compliance.evidence import evidences, store_raw_evidence
 from compliance.fetch import ComplianceFetcher
+
+import requests
+
+import yaml
+
+from ...ibm_cloud.util.iam import get_tokens
 
 
 class ClusterResourceFetcher(ComplianceFetcher):
@@ -61,6 +70,7 @@ class ClusterResourceFetcher(ComplianceFetcher):
                     cltype,
                     str(e)
                 )
+                raise
         return json.dumps(resources)
 
     def _fetch_bom_resource(self):
@@ -111,89 +121,86 @@ class ClusterResourceFetcher(ComplianceFetcher):
             api_key = getattr(
                 self.config.creds['ibm_cloud'], f'{account}_api_key'
             )
-            try:
-                self._run_command(
-                    ['ibmcloud', 'login', '--no-region', '--apikey', api_key]
-                )
-            except subprocess.CalledProcessError as e:
-                self.logger.error(
-                    'Failed to login with account %s: %s',
-                    account,
-                    mask_secrets(str(e), [api_key])
-                )
-                continue
-            try:
-                resources[account] = []
-                for cluster in cluster_list[account]:
-                    # get configuration to access the target cluster
-                    args = [
-                        'ibmcloud',
-                        'cs',
-                        'cluster',
-                        'config',
-                        '-s',
-                        '-c',
-                        cluster['name']
-                    ]
-                    try:
-                        self._run_command(args)
-                    except subprocess.CalledProcessError as e:
-                        if e.returncode == 2:  # RC: 2 == no plugin
-                            self.logger.warning(
-                                'Kubernetes service plugin missing.  '
-                                'Attempting to install plugin...'
-                            )
-                            self._run_command(
-                                [
-                                    'ibmcloud',
-                                    'plugin',
-                                    'install',
-                                    'kubernetes-service'
-                                ]
-                            )
-                            self._run_command(args)
-                        else:
-                            raise
-                    # login using "oc" command if the target is openshift
-                    if cluster['type'] == 'openshift':
-                        try:
-                            self._run_command(
-                                ['oc', 'login', '-u', 'apikey', '-p', api_key]
-                            )
-                        except subprocess.CalledProcessError as e:
+
+            tokens = get_tokens(api_key)
+            resources[account] = []
+            for cluster in cluster_list[account]:
+                try:
+                    if cluster['type'] == 'kubernetes':
+                        # get token for an IKS cluster
+                        # https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
+                        headers = {
+                            'Authorization': 'Bearer '
+                            f'{tokens["access_token"]}',
+                            'X-Auth-Refresh-Token': tokens['refresh_token']
+                        }
+                        resp = requests.get(
+                            'https://containers.cloud.ibm.com'
+                            '/global/v1/clusters/'
+                            f'{cluster["id"]}/config',
+                            headers=headers
+                        )
+                        resp.raise_for_status()
+                        z = zipfile.ZipFile(io.BytesIO(resp.content))
+                        cluster_token = None
+                        ca_cert_filepath = None
+                        for name in z.namelist():
+                            p = pathlib.Path(name)
+                            if p.name.startswith('kube-config'):
+                                kubeconfig = yaml.safe_load(z.read(name))
+                                cluster_token = kubeconfig['users'][0]['user'][
+                                    'auth-provider']['config']['id-token']
+                            if p.name.endswith('.pem'):
+                                tmpdir = tempfile.TemporaryDirectory()
+                                z.extract(name, path=tmpdir.name)
+                                ca_cert_filepath = os.path.join(
+                                    tmpdir.name, name
+                                )
+                        if cluster_token is None:
                             self.logger.error(
-                                'Failed to login an OpenShift cluster with '
-                                'account %s: %s',
-                                account,
-                                mask_secrets(str(e), [api_key])
-                            )
-                            continue
-                    # get resources
-                    resource_list = []
-                    for resource in resource_types:
-                        try:
-                            cp = self._run_command(
-                                [
-                                    'kubectl',
-                                    'get',
-                                    resource,
-                                    '-A',
-                                    '-o',
-                                    'json'
-                                ]
-                            )
-                            output = cp.stdout
-                            resource_list.extend(json.loads(output)['items'])
-                        except RuntimeError:
-                            self.logger.warning(
-                                'Failed to get %s resource in cluster %s',
-                                resource,
+                                'Failed to extract token from the config file '
+                                'for cluster "%s".',
                                 cluster['name']
                             )
-                    cluster['resources'] = resource_list
+                            continue
+                        if ca_cert_filepath is None:
+                            self.logger.error(
+                                'Failed to extract CA certificate file (*.pem)'
+                                ' from the config file'
+                                ' for cluster "%s".',
+                                cluster['name']
+                            )
+                            continue
+                        headers = {'Authorization': f'Bearer {cluster_token}'}
+                        cluster['resources'] = {}
+                        for resource in resource_types:
+                            resp = requests.get(
+                                f'{cluster["serverURL"]}/api/v1/{resource}s',
+                                headers=headers,
+                                verify=ca_cert_filepath
+                            )
+                            resp.raise_for_status()
+                            cluster['resources'][resource] = resp.json(
+                            )['items']
+                    elif cluster['type'] == 'openshift':
+                        self.logger.warning(
+                            'Not implemented cluster type %s: %s',
+                            cluster['type'],
+                            cluster['name']
+                        )
+                    else:
+                        self.logger.warning(
+                            'Ignoring unsupported cluster type "%s": %s',
+                            cluster['type'],
+                            cluster['name']
+                        )
                     resources[account].append(cluster)
-            finally:
-                self._run_command(['ibmcloud', 'logout'])
+                except Exception as e:
+                    self.logger.error(
+                        'Failed to get resource from cluster "%s": %s',
+                        cluster['name'],
+                        str(e)
+                    )
 
         return resources
 
