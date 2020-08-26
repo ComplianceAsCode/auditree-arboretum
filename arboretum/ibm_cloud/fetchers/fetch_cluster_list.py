@@ -15,12 +15,13 @@
 """IBM Cloud cluster list fetcher."""
 
 import json
-import subprocess
-
-from arboretum.common.utils import mask_secrets
 
 from compliance.evidence import store_raw_evidence
 from compliance.fetch import ComplianceFetcher
+
+import requests
+
+from ..util.iam import get_tokens
 
 
 class ClusterListFetcher(ComplianceFetcher):
@@ -35,56 +36,18 @@ class ClusterListFetcher(ComplianceFetcher):
             cluster_list[account] = self._get_cluster_list(account)
         return json.dumps(cluster_list)
 
-    def _run_command(self, args):
-        return subprocess.run(
-            args,
-            text=True,
-            timeout=30,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=True,
-            shell=False
-        )
-
     def _get_cluster_list(self, account):
 
-        logger = self.locker.logger.getChild('ibm_cloud.cluster_list_fetcher')
         # get credential for the account
         api_key = getattr(self.config.creds['ibm_cloud'], f'{account}_api_key')
-
-        # login
-        try:
-            self._run_command(
-                ['ibmcloud', 'login', '--no-region', '--apikey', api_key]
-            )
-        except subprocess.CalledProcessError as e:
-            logger.error(
-                'Failed to login with account %s: %s',
-                account,
-                mask_secrets(str(e), [api_key])
-            )
-            return
-
+        tokens = get_tokens(api_key)
+        access_token = tokens['access_token']
         # get cluster list
-        cluster_list = None
-        cmd = ['ibmcloud', 'cs', 'cluster', 'ls', '--json']
-        try:
-            cp = self._run_command(cmd)
-            cluster_list = cp.stdout
-        except subprocess.CalledProcessError as e:
-            if e.returncode == 2:  # RC: 2 == no plugin
-                logger.warning(
-                    'Kubernetes service plugin missing.  '
-                    'Attempting to install plugin...'
-                )
-                self._run_command(
-                    ['ibmcloud', 'plugin', 'install', 'kubernetes-service']
-                )
-                cp = self._run_command(cmd)
-                cluster_list = cp.stdout
-            else:
-                raise
-        finally:
-            self._run_command(['ibmcloud', 'logout'])
-
-        return json.loads(cluster_list)
+        # https://cloud.ibm.com/apidocs/kubernetes#getclusters
+        headers = {'Authorization': f'Bearer {access_token}'}
+        resp = requests.get(
+            'https://containers.cloud.ibm.com/global/v1/clusters',
+            headers=headers
+        )
+        resp.raise_for_status()
+        return resp.json()
