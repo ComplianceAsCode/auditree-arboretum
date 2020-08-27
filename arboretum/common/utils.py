@@ -34,16 +34,3 @@ def parse_seconds(seconds):
             formatted.append(f'{q} {unit}')
         seconds = r
     return ', '.join(formatted)
-
-
-def mask_secrets(text, secrets):
-    """
-    Replace secret words in a text with `***`.
-
-    :param str text: a string which may contain secret words.
-    :param list[str] secrets: secret word list.
-    :returns: masked text.
-    """
-    for s in secrets:
-        text = text.replace(s, '***')
-    return text
