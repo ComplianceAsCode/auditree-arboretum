@@ -16,10 +16,10 @@
 
 import json
 
+from arboretum.common.iam_ibm import get_tokens
+
 from compliance.evidence import store_raw_evidence
 from compliance.fetch import ComplianceFetcher
-
-from ..util.iam import get_tokens
 
 
 class ClusterListFetcher(ComplianceFetcher):

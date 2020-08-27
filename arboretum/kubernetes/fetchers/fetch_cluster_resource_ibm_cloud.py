@@ -7,13 +7,13 @@ import pathlib
 import tempfile
 import zipfile
 
+from arboretum.common.iam_ibm import get_tokens
+
 from compliance.evidence import evidences
 
 import requests
 
 import yaml
-
-from ...ibm_cloud.util.iam import get_tokens
 
 
 def fetch_cluster_resource(parent):
