@@ -14,22 +14,12 @@
 # limitations under the License.
 """Cluster resource fetcher for various types of clusters."""
 
-import io
 import json
-import os
-import pathlib
 import subprocess
-import tempfile
-import zipfile
+from importlib import import_module
 
 from compliance.evidence import evidences, store_raw_evidence
 from compliance.fetch import ComplianceFetcher
-
-import requests
-
-import yaml
-
-from ...ibm_cloud.util.iam import get_tokens
 
 
 class ClusterResourceFetcher(ComplianceFetcher):
@@ -57,13 +47,32 @@ class ClusterResourceFetcher(ComplianceFetcher):
             try:
                 if cltype == 'kubernetes':
                     resources['kubernetes'] = self._fetch_bom_resource()
-                elif cltype == 'ibm_cloud':
-                    resources['ibm_cloud'] = self._fetch_ibm_cloud_resource()
                 else:
-                    self.logger.error(
-                        'Specified cluster list type "%s" is not supported',
-                        cltype
+                    module_name = (
+                        'arboretum.kubernetes.fetchers.'
+                        f'fetch_cluster_resource_{cltype}'
                     )
+                    function_name = 'fetch_cluster_resource'
+                    try:
+                        module = import_module(module_name)
+                    except ModuleNotFoundError:
+                        self.logger.error(
+                            'Failed to load plugin for cluster type "%s": %s',
+                            cltype,
+                            module_name
+                        )
+                        raise
+                    try:
+                        fetcher = getattr(module, function_name)
+                    except AttributeError:
+                        self.logger.error(
+                            'Failed to load expected funtion "%s" '
+                            'in module "%s"',
+                            function_name,
+                            module_name
+                        )
+                        raise
+                    resources[cltype] = fetcher(self)
             except Exception as e:
                 self.logger.error(
                     'Failed to fetch resources for cluster list "%s": %s',
@@ -105,103 +114,6 @@ class ClusterResourceFetcher(ComplianceFetcher):
                     'name': c['name'], 'resources': cluster_resources
                 }
             ]
-        return resources
-
-    def _fetch_ibm_cloud_resource(self):
-        resource_types = self.config.get(
-            'org.ibm_cloud.cluster_resource.target_resource_types',
-            ClusterResourceFetcher.RESOURCE_TYPE_DEFAULT
-        )
-        cluster_list = {}
-        with evidences(self.locker, 'raw/ibm_cloud/cluster_list.json') as ev:
-            cluster_list = json.loads(ev.content)
-
-        resources = {}
-        for account in cluster_list:
-            api_key = getattr(
-                self.config.creds['ibm_cloud'], f'{account}_api_key'
-            )
-
-            tokens = get_tokens(api_key)
-            resources[account] = []
-            for cluster in cluster_list[account]:
-                try:
-                    if cluster['type'] == 'kubernetes':
-                        # get token for an IKS cluster
-                        # https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
-                        headers = {
-                            'Authorization': 'Bearer '
-                            f'{tokens["access_token"]}',
-                            'X-Auth-Refresh-Token': tokens['refresh_token']
-                        }
-                        resp = requests.get(
-                            'https://containers.cloud.ibm.com'
-                            '/global/v1/clusters/'
-                            f'{cluster["id"]}/config',
-                            headers=headers
-                        )
-                        resp.raise_for_status()
-                        z = zipfile.ZipFile(io.BytesIO(resp.content))
-                        cluster_token = None
-                        ca_cert_filepath = None
-                        for name in z.namelist():
-                            p = pathlib.Path(name)
-                            if p.name.startswith('kube-config'):
-                                kubeconfig = yaml.safe_load(z.read(name))
-                                cluster_token = kubeconfig['users'][0]['user'][
-                                    'auth-provider']['config']['id-token']
-                            if p.name.endswith('.pem'):
-                                tmpdir = tempfile.TemporaryDirectory()
-                                z.extract(name, path=tmpdir.name)
-                                ca_cert_filepath = os.path.join(
-                                    tmpdir.name, name
-                                )
-                        if cluster_token is None:
-                            self.logger.error(
-                                'Failed to extract token from the config file '
-                                'for cluster "%s".',
-                                cluster['name']
-                            )
-                            continue
-                        if ca_cert_filepath is None:
-                            self.logger.error(
-                                'Failed to extract CA certificate file (*.pem)'
-                                ' from the config file'
-                                ' for cluster "%s".',
-                                cluster['name']
-                            )
-                            continue
-                        headers = {'Authorization': f'Bearer {cluster_token}'}
-                        cluster['resources'] = {}
-                        for resource in resource_types:
-                            resp = requests.get(
-                                f'{cluster["serverURL"]}/api/v1/{resource}s',
-                                headers=headers,
-                                verify=ca_cert_filepath
-                            )
-                            resp.raise_for_status()
-                            cluster['resources'][resource] = resp.json(
-                            )['items']
-                    elif cluster['type'] == 'openshift':
-                        self.logger.warning(
-                            'Not implemented cluster type %s: %s',
-                            cluster['type'],
-                            cluster['name']
-                        )
-                    else:
-                        self.logger.warning(
-                            'Ignoring unsupported cluster type "%s": %s',
-                            cluster['type'],
-                            cluster['name']
-                        )
-                    resources[account].append(cluster)
-                except Exception as e:
-                    self.logger.error(
-                        'Failed to get resource from cluster "%s": %s',
-                        cluster['name'],
-                        str(e)
-                    )
-
         return resources
 
     def _run_command(self, args):
