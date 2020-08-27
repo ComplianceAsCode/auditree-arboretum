@@ -59,16 +59,15 @@ def fetch_cluster_resource(parent):
                 io.BytesIO(resp.content)
             )
 
-        parent.session().close()
-        parent._session = None
         # bulk retrieve resource
         resources[account] = []
         for cluster in cluster_list[account]:
+            s = requests.session()  # session for cluster
             try:
                 z = cluster_config[cluster['name']]
+                cluster_token = None
+                ca_cert_filepath = None
                 if cluster['type'] == 'kubernetes':
-                    cluster_token = None
-                    ca_cert_filepath = None
                     for name in z.namelist():
                         p = pathlib.Path(name)
                         if p.name.startswith('kube-config'):
@@ -94,33 +93,60 @@ def fetch_cluster_resource(parent):
                             cluster['name']
                         )
                         continue
-                    s = requests.session()
-                    headers = {'Authorization': f'Bearer {cluster_token}'}
-                    s.headers.update(headers)
-                    try:
-                        cluster['resources'] = {}
-                        for resource in resource_types:
-                            resp = s.get(
-                                f'{cluster["serverURL"]}/api/v1/{resource}',
-                                verify=ca_cert_filepath
-                            )
-                            resp.raise_for_status()
-                            cluster['resources'][resource] = resp.json(
-                            )['items']
-                    finally:
-                        s.close()
                 elif cluster['type'] == 'openshift':
-                    parent.logger.warning(
-                        'Not implemented cluster type %s: %s',
-                        cluster['type'],
-                        cluster['name']
+                    # https://cloud.ibm.com/docs/openshift?topic=openshift-access_cluster
+                    url = (
+                        f'{cluster["serverURL"]}/.well-known/'
+                        'oauth-authorization-server'
                     )
+                    resp = s.get(url)
+                    resp.raise_for_status()
+                    token_endpoint = resp.json()['token_endpoint']
+                    parent.logger.debug('token_endpoint: %s', token_endpoint)
+                    oauth_server = token_endpoint.split('/')[2]
+                    headers = {'X-CSRF-Token': 'a'}
+                    url = (
+                        f'https://{oauth_server}/oauth/authorize?client_id='
+                        'openshift-challenging-client&response_type=token'
+                    )
+                    parent.logger.debug(
+                        'Getting access token from oauth server %s', url
+                    )
+                    resp = requests.get(
+                        url,
+                        auth=('apikey', api_key),
+                        headers=headers,
+                        allow_redirects=False
+                    )
+                    # do not log resp.header because it contains
+                    # token string.
+                    location = resp.headers['Location']
+                    keyword = 'access_token='
+                    start = location.find(keyword)
+                    end = location.find('&', start)
+                    cluster_token = location[start + len(keyword):end]
+                    s.headers.update({'X-CSRF-Token': None})
                 else:
                     parent.logger.warning(
                         'Ignoring unsupported cluster type "%s": %s',
                         cluster['type'],
                         cluster['name']
                     )
+                    continue
+                headers = {'Authorization': f'Bearer {cluster_token}'}
+                s.headers.update(headers)
+                try:
+                    cluster['resources'] = {}
+                    for resource in resource_types:
+                        resp = s.get(
+                            f'{cluster["serverURL"]}/api/v1/{resource}',
+                            verify=ca_cert_filepath
+                        )
+                        resp.raise_for_status()
+                        cluster['resources'][resource] = resp.json()['items']
+                finally:
+                    s.close()
+
                 resources[account].append(cluster)
             except Exception as e:
                 parent.logger.error(
