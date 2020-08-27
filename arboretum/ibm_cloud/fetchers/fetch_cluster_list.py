@@ -19,13 +19,24 @@ import json
 from compliance.evidence import store_raw_evidence
 from compliance.fetch import ComplianceFetcher
 
-import requests
-
 from ..util.iam import get_tokens
 
 
 class ClusterListFetcher(ComplianceFetcher):
     """Fetch the list of IBM Cloud clusters."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Initialize the fetcher object with configuration settings."""
+        headers = {'Accept': 'application/json'}
+        cls.session('https://containers.cloud.ibm.com', **headers)
+
+        return cls
+
+    @classmethod
+    def tearDownClass(cls):
+        """Destroys the fetcher object."""
+        cls.session().close()
 
     @store_raw_evidence('ibm_cloud/cluster_list.json')
     def fetch_cluster_list(self):
@@ -45,9 +56,6 @@ class ClusterListFetcher(ComplianceFetcher):
         # get cluster list
         # https://cloud.ibm.com/apidocs/kubernetes#getclusters
         headers = {'Authorization': f'Bearer {access_token}'}
-        resp = requests.get(
-            'https://containers.cloud.ibm.com/global/v1/clusters',
-            headers=headers
-        )
+        resp = self.session().get('/global/v1/clusters', headers=headers)
         resp.raise_for_status()
         return resp.json()
