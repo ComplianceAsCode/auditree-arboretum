@@ -25,7 +25,7 @@ from compliance.fetch import ComplianceFetcher
 class ClusterResourceFetcher(ComplianceFetcher):
     """Fetch the resources of clusters."""
 
-    RESOURCE_TYPE_DEFAULT = ['node', 'pod', 'configmap']
+    RESOURCE_TYPE_DEFAULT = ['nodes', 'pods', 'configmaps']
 
     @classmethod
     def setUpClass(cls):

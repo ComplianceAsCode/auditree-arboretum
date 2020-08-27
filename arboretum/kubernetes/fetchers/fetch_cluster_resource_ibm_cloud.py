@@ -101,7 +101,7 @@ def fetch_cluster_resource(parent):
                         cluster['resources'] = {}
                         for resource in resource_types:
                             resp = s.get(
-                                f'{cluster["serverURL"]}/api/v1/{resource}s',
+                                f'{cluster["serverURL"]}/api/v1/{resource}',
                                 verify=ca_cert_filepath
                             )
                             resp.raise_for_status()
