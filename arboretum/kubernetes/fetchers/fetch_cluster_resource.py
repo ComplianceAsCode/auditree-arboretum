@@ -35,6 +35,11 @@ class ClusterResourceFetcher(ComplianceFetcher):
         )
         return cls
 
+    @classmethod
+    def tearDownClass(cls):
+        """Destroys the fetcher object."""
+        cls.session().close()
+
     @store_raw_evidence('kubernetes/cluster_resource.json')
     def fetch_cluster_resource(self):
         """Fetch cluster resources of listed clusters."""

@@ -22,6 +22,10 @@ def fetch_cluster_resource(parent):
         'org.ibm_cloud.cluster_resource.target_resource_types',
         parent.RESOURCE_TYPE_DEFAULT
     )
+
+    headers = {'Accept': 'application/json'}
+    parent.session('https://containers.cloud.ibm.com', **headers)
+
     cluster_list = {}
     with evidences(parent.locker, 'raw/ibm_cloud/cluster_list.json') as ev:
         cluster_list = json.loads(ev.content)
@@ -33,25 +37,36 @@ def fetch_cluster_resource(parent):
         )
 
         tokens = get_tokens(api_key)
+        parent.session().headers.update(
+            {
+                'Authorization': 'Bearer '
+                f'{tokens["access_token"]}',
+                'X-Auth-Refresh-Token': tokens['refresh_token']
+            }
+        )
+
+        # bulk retrieve config
+        cluster_config = {}
+        for cluster in cluster_list[account]:
+            # get token for an IKS cluster
+            # https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
+            resp = parent.session().get(
+                '/global/v1/clusters/'
+                f'{cluster["id"]}/config'
+            )
+            resp.raise_for_status()
+            cluster_config[cluster['name']] = zipfile.ZipFile(
+                io.BytesIO(resp.content)
+            )
+
+        parent.session().close()
+        parent._session = None
+        # bulk retrieve resource
         resources[account] = []
         for cluster in cluster_list[account]:
             try:
+                z = cluster_config[cluster['name']]
                 if cluster['type'] == 'kubernetes':
-                    # get token for an IKS cluster
-                    # https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
-                    headers = {
-                        'Authorization': 'Bearer '
-                        f'{tokens["access_token"]}',
-                        'X-Auth-Refresh-Token': tokens['refresh_token']
-                    }
-                    resp = requests.get(
-                        'https://containers.cloud.ibm.com'
-                        '/global/v1/clusters/'
-                        f'{cluster["id"]}/config',
-                        headers=headers
-                    )
-                    resp.raise_for_status()
-                    z = zipfile.ZipFile(io.BytesIO(resp.content))
                     cluster_token = None
                     ca_cert_filepath = None
                     for name in z.namelist():
@@ -79,16 +94,21 @@ def fetch_cluster_resource(parent):
                             cluster['name']
                         )
                         continue
+                    s = requests.session()
                     headers = {'Authorization': f'Bearer {cluster_token}'}
-                    cluster['resources'] = {}
-                    for resource in resource_types:
-                        resp = requests.get(
-                            f'{cluster["serverURL"]}/api/v1/{resource}s',
-                            headers=headers,
-                            verify=ca_cert_filepath
-                        )
-                        resp.raise_for_status()
-                        cluster['resources'][resource] = resp.json()['items']
+                    s.headers.update(headers)
+                    try:
+                        cluster['resources'] = {}
+                        for resource in resource_types:
+                            resp = s.get(
+                                f'{cluster["serverURL"]}/api/v1/{resource}s',
+                                verify=ca_cert_filepath
+                            )
+                            resp.raise_for_status()
+                            cluster['resources'][resource] = resp.json(
+                            )['items']
+                    finally:
+                        s.close()
                 elif cluster['type'] == 'openshift':
                     parent.logger.warning(
                         'Not implemented cluster type %s: %s',
@@ -108,5 +128,6 @@ def fetch_cluster_resource(parent):
                     cluster['name'],
                     str(e)
                 )
+                raise
 
     return resources
