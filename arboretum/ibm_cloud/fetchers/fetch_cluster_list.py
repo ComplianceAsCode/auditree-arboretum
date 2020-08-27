@@ -55,7 +55,9 @@ class ClusterListFetcher(ComplianceFetcher):
         access_token = tokens['access_token']
         # get cluster list
         # https://cloud.ibm.com/apidocs/kubernetes#getclusters
-        headers = {'Authorization': f'Bearer {access_token}'}
-        resp = self.session().get('/global/v1/clusters', headers=headers)
+        self.session().headers.update(
+            {'Authorization': f'Bearer {access_token}'}
+        )
+        resp = self.session().get('/global/v1/clusters')
         resp.raise_for_status()
         return resp.json()
