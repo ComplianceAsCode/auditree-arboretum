@@ -1,3 +1,8 @@
+# 0.5.1
+
+- [IMPROVED] Updated template layout for Repository/Branch New Commits report.
+- [IMPROVED] Updated template layout for Repository/Branch/Filepath New Commits report.
+
 # 0.5.0
 
 - [NEW] Add repository/branch new commits check.

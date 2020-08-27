@@ -30,9 +30,10 @@ and file paths:
 {%- endfor -%}
 {%- endfor -%}
 
-{% if test.total_issues_count(results) == 0 -%}
+{% if test.total_issues_count(results) == 0 %}
+
 **No new commits to report.**
-{% else -%}
+{% else %}
 {% for topic in all_warnings.keys()|sort %}
 
 ## {{ topic }}
