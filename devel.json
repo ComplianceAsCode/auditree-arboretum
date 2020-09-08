@@ -24,6 +24,9 @@
           }
         }
       }
+    },
+    "ibm_cloud": {
+      "accounts": ["my_ic_account_one", "my_ic_account_two"]
     }
   }
 }
