@@ -19,3 +19,6 @@ IAM_TOKEN_URL = 'https://iam.cloud.ibm.com/identity/token'
 
 # IAM token API KEY grant type
 IAM_API_KEY_GRANT_TYPE = 'urn:ibm:params:oauth:grant-type:apikey'
+
+# IBM Cloud containers API base URL
+IC_CONTAINERS_BASE_URL = 'https://containers.cloud.ibm.com'
