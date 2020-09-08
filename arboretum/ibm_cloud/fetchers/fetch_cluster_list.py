@@ -57,11 +57,10 @@ class ClusterListFetcher(ComplianceFetcher):
 
         # get credential for the account
         api_key = getattr(self.config.creds['ibm_cloud'], f'{account}_api_key')
-        access_token, _ = get_tokens(api_key)
         # get cluster list
         # https://cloud.ibm.com/apidocs/kubernetes#getclusters
         self.session().headers.update(
-            {'Authorization': f'Bearer {access_token}'}
+            {'Authorization': f'Bearer {get_tokens(api_key)[0]}'}
         )
         resp = self.session().get('/global/v1/clusters')
         resp.raise_for_status()
