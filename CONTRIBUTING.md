@@ -1,6 +1,6 @@
 # Contributing
 
-If you want to add to arboretum, please familiarize yourself with the code & our [Coding Standards][]. Make a fork of the repository & file a Pull Request from your fork with the changes. You will need to click the checkbox in the template to show you agree to the [Developer Certificate of Origin](../blob/main/DCO1.1.txt).
+If you want to add to arboretum, please familiarize yourself with the code & our [Coding Standards][]. Make a fork of the repository & file a Pull Request from your fork with the changes. You will need to click the checkbox in the template to show you agree to the [Developer Certificate of Origin](https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/DCO1.1.txt).
 
 If you make **regular & substantial contributions** to Auditree, you may want to become a collaborator. This means you can approve pull requests (though not your own) & create releases of the tool. Please [file an issue][new collab] to request collaborator access. A collaborator supports the project, ensuring coding standards are met & best practices are followed in contributed code, cutting & documenting releases, promoting the project etc.
 
