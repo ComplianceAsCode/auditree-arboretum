@@ -27,6 +27,13 @@
     },
     "ibm_cloud": {
       "accounts": ["my_ic_account_one", "my_ic_account_two"]
+    },
+    "cos": {
+      "accounts": {
+        "my_account": {
+            "us-south": ["instance_1", "instance_2"]
+        }
+      }
     }
   }
 }

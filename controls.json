@@ -33,5 +33,15 @@
     "auditree_evidence": {
       "auditree_control": ["arboretum.auditree"]
     }
+  },
+  "arboretum.object_storage.checks.test_cos_bucket_encryption.COSBucketEncryptionKeyCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["arboretum.object_storage"]
+    }
+  },
+  "arboretum.object_storage.checks.test_cos_expired_keys.COSBucketEncryptionKeyValidCheck": {
+    "auditree_evidence": {
+      "auditree_control": ["arboretum.object_storage"]
+    }
   }
 }
