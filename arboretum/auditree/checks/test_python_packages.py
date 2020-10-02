@@ -59,10 +59,8 @@ class PythonPackageCheck(ComplianceCheck):
         yesterday = None
         yesterday_dt = datetime.utcnow() - timedelta(days=1)
         try:
-            yesterday = self.locker.get_evidence(
-                'raw/auditree/python_packages.json',
-                ignore_ttl=True,
-                evidence_dt=yesterday_dt
+            yesterday = self.get_historical_evidence(
+                'raw/auditree/python_packages.json', yesterday_dt
             )
         except ValueError:
             self.add_warnings(
