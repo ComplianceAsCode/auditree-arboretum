@@ -81,8 +81,8 @@ class LockerRepoIntegrityCheck(ComplianceCheck):
                 evidence_found = True
                 previous_dt = datetime.utcnow() - timedelta(days=1)
                 try:
-                    previous_raw = self.locker.get_evidence(
-                        path, ignore_ttl=True, evidence_dt=previous_dt
+                    previous_raw = self.get_historical_evidence(
+                        path, previous_dt
                     )
                 except ValueError:
                     self.add_failures(

@@ -84,10 +84,9 @@ class AbandonedEvidenceCheck(ComplianceCheck):
             previous_evidence = None
             try:
                 current_evidence = self.locker.get_evidence(ae_path)
-                previous_evidence = self.locker.get_evidence(
-                    ae_path,
-                    ignore_ttl=True,
-                    evidence_dt=datetime.utcnow() - timedelta(days=1)
+                self.add_evidence_metadata(current_evidence.path)
+                previous_evidence = self.get_historical_evidence(
+                    ae_path, datetime.utcnow() - timedelta(days=1)
                 )
                 self._test_with_history(current_evidence, previous_evidence)
             except EvidenceNotFoundError:
