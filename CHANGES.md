@@ -1,3 +1,7 @@
+# [0.6.2](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.6.2)
+
+- [ADDED] Folder hierarchy for Permissions related fetchers, checks, and harvest reports added.
+
 # [0.6.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.6.1)
 
 - [FIXED] Auditree Abandoned Evidence check now tracks all evidence used by check.
