@@ -1,3 +1,9 @@
+# [0.7.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.7.0)
+
+- [ADDED] Folder hierarchy for Issue Management related fetchers, checks, and harvest reports added.
+- [ADDED] Github issues fetcher added to Issue Management.
+- [ADDED] Zenhub workspaces fetcher added to Issue Management.
+
 # [0.6.2](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.6.2)
 
 - [ADDED] Folder hierarchy for Permissions related fetchers, checks, and harvest reports added.

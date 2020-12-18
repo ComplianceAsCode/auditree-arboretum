@@ -2,8 +2,7 @@
 
 The fetchers and checks contained within this `object_storage` category folder are
 common tests that can be configured and executed for the purpose of generating
-compliance reports and notifications using the [auditree-framework][].  They
-validate the configuration and ensure smooth execution of an auditree instance.
+compliance reports and notifications using the [auditree-framework][].
 See [auditree-framework documentation][] for more details.
 
 These tests are normally executed by a CI/CD system like
