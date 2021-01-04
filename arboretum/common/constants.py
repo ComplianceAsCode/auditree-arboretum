@@ -35,3 +35,9 @@ IGNORE_REPO_METADATA = {
 
 # Evidence locker metadata datetime format
 LOCKER_DTTM_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
+
+# Github host URL
+GH_HOST_URL = 'https://github.com'
+
+# Zenhub public API
+ZH_API_ROOT = 'https://api.zenhub.com'

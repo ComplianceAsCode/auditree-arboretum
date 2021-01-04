@@ -25,6 +25,37 @@
         }
       }
     },
+    "issue_mgmt": {
+      "github": [
+        {
+          "repo": "foo-owner/foo-repo",
+          "states": ["open", "closed"],
+          "labels": {
+            "equals": ["label-one", "label-two"],
+            "contains": ["label-three"],
+            "startswith": ["label-four"],
+            "endswith": ["label-five"]
+          }
+        },
+        {
+          "host": "https://github.my_org.com",
+          "repo": "bar-owner/bar-repo",
+          "search": "is:open is:closed in:title \"my issue title\""
+        }
+      ],
+      "zenhub": [
+        {
+          "github_repo": "foo-owner/foo-repo",
+          "workspaces": ["My super cool foo workspace"]
+        },
+        {
+          "github_host": "https://github.my_org.com",
+          "github_repo": "bar-owner/bar-repo",
+          "api_root": "https://zenhub.my_org.com",
+          "workspaces": ["My super cool bar workspace", "Some other workspace"]
+        }
+      ]
+    },
     "ibm_cloud": {
       "accounts": ["my_ic_account_one", "my_ic_account_two"]
     }
