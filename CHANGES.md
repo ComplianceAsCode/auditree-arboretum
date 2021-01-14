@@ -1,3 +1,9 @@
+# [0.8.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.0)
+
+- [ADDED] IBM Cloud Databases list fetcher added.
+- [ADDED] IBM Cloud Databases backups fetcher added.
+- [ADDED] Folder hierarchy for IBM Cloud Databases fetchers, checks, and harvest reports added.
+
 # [0.7.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.7.0)
 
 - [ADDED] Folder hierarchy for Issue Management related fetchers, checks, and harvest reports added.

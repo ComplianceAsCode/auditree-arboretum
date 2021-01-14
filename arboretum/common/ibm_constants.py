@@ -22,3 +22,9 @@ IAM_API_KEY_GRANT_TYPE = 'urn:ibm:params:oauth:grant-type:apikey'
 
 # IBM Cloud containers API base URL
 IC_CONTAINERS_BASE_URL = 'https://containers.cloud.ibm.com'
+
+# IBM Cloud Resource controller base URL
+RESOURCE_CONTROLLER_BASE_URL = 'https://resource-controller.cloud.ibm.com'
+
+# formattable string for IBM Cloud Databases url per region
+DB_API_URL = 'https://api.{}.databases.cloud.ibm.com'
