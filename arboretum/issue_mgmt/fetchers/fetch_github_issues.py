@@ -67,7 +67,7 @@ class GithubIssuesFetcher(ComplianceFetcher):
         if 'search' in config.keys():
             return [f'{base} {config["search"]}']
         searches = []
-        for state in config.get('state', ['open']):
+        for state in config.get('states', ['open']):
             base += f' is:{state}'
         for label in self._get_labels(config, host):
             searches.append(f'{base} label:"{label}"')
