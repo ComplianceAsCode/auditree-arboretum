@@ -1,3 +1,7 @@
+# [0.8.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.0)
+
+- [ADDED] GitHub org collaborators fetcher added to `Permissions`.
+
 # [0.7.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.7.1)
 
 - [FIXED] Github issues fetcher now uses `states` option matching the README writeup.
