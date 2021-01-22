@@ -41,3 +41,6 @@ GH_HOST_URL = 'https://github.com'
 
 # Zenhub public API
 ZH_API_ROOT = 'https://api.zenhub.com'
+
+# Default affiliation type to fetch github repo collaborators
+GH_ALL_COLLABORATORS = ['all']

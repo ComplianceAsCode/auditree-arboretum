@@ -25,6 +25,20 @@
         }
       }
     },
+    "permissions": {
+      "org_integrity": {
+        "orgs": [
+          {
+            "url": "https://github.com/my-org-1"
+          },
+          {
+            "url": "https://github.my-company.com/my-org-2",
+            "collaborator_types": ["direct", "outside"],
+            "repos": ["repo1", "repo2"]
+          }
+        ]
+      }
+    },
     "issue_mgmt": {
       "github": [
         {
