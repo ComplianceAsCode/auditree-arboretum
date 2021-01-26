@@ -97,10 +97,27 @@ day.
 
 ## Checks
 
-Checks coming soon...
+### Organization Integrity (Repository Collaborators)
+
+* Class: [OrgCollaboratorsCheck][org-check]
+
+* Purpose: Ensure that `direct` collaborators do not exist in the repositories of the organizations
+
+* Behavior: Failures are issued when direct collaborators are found in the evidences collected by a valid fetcher. Supported fetchers:
+    * [GithubOrgCollaboratorsFetcher][gh-org-fetcher] fetcher
+
+* Evidence depended upon:
+    * The organization direct collaborators evidence for each organization/repositories specified in the fetcher's configuration
+if `direct` is included as a collaborators type in the configuration:
+      * `raw/permissions/<service>_direct_collaborators_<org_url_hash>.json`
+
+
+* Import statement:
+  `from arboretum.permissions.checks.test_org_direct_collaborators import OrgCollaboratorsCheck`
 
 [auditree-framework]: https://github.com/ComplianceAsCode/auditree-framework
 [auditree-framework documentation]: https://complianceascode.github.io/auditree-framework/
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
 [gh-org-fetcher]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/fetchers/github/fetch_org_collaborators.py
 [repository-permissions]: https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
+[org-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_direct_collaborators.py

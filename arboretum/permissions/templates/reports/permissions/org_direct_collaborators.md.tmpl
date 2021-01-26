@@ -1,0 +1,31 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+# {{ test.title }} for {{ now.strftime('%Y-%m-%d') }}
+
+This report displays direct collaborators in the repositories of the organizations.
+
+It issues failures when:
+
+- Users are found as direct collaborators in any repository of the organizations
+
+If a failure is not present for the above category of check this
+means that the check passed without issue.
+
+{% if (all_failures | length == 0) %}
+No issues found.
+{%- else -%}
+
+{% for category, failures in all_failures.items() %}
+
+{% if category == 'unexpected-org-collaborators' %}
+## Failure: Users found in organizations as direct repo collaborators
+
+| User                   | Organization              | Repository                |
+| ---------------------- | ------------------------- | ------------------------- |
+{%- for failure in failures %}
+{%- for user in failure['users'] %}
+| {{ user }} | {{ failure['org'] }} | {{ failure['repo'] }}
+{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
