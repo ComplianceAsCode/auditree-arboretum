@@ -1,45 +1,90 @@
-# 0.5.1
 
-- [IMPROVED] Updated template layout for Repository/Branch New Commits report.
-- [IMPROVED] Updated template layout for Repository/Branch/Filepath New Commits report.
+# [0.11.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
 
-# 0.5.0
+- [ADDED] Kubernetes resources fetcher added.
 
-- [NEW] Add repository/branch new commits check.
-- [NEW] Add repository/branch/filepath new commits check.
-- [NEW] Add Github repository/branch/filepath recent commits fetcher.
-- [IMPROVED] Github repository/branch recent commits fetcher now fetches since evidence last update.
+# [0.10.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.10.0)
+
+- [ADDED] Organization repository direct collaborators check added to `permissions`.
+
+# [0.9.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.9.0)
+
+- [ADDED] Kubernetes resources fetcher added.
+
+# [0.8.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.1)
+
+- [FIXED] Added missing `__init__.py` file to `permissions/fetchers/github` folder.
+
+# [0.8.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.0)
+
+- [ADDED] GitHub org collaborators fetcher added to `Permissions`.
+
+# [0.7.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.7.1)
+
+- [FIXED] Github issues fetcher now uses `states` option matching the README writeup.
+
+# [0.7.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.7.0)
+
+- [ADDED] Folder hierarchy for Issue Management related fetchers, checks, and harvest reports added.
+- [ADDED] Github issues fetcher added to Issue Management.
+- [ADDED] Zenhub workspaces fetcher added to Issue Management.
+
+# [0.6.2](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.6.2)
+
+- [ADDED] Folder hierarchy for Permissions related fetchers, checks, and harvest reports added.
+
+# [0.6.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.6.1)
+
+- [FIXED] Auditree Abandoned Evidence check now tracks all evidence used by check.
+- [FIXED] Auditree Locker Repo Integrity check now tracks all evidence used by check.
+- [FIXED] Auditree Python Packages check now tracks all evidence used by check.
+
+# [0.6.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.6.0)
+
+- [ADDED] IBM Cloud cluster list fetcher added.
+
+# [0.5.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.5.1)
+
+- [CHANGED] Template layout for Repository/Branch New Commits report updated.
+- [CHANGED] Template layout for Repository/Branch/Filepath New Commits report updated.
+
+# [0.5.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.5.0)
+
+- [ADDED] Repository/branch new commits check added.
+- [ADDED] Repository/branch/filepath new commits check added.
+- [ADDED] Github repository/branch/filepath recent commits fetcher added.
+- [CHANGED] Github repository/branch recent commits fetcher now fetches since evidence last update.
 - [CHANGED] Github repo recent commits evidence: TTL set to 2 days for locker, 1 day all other repos.
 - [FIXED] Links to the `auditree-framework` in README.md files are correct now.
 
-# 0.4.0
+# [0.4.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.4.0)
 
-- [NEW] Add Github repository metadata fetcher.
-- [NEW] Add Github repository recent commits fetcher.
-- [NEW] Add Github repository branch protection fetcher.
-- [NEW] Add Evidence locker repository integrity checks.
-- [NEW] Add Evidence locker recent commits integrity checks.
+- [ADDED] Github repository metadata fetcher added.
+- [ADDED] Github repository recent commits fetcher added.
+- [ADDED] Github repository branch protection fetcher added.
+- [ADDED] Evidence locker repository integrity checks added.
+- [ADDED] Evidence locker recent commits integrity checks added.
 
-# 0.3.0
+# [0.3.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.3.0)
 
-- [BREAKING] Move `auditree` fetchers and checks up to arboretum.auditree.
-- [NEW] Add folder hierarchy for Ansible fetchers, checks, and harvest reports.
-- [NEW] Add folder hierarchy for Chef fetchers, checks, and harvest reports.
-- [NEW] Add folder hierarchy for IBM Cloud fetchers, checks, and harvest reports.
-- [NEW] Add folder hierarchy for Kubernetes fetchers, checks, and harvest reports.
-- [NEW] Add folder hierarchy for Object Storage fetchers, checks, and harvest reports.
-- [NEW] Add folder hierarchy for Pager Duty fetchers, checks, and harvest reports.
-- [NEW] Add folder hierarchy for Splunk fetchers, checks, and harvest reports.
+- [BREAKING] Moved `auditree` fetchers and checks up to arboretum.auditree.
+- [ADDED] Folder hierarchy for Ansible fetchers, checks, and harvest reports added.
+- [ADDED] Folder hierarchy for Chef fetchers, checks, and harvest reports added.
+- [ADDED] Folder hierarchy for IBM Cloud fetchers, checks, and harvest reports added.
+- [ADDED] Folder hierarchy for Kubernetes fetchers, checks, and harvest reports added.
+- [ADDED] Folder hierarchy for Object Storage fetchers, checks, and harvest reports added.
+- [ADDED] Folder hierarchy for Pager Duty fetchers, checks, and harvest reports added.
+- [ADDED] Folder hierarchy for Splunk fetchers, checks, and harvest reports added.
 
-# 0.2.0
+# [0.2.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.2.0)
 
-- [NEW] Add Python packages fetcher and check.
+- [ADDED] Python packages fetcher and check added.
 
-# 0.1.0
+# [0.1.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.1.0)
 
-- [NEW] Add compliance configuration fetcher and check.
+- [ADDED] Compliance configuration fetcher and check added.
 
-# 0.0.1
+# [0.0.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.0.1)
 
-- [NEW] Add abandoned evidence fetcher and check.
-- [NEW] Make the Auditree Arboretum library public.
+- [ADDED] Abandoned evidence fetcher and check added.
+- [ADDED] Made the Auditree Arboretum library public.

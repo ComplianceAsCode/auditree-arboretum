@@ -1,0 +1,38 @@
+{
+  "iks": {
+    "demo2020": [
+      {
+        "name": "compliance-dev-city10",
+        "region": "region2",
+        "type": "kubernetes",
+        "resources": [
+          {
+            "apiVersion": "v1",
+            "data": {
+              "exit-code": "2",
+              "results": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <TestResult  xmlns=\"http://checklists.nist.gov/xccdf/1.2\"  id=\"xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis\"  start-time=\"2020-08-03T02:26:31+00:00\" end-time=\"2020-08-03T02:26:31+00:00\"  version=\"0.1.52\"  test-system=\"cpe:/a:redhat:openscap:1.3.3\">       <benchmark href=\"/content/ssg-ocp4-ds.xml\" id=\"xccdf_org.ssgproject.content_benchmark_OCP-4\"/> <title>OSCAP Scan Result</title> <profile idref=\"xccdf_org.ssgproject.content_profile_cis\"/> <target>kube-roksopensca-default-00000123.iks.abc</target> <target-id-ref system=\"http://scap.nist.gov/schema/asset-identification/1.1\" name=\"asset0\" href=\"\"/> <platform idref=\"cpe:/a:redhat:openshift_container_platform:4.1\"/> <platform idref=\"cpe:/a:machine\"/> <set-value idref=\"xccdf_org.ssgproject.content_value_ocp_data_root\">/kubernetes-api-resources</set-value> <set-value idref=\"xccdf_org.ssgproject.content_value_var_kube_authorization_mode\">Webhook</set-value> <set-value idref=\"xccdf_org.ssgproject.content_value_var_streaming_connection_timeouts\">5m</set-value> <rule-result idref=\"xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd\" time=\"2020-08-03T02:26:31+00:00\" severity=\"medium\" weight=\"1.000000\"> <result>notselected</result> <ident system=\"https://nvd.nist.gov/cce/index.cfm\">CCE-84209-6</ident> </rule-result> <rule-result idref=\"xccdf_org.ssgproject.content_rule_controller_use_service_account\" time=\"2020-08-03T02:26:31+00:00\" severity=\"medium\" weight=\"1.000000\"> <result>pass</result> <check system=\"http://oval.mitre.org/XMLSchema/oval-definitions-5\"> <check-content-ref name=\"oval:ssg-controller_use_service_account:def:1\" href=\"#oval0\"/> </check> </rule-result> <rule-result idref=\"xccdf_org.ssgproject.content_rule_controller_use_service_account\" time=\"2020-08-03T02:26:31+00:00\" severity=\"medium\" weight=\"1.000000\"> <result>pass</result> <check system=\"http://oval.mitre.org/XMLSchema/oval-definitions-5\"> <check-content-ref name=\"oval:ssg-controller_use_service_account:def:1\" href=\"#oval0\"/> </check> </rule-result> <rule-result idref=\"xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs\" time=\"2020-08-03T02:26:31+00:00\" severity=\"medium\" weight=\"1.000000\">   <result>fail</result> <check system=\"http://oval.mitre.org/XMLSchema/oval-definitions-5\"> <check-content-ref name=\"oval:ssg-controller_rotate_kubelet_server_certs:def:1\" href=\"#oval0\"/> </check> </rule-result> <rule-result idref=\"xccdf_org.ssgproject.content_rule_scc_limit_root_containers\" time=\"2020-08-03T02:26:31+00:00\" severity=\"medium\" weight=\"1.000000\">  <result>notchecked</result> <message severity=\"info\">No candidate or applicable check found.</message> </rule-result> </TestResult>"
+              },
+            "kind": "ConfigMap",
+            "metadata": {
+              "annotations": {
+                "compliance-remediations/processed": "",
+                "compliance.openshift.io/scan-error-msg": "",
+                "compliance.openshift.io/scan-result": "NON-COMPLIANT",
+                "openscap-scan-result/node": "10.321.456.999"
+              },
+              "creationTimestamp": "2020-08-03T02:26:38Z",
+              "labels": {
+                "compliance-scan": "ssg-ocp4-ds-cis"
+              },
+              "name": "ssg-ocp4-ds-cis-10.321.456.999-pod",
+              "namespace": "openshift-compliance",
+              "resourceVersion": "22693331",
+              "selfLink": "/api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-10.321.456.999-pod",
+              "uid": "dba4a77e-5eab-4df8-8258-64305f6a1768"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
