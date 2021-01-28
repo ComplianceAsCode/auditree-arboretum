@@ -1,6 +1,6 @@
 # [0.8.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.1)
 
-- [FIXED] Added missing `__init__.py` file to `Permissions/github` fetchers.
+- [FIXED] Added missing `__init__.py` file to `permissions/fetchers/github` folder.
 
 # [0.8.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.0)
 
