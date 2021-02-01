@@ -130,7 +130,7 @@ day.
 * Evidence depended upon:
     * The organization direct collaborators evidence for each organization/repositories specified in the fetcher's configuration
 if `direct` is included as a collaborators type in the configuration:
-      * Evidence file in the forn of `raw/permissions/<service>_direct_collaborators_<org_url_hash>.json`
+      * Evidence file in the form of `raw/permissions/<service>_direct_collaborators_<org_url_hash>.json`
 
 
 * Import statement:

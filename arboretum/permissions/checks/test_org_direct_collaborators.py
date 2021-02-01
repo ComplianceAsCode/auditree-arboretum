@@ -52,6 +52,8 @@ class OrgCollaboratorsCheck(ComplianceCheck):
         """Check that there are no direct collaborators in the org repos."""
         orgs = self.config.get('org.permissions.org_integrity.orgs')
         for org in orgs:
+            if 'direct' not in org.get('collaborator_types', []):
+                continue
             host, org_name = org['url'].rsplit('/', 1)
             service = 'gh'
             if 'gitlab' in host:
