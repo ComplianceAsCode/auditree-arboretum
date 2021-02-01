@@ -66,17 +66,32 @@ class OrgCollaboratorsCheck(ComplianceCheck):
                                      self.locker).content
             )
             for repo in repos:
-                all_users = repos[repo]
+                all_users = [u['login'] for u in repos[repo]]
                 if not all_users:
                     continue
-                self.add_failures(
-                    'unexpected-org-collaborators',
-                    {
-                        'org': org_name,
-                        'repo': repo,
-                        'users': [u['login'] for u in all_users]
-                    }
-                )
+                exceptions = [
+                    e['user']
+                    for e in org.get('exceptions', [])
+                    if ('repos' not in e or repo in e['repos'])
+                ]
+                failed_users = set(all_users) - set(exceptions)
+                warning_users = set(all_users).intersection(exceptions)
+                if failed_users:
+                    self.add_failures(
+                        'unexpected-org-collaborators', {
+                            'org': org_name,
+                            'repo': repo,
+                            'users': failed_users
+                        }
+                    )
+                if warning_users:
+                    self.add_warnings(
+                        'allowed-org-collaborators', {
+                            'org': org_name,
+                            'repo': repo,
+                            'users': warning_users
+                        }
+                    )
 
     def msg_org_direct_collaborators(self):
         """

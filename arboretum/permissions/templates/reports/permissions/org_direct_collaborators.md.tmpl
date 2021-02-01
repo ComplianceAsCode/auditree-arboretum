@@ -7,10 +7,15 @@ It issues failures when:
 
 - Users are found as direct collaborators in any repository of the organizations
 
-If a failure is not present for the above category of check this
+It issues warnings when:
+
+- Users are found as direct collaborators in any repository of the organizations
+but they are allowed as execptions
+
+If a failure or warning is not present for the above category of check this
 means that the check passed without issue.
 
-{% if (all_failures | length == 0) %}
+{% if (all_failures | length == 0) and (all_warnings | length == 0) %}
 No issues found.
 {%- else -%}
 
@@ -24,6 +29,20 @@ No issues found.
 {%- for failure in failures %}
 {%- for user in failure['users'] %}
 | {{ user }} | {{ failure['org'] }} | {{ failure['repo'] }}
+{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+
+{% for category, warnings in all_warnings.items() %}
+{% if category == 'allowed-org-collaborators' %}
+## Warning: Users found in organizations as direct repo collaborators but allowed as exceptions
+
+| User                   | Organization              | Repository                |
+| ---------------------- | ------------------------- | ------------------------- |
+{%- for warning in warnings %}
+{%- for user in warning['users'] %}
+| {{ user }} | {{ warning['org'] }} | {{ warning['repo'] }}
 {%- endfor -%}
 {%- endfor -%}
 {%- endif -%}

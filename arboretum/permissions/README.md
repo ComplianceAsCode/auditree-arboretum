@@ -106,10 +106,31 @@ day.
 * Behavior: Failures are issued when direct collaborators are found in the evidences collected by a valid fetcher. Supported fetchers:
     * [GithubOrgCollaboratorsFetcher][gh-org-fetcher] fetcher
 
+* Configuration elements:
+  * `org.permissions.org_integrity.orgs`
+     * Required
+     * List of dictionaries each containing organization configuration.
+        * `url`
+           * Required
+           * String in the form of `"https://github.com/my-org"` or `"https://github.<company>.com/my-org"`.
+           * Use to define the organization url to check.
+        * `exceptions`
+           * Optional
+           * List of dictionaries each containing exceptions to be ignored by the check.
+             * `user`
+                * Required
+                * String in the form of `"<userid>"`.
+                * Use to define the user to be treated as an exception.
+             * `repos`
+                * Optional
+                * List of strings in the form of `["my-repo", "my-other-repo"]`.
+                * Defaults to all repositories in the organization.
+                * Use to define the repos where the exception applies.
+
 * Evidence depended upon:
     * The organization direct collaborators evidence for each organization/repositories specified in the fetcher's configuration
 if `direct` is included as a collaborators type in the configuration:
-      * `raw/permissions/<service>_direct_collaborators_<org_url_hash>.json`
+      * Evidence file in the forn of `raw/permissions/<service>_direct_collaborators_<org_url_hash>.json`
 
 
 * Import statement:
