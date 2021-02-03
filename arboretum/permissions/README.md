@@ -139,6 +139,7 @@ direct collaborators matching the exceptions are found.
           "orgs": [
             {
               "url": "https://github.com/my-org-1",
+              "collaborator_types": ["direct"],
               "exceptions": [
                 {
                   "user": "userid_1"
