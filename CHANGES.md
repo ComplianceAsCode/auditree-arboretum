@@ -1,3 +1,7 @@
+# [0.9.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.9.0)
+
+- [ADDED] Kubernetes resources fetcher added.
+
 # [0.8.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.8.1)
 
 - [FIXED] Added missing `__init__.py` file to `permissions/fetchers/github` folder.

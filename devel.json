@@ -72,6 +72,17 @@
     },
     "ibm_cloud": {
       "accounts": ["my_ic_account_one", "my_ic_account_two"]
+    },
+    "kubernetes": {
+      "cluster_resources": {
+        "clusters": [
+          {
+            "label": "myaccount1",
+            "server": "https://myserver1:30000"
+          }
+        ],
+        "types": ["nodes", "pods", "apigroup.example.com/v1/mycustom"]
+      }
     }
   }
 }
