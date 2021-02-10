@@ -1,3 +1,9 @@
+# [0.11.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
+
+- [ADDED] Github org integrity fetcher added to `permissions`.
+- [ADDED] Github org integrity forks fetcher functionality added Github org integrity fetcher.
+- [CHANGED] Github org integrity collaborators fetcher functionality added to Github org integrity permissions fetcher.
+
 # [0.10.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.10.0)
 
 - [ADDED] Organization repository direct collaborators check added to `permissions`.
