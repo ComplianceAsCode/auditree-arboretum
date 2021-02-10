@@ -78,7 +78,7 @@ class OrgCollaboratorsCheck(ComplianceCheck):
                 exception_users = [
                     e['user']
                     for e in exceptions[org]
-                    if ('repos' not in e or repo in e['repos'])
+                    if 'repos' not in e.keys() or repo in e['repos']
                 ]
                 failed_users = set(all_users) - set(exception_users)
                 warning_users = set(all_users).intersection(exception_users)

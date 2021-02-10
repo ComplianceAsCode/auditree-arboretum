@@ -1,16 +1,25 @@
 {#- -*- mode:jinja2; coding: utf-8 -*- -#}
 # {{ test.title }} for {{ now.strftime('%Y-%m-%d') }}
 
-This report displays direct collaborators in the repositories of the organizations.
+This report flags direct collaborator access found in the organization repositories.
+
+Organizations and repositories checked:
+
+| Organization           | Repositories              |
+| ---------------------- | ------------------------- |
+{%- for org in test.config.get('org.permissions.org_integrity.orgs') -%}
+{%- if 'collaborator_types' in org.keys() and 'direct' in org['collaborator_types'] %}
+| {{ org['url'].rsplit('/', 1)[1] }} | {{ ', '.join(org['repos']) if 'repos' in org.keys() else 'All repositories' }} |
+{%- endif %}
+{%- endfor %}
 
 It issues failures when:
 
-- Users are found as direct collaborators in any repository of the organizations
+- Users have organization repository access as direct collaborators.
 
 It issues warnings when:
 
-- Users are found as direct collaborators in any repository of the organizations
-but they are allowed as execptions
+- Direct collaborators are found but are listed as exceptions in the configuration.
 
 If a failure or warning is not present for the above category of check this
 means that the check passed without issue.
@@ -28,7 +37,7 @@ No issues found.
 | ---------------------- | ------------------------- | ------------------------- |
 {%- for failure in failures %}
 {%- for user in failure['users'] %}
-| {{ user }} | {{ failure['org'] }} | {{ failure['repo'] }}
+| {{ user }} | {{ failure['org'] }} | {{ failure['repo'] }} |
 {%- endfor -%}
 {%- endfor -%}
 {%- endif -%}
@@ -42,7 +51,7 @@ No issues found.
 | ---------------------- | ------------------------- | ------------------------- |
 {%- for warning in warnings %}
 {%- for user in warning['users'] %}
-| {{ user }} | {{ warning['org'] }} | {{ warning['repo'] }}
+| {{ user }} | {{ warning['org'] }} | {{ warning['repo'] }} |
 {%- endfor -%}
 {%- endfor -%}
 {%- endif -%}

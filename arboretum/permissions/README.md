@@ -123,12 +123,12 @@ direct collaborators matching the exceptions are found.
                 * Required
                 * Github, Gitlab or Bitbucket user id (string). 
                 * Use to define the user to be treated as an exception.
-		* NOTE: Only Github is currently supported by this check. Gitlab and Bitbucket support coming soon...
+                * NOTE: Only Github is currently supported by this check. Gitlab and Bitbucket support coming soon...
              * `repos`
                 * Optional
                 * List of strings in the form of `["repo_a", "repo_b"]`.
                 * Defaults to all repositories in the organization.
-                * Use to define the repos where the exception applies.
+                * Use to limit the user exception to specific repositories in the organization.
 * Example configuration:
 
   ```json
