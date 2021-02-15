@@ -1,3 +1,7 @@
+# [0.10.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.10.0)
+
+- [ADDED] Organization repository direct collaborators check added to `permissions`.
+
 # [0.9.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.9.0)
 
 - [ADDED] Kubernetes resources fetcher added.

@@ -97,10 +97,73 @@ day.
 
 ## Checks
 
-Checks coming soon...
+### Organization Integrity (Repository Collaborators)
+
+* Class: [OrgCollaboratorsCheck][org-collaborators-check]
+* Purpose: Ensure that `direct` collaborators do not exist in the organization repositories.
+* Behavior: Collaborators are checked for every repository.
+A failure is generated when direct collaborators are found in a repository. This check can be optionally
+configured to accept exceptions, a warning instead of a failure is generated for those exceptions when
+direct collaborators matching the exceptions are found.
+* Evidence depended upon:
+    * `direct` collaborators found in organization repositories.
+      * `raw/permissions/<gh|gl|bb>_direct_collaborators_<org_url_hash>.json`
+      * NOTE: Only gh (Github) is currently supported by this check. Gitlab and Bitbucket support coming soon...
+* Configuration elements:
+  * `org.permissions.org_integrity.orgs`
+     * Required
+     * List of dictionaries:
+        * `url`
+           * Required
+           * Organization URL (string).
+        * `exceptions`
+           * Optional
+           * List of dictionaries:
+             * `user`
+                * Required
+                * Github, Gitlab or Bitbucket user id (string). 
+                * Use to define the user to be treated as an exception.
+                * NOTE: Only Github is currently supported by this check. Gitlab and Bitbucket support coming soon...
+             * `repos`
+                * Optional
+                * List of strings in the form of `["repo_a", "repo_b"]`.
+                * Defaults to all repositories in the organization.
+                * Use to limit the user exception to specific repositories in the organization.
+* Example configuration:
+
+  ```json
+  {
+    "org": {
+      "permissions": {
+        "org_integrity": {
+          "orgs": [
+            {
+              "url": "https://github.com/my-org-1",
+              "collaborator_types": ["direct"],
+              "exceptions": [
+                {
+                  "user": "userid_1"
+                },
+                {
+                  "user": "userid_2",
+                  "repos": ["repo_a", "repo_b"]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+  ```
+* Import statement:
+   ```python
+   from arboretum.permissions.checks.test_org_collaborators import OrgCollaboratorsCheck
+   ```
 
 [auditree-framework]: https://github.com/ComplianceAsCode/auditree-framework
 [auditree-framework documentation]: https://complianceascode.github.io/auditree-framework/
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
 [gh-org-fetcher]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/fetchers/github/fetch_org_collaborators.py
 [repository-permissions]: https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
+[org-collaborators-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_collaborators.py
