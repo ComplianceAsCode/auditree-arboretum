@@ -106,7 +106,7 @@ A failure is generated when direct collaborators are found in a repository. This
 configured to accept exceptions, a warning instead of a failure is generated for those exceptions when
 direct collaborators matching the exceptions are found.
 * Evidence depended upon:
-    * Recent `direct` collaborators found in organization repositories.
+    * `direct` collaborators found in organization repositories.
       * `raw/permissions/<gh|gl|bb>_direct_collaborators_<org_url_hash>.json`
       * NOTE: Only gh (Github) is currently supported by this check. Gitlab and Bitbucket support coming soon...
 * Configuration elements:
