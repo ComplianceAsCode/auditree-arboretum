@@ -21,7 +21,9 @@ to include the fetchers and checks from this library in your downstream project.
 * Class: [ClusterResourceFetcher][fetch-cluster-resource]
 * Purpose: Write the resources of **stand-alone** Kubernetes clusters to the
 evidence locker.  **NOTE:** Do not use this fetcher for managed clusters.
-Instead use the [IBM Cloud cluster list fetcher][ibm-cloud-cluster-list-fetcher].
+For IBM Cloud clusters, use the
+[IBM Cloud cluster list fetcher][ibm-cloud-cluster-list-fetcher] and the
+[IBM Cloud cluster resource fetcher][ibm-cloud-cluster-resource-fetcher].
 * Behavior: Retrieve stand-alone Kubernetes cluster resource data for the provided
 list of clusters.  TTL is set to 1 day.
 * Configuration elements:
@@ -120,4 +122,5 @@ Checks coming soon...
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
 [fetch-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/fetchers/fetch_cluster_resource.py
 [ibm-cloud-cluster-list-fetcher]: https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/ibm_cloud#cluster-list
+[ibm-cloud-cluster-resource-fetcher]: https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/ibm_cloud#cluster-resource
 [kube-rbac-docs]: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
