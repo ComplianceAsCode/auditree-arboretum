@@ -16,14 +16,11 @@ how to include the fetchers and checks from this library in your downstream proj
 
 ## Fetchers
 
-### Organization Integrity (Repository Collaborators)
+### Organization Integrity Permissions
 
-* Class: [GithubOrgCollaboratorsFetcher][gh-org-fetcher]
-* Purpose: Writes the details of collaborators in Github organizations to the evidence locker. This fetcher class is only meant for use with Github or Github Enterprise organizations.
-* Behavior: For each Github organization specified, an evidence file per collaborator type (affiliation) is stored in
-the locker containing collaborator details for the specified repositories in the organization. The default is to
-retrieve all collaborators by affiliation from all repositories in each specified Github organization.  TTL is set to 1
-day.
+* Class: [GithubOrgPermissionFetcher][fetch-org-permissions]
+* Purpose: Writes the details of collaborators and repository forks in Github organizations to the evidence locker. This fetcher class is only meant for use with Github or Github Enterprise organizations.
+* Behavior: For each Github organization specified, Github collaborator and Github fork evidence files per collaborator type (affiliation) are stored in the locker containing details for the specified repositories in the organization. The default is to retrieve all collaborators and all forks by affiliation from all repositories in each specified Github organization.  TTL is set to 1 day.
 * Configuration elements:
   * `org.permissions.org_integrity.orgs`
      * Required
@@ -36,7 +33,7 @@ day.
            * Optional
            * List of strings in the form of `["my-repo", "my-other-repo"]`.
            * Defaults to all repositories in the organization.
-           * Use if looking to filter collaborator evidence to a subset of repositories in the organization otherwise do not include.
+           * Use if looking to filter permissions evidence to a subset of repositories in the organization otherwise do not include.
         * `collaborator_types`
            * Optional
            * List of strings in the form of `["all", "direct", "outside"]`.
@@ -92,7 +89,7 @@ day.
 * Import statement:
 
   ```python
-  from arboretum.permissions.fetchers.github.fetch_org_collaborators import GithubOrgCollaboratorsFetcher
+  from arboretum.permissions.fetchers.github.fetch_org_permissions import GithubOrgPermissionFetcher
   ```
 
 ## Checks
@@ -164,6 +161,6 @@ direct collaborators matching the exceptions are found.
 [auditree-framework]: https://github.com/ComplianceAsCode/auditree-framework
 [auditree-framework documentation]: https://complianceascode.github.io/auditree-framework/
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
-[gh-org-fetcher]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/fetchers/github/fetch_org_collaborators.py
+[fetch-org-permissions]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/fetchers/github/fetch_org_permissions.py
 [repository-permissions]: https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 [org-collaborators-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_collaborators.py
