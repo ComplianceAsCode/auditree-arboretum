@@ -1,3 +1,7 @@
+# [0.11.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.1)
+
+- [FIXED] Renamed RepoMetadataEvidence `filtered_content` to `relevant_content`.
+
 # [0.11.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
 
 - [ADDED] Github org integrity fetcher added to `permissions`.
