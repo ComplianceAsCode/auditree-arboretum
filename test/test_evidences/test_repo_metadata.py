@@ -27,7 +27,7 @@ class RepoMetadataEvidenceTest(unittest.TestCase):
         """Ensure properties requiring content return None when no content."""
         evidence = RepoMetadataEvidence('gh_foo.json', 'bar')
         self.assertIsNone(evidence.repo_size)
-        self.assertIsNone(evidence.filtered_content)
+        self.assertIsNone(evidence.relevant_content)
 
     def test_gl_not_implemented(self):
         """Ensure NotImplementedError raised for Gitlab."""
@@ -55,10 +55,10 @@ class RepoMetadataEvidenceTest(unittest.TestCase):
         )
         self.assertEqual(evidence.repo_size, 12345)
 
-    def test_filtered_content(self):
+    def test_relevant_content(self):
         """Ensure all IGNORED_REPO_METADATA fields are parsed out."""
         evidence = RepoMetadataEvidence('gh_foo.json', 'bar')
         evidence.set_content(
             open('./test/fixtures/gh_repo_metadata.json').read()
         )
-        self.assertEqual(json.loads(evidence.filtered_content), {'foo': 'bar'})
+        self.assertEqual(json.loads(evidence.relevant_content), {'foo': 'bar'})

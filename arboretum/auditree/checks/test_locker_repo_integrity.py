@@ -109,8 +109,8 @@ class LockerRepoIntegrityCheck(ComplianceCheck):
                         )
                     difference = ''.join(
                         context_diff(
-                            prev.filtered_content.splitlines(keepends=True),
-                            current.filtered_content.splitlines(keepends=True),
+                            prev.relevant_content.splitlines(keepends=True),
+                            current.relevant_content.splitlines(keepends=True),
                             path,
                             path,
                             previous_dt.strftime('%b %d, %Y'),
