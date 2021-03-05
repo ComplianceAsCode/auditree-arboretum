@@ -72,17 +72,6 @@ class ClusterResourceFetcher(ComplianceFetcher):
                     name, path=self.tempdir.name
                 )
                 ca_cert_filepath = os.path.join(self.tempdir.name, name)
-        if cluster_token is None:
-            raise RuntimeError(
-                'Failed to extract token from the config'
-                f'file for cluster "{cluster["name"]}".'
-            )
-        if ca_cert_filepath is None:
-            raise RuntimeError(
-                'Failed to extract CA certificate file '
-                '(*.pem) from the config file '
-                f'for cluster "{cluster["name"]}".'
-            )
         return cluster_token, ca_cert_filepath
 
     def _get_roks_credentials(self, cluster, api_key):
@@ -107,11 +96,6 @@ class ClusterResourceFetcher(ComplianceFetcher):
         keyword = 'access_token='
         start = location.find(keyword)
         end = location.find('&', start)
-        if start < 0 or end < 0:
-            raise RuntimeError(
-                'Failed to extract access token '
-                f'for cluster "{cluster["name"]}"'
-            )
         cluster_token = location[start + len(keyword):end]
         s.headers.update = ({'X-CSRF-Token': None})
 
@@ -155,11 +139,6 @@ class ClusterResourceFetcher(ComplianceFetcher):
                 elif cluster['type'] == 'openshift':
                     cluster_token, ca_cert = self._get_roks_credentials(
                         cluster, api_key)
-                else:
-                    raise RuntimeError(
-                        f'Cluster "{cluster["name"]}" is '
-                        f'unsupported cluster type: {cluster["type"]}'
-                    )
                 self.session(cluster['serverURL'], **headers)
                 cluster['resources'] = get_cluster_resources(
                     self.session(),
