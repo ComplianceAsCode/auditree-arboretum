@@ -59,6 +59,11 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         cls.tempdir.cleanup()
 
     def _get_iks_credentials(self, cluster, cluster_configs):
+        """Get credentials for an IKS cluster.
+
+        This function implements the procedure described in
+        https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
+        """
         for name in cluster_configs[cluster['name']].namelist():
             p = pathlib.Path(name)
             if p.name.startswith('kube-config'):
@@ -75,6 +80,11 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         return cluster_token, ca_cert_filepath
 
     def _get_roks_credentials(self, cluster, api_key):
+        """Get credentials for a ROKS cluster.
+
+        This function implements the procedure described in
+        https://cloud.ibm.com/docs/openshift?topic=openshift-access_cluster#access_automation
+        """
         s = self.session(cluster['serverURL'])
         oauth_path = '/.well-known/oauth-authorization-server'
         resp = s.get(oauth_path)
