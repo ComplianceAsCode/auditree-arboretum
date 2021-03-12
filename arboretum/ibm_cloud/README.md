@@ -117,6 +117,6 @@ Checks coming soon...
 [ibm-cloud-api]: https://containers.cloud.ibm.com/
 [ibm-cloud-gen-api-console]: https://cloud.ibm.com/docs/account?topic=account-userapikey#create_user_key
 [fetch-ibm-cloud-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/ibm_cloud/fetchers/fetch_cluster_resource.py
-[fetch-kube-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/fetchers/fetch_cluster_resource.py
+[fetch-kube-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/kubernetes#cluster-resource
 [ibm-cloud-download-config]: https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
 [ibm-cloud-roks-oauth]: https://cloud.ibm.com/docs/openshift?topic=openshift-access_cluster#access_automation
