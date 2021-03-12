@@ -64,7 +64,7 @@ to include the fetchers and checks from this library in your downstream project.
 
 ### Cluster Resource
 
-* Class: [ClusterResourceFetcher][fetch-ibm-cloud-cluster-resource]
+* Class: [ICClusterResourceFetcher][fetch-ibm-cloud-cluster-resource]
 * Purpose: Write the resources of IBM Cloud Kubernetes clusters to the evidence locker.
 * Behavior: Retrieve the resources of IBM Cloud Kubernetes clusters listed by [cluster list fetcher][fetch-cluster-list]. For IBM Cloud Kubernetes Service (IKS) clusters, the fetcher [downloads cluster config via IBM Cloud API][ibm-cloud-download-config] and extract the access token from the config. For IBM Cloud Red Hat Kubernetes Service (ROKS) clusters, the fetcher retrieves the access token using [the OAUTH server][ibm-cloud-roks-oauth] of the cluster. TTL is set to 1 day.
 
@@ -102,7 +102,7 @@ to include the fetchers and checks from this library in your downstream project.
 * Import statement:
 
    ```python
-   from arboretum.ibm_cloud.fetchers.fetch_cluster_resource import ClusterResourceFetcher
+   from arboretum.ibm_cloud.fetchers.fetch_cluster_resource import ICClusterResourceFetcher
    ```
 
 ## Checks

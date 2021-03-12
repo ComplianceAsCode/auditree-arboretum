@@ -31,7 +31,7 @@ from compliance.fetch import ComplianceFetcher
 import yaml
 
 
-class ClusterResourceFetcher(ComplianceFetcher):
+class ICClusterResourceFetcher(ComplianceFetcher):
     """Fetch resources of IBM Cloud Kubernetes clusters."""
 
     @classmethod
