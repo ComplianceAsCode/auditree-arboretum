@@ -98,7 +98,22 @@ to include the fetchers and checks from this library in your downstream project.
   ```
 
 * Required credentials:
-  * `ibm_cloud` credentials with read/view permissions are needed for this fetcher to successfully retrieve the evidence.  See `Required credentials` of the [cluster list fetcher][fetch-cluster-list].
+  * `ibm_cloud` credentials with read/view permissions are needed for this fetcher to successfully retrieve the evidence.
+    * `XXX_api_key`: API key string for account `XXX`.
+    * Example credential file entry:
+
+      ```ini
+      [ibm_cloud]
+      acct_a_api_key=your-ibm-cloud-api-key-for-acct-a
+      acct_b_api_key=your-ibm-cloud-api-key-for-acct-b
+      ```
+
+    * NOTE: API keys can be generated using the [IBM Cloud CLI][ic-api-key-create] or [IBM Cloud Console][ibm-cloud-gen-api-console]. Example to create an API key with IBM Cloud CLI is:
+
+      ```sh
+      ibmcloud iam api-key-create your-iks-api-key-for-acct-x
+      ```
+
 * Import statement:
 
    ```python
