@@ -25,7 +25,9 @@ from arboretum.common.iam_ibm_utils import get_tokens
 from arboretum.common.kube_constants import RESOURCE_TYPES_DEFAULT
 from arboretum.common.kube_utils import get_cluster_resources
 
-from compliance.evidence import DAY, RawEvidence, evidences, store_raw_evidence
+from compliance.evidence import (
+    DAY, RawEvidence, get_evidence_dependency, store_raw_evidence
+)
 from compliance.fetch import ComplianceFetcher
 
 import yaml
@@ -114,8 +116,10 @@ class ICClusterResourceFetcher(ComplianceFetcher):
     @store_raw_evidence('ibm_cloud/cluster_resources.json')
     def fetch_cluster_resource(self):
         """Fetch cluster resources."""
-        with evidences(self.locker, 'raw/ibm_cloud/cluster_list.json') as ev:
-            cluster_list = json.loads(ev.content)
+        cluster_list_evidence = get_evidence_dependency(
+            'raw/ibm_cloud/cluster_list.json', self.locker
+        )
+        cluster_list = json.loads(cluster_list_evidence.content)
         resources = {}
         for account in cluster_list:
             api_key = getattr(
