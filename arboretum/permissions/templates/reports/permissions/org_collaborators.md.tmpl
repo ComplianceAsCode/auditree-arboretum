@@ -1,0 +1,59 @@
+{#- -*- mode:jinja2; coding: utf-8 -*- -#}
+# {{ test.title }} for {{ now.strftime('%Y-%m-%d') }}
+
+This report flags direct collaborator access found in the organization repositories.
+
+Organizations and repositories checked:
+
+| Organization           | Repositories              |
+| ---------------------- | ------------------------- |
+{%- for org in test.config.get('org.permissions.org_integrity.orgs') -%}
+{%- if 'collaborator_types' in org.keys() and 'direct' in org['collaborator_types'] %}
+| {{ org['url'].rsplit('/', 1)[1] }} | {{ ', '.join(org['repos']) if 'repos' in org.keys() else 'All repositories' }} |
+{%- endif %}
+{%- endfor %}
+
+It issues failures when:
+
+- Users have organization repository access as direct collaborators.
+
+It issues warnings when:
+
+- Direct collaborators are found but are listed as exceptions in the configuration.
+
+If a failure or warning is not present for the above category of check this
+means that the check passed without issue.
+
+{% if (all_failures | length == 0) and (all_warnings | length == 0) %}
+No issues found.
+{%- else -%}
+
+{% for category, failures in all_failures.items() %}
+
+{% if category == 'unexpected-org-collaborators' %}
+## Failure: Users found in organizations as direct repo collaborators
+
+| User                   | Organization              | Repository                |
+| ---------------------- | ------------------------- | ------------------------- |
+{%- for failure in failures %}
+{%- for user in failure['users'] %}
+| {{ user }} | {{ failure['org'] }} | {{ failure['repo'] }} |
+{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+
+{% for category, warnings in all_warnings.items() %}
+{% if category == 'allowed-org-collaborators' %}
+## Warning: Users found in organizations as direct repo collaborators but allowed as exceptions
+
+| User                   | Organization              | Repository                |
+| ---------------------- | ------------------------- | ------------------------- |
+{%- for warning in warnings %}
+{%- for user in warning['users'] %}
+| {{ user }} | {{ warning['org'] }} | {{ warning['repo'] }} |
+{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
