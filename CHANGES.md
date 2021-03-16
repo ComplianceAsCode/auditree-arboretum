@@ -1,7 +1,7 @@
 
 # [0.11.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
 
-- [ADDED] Kubernetes resources fetcher added.
+- [ADDED] Compliance OSCAL Observations harvest report added.
 
 # [0.10.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.10.0)
 

@@ -41,8 +41,8 @@ Checks coming soon...
    harvest reports arboretum --detail compliance_oscal_observations
    ```
 
-[compliance-oscal-observations]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/reports/compliance_oscal_observations.py
-[fetch-cluster-resource]: https://github.ibm.com/auditree/auditree-central/blob/master/auditree_central/provider/iks/fetchers/fetch_cluster_resource.py
+[compliance-oscal-observations]: reports/compliance_oscal_observations.py
+[fetch-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/fetchers/fetch_cluster_resource.py
 [assessment-results]: https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/
 [xccdf]: https://csrc.nist.gov/projects/security-content-automation-protocol/specifications/xccdf
 [compliance-operator]: https://github.com/openshift/compliance-operator/blob/master/README.md

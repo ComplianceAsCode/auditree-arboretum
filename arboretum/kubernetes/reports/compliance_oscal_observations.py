@@ -1,5 +1,5 @@
 # -*- mode:python; coding:utf-8 -*-
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-The compliance OSCAL observations report.
+The Compliance OSCAL Observations report.
 
-A json report comprising NIST OSCAL Assessment Results Observations generated
-by processing compliance operator fetcher cluster_resource evidence. The
-embedded XML within the cluster_resource evidence is transformed to produce the
-report. If an optional oscal_metadata file is specified, then the report is
+A json report containing NIST OSCAL Assessment Results Observations generated
+by processing Kubernetes stand-alone cluster resources evidence. The
+XML within the cluster resources evidence is transformed to produce the JSON
+report. If an optional OSCAL metadata file is specified, then the report is
 enhanced accordingly.
 
 Provide the "start" and "end" optional configuration (--config) parameters
@@ -48,12 +48,13 @@ Example usages:
 oscal_metadata.yaml:
 --------------------
 
-The oscal_metadata.yaml file comprises one or more mappings. Below is shown the
+The oscal_metadata.yaml file contains one or more mappings. Below is shown the
 format of a single mapping. The items in angle brackets are to be replaced with
 desired values for augmenting the produced OSCAL.
 
-The mapping whose <name> matches the [metadata][name] in the evidence for the
-corresponding embedded XML, if any, is used for augmenting the produced OSCAL.
+The mapping whose <name> matches the [metadata][name] in the cluster resources
+evidence for the corresponding XML is used for augmenting the produced OSCAL.
+If no match is found, no augmentation occurs.
 
 <name>:
    namespace: <namespace>
