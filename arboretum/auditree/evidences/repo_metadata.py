@@ -39,18 +39,18 @@ class RepoMetadataEvidence(RawEvidence):
             return self._size
 
     @property
-    def filtered_content(self):
+    def relevant_content(self):
         """Provide evidence content minus the ignored fields as JSON."""
         if self.content:
-            if not hasattr(self, '_filtered_content'):
+            if not hasattr(self, '_relevant_content'):
                 metadata = json.loads(self.content)
                 for field in IGNORE_REPO_METADATA[self.name[:2]]:
                     try:
                         metadata.pop(field)
                     except KeyError:
                         pass
-                self._filtered_content = str(format_json(metadata))
-            return self._filtered_content
+                self._relevant_content = str(format_json(metadata))
+            return self._relevant_content
 
     def _get_gh_repo_size(self):
         return json.loads(self.content)['size']

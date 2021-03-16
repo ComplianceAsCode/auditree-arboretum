@@ -1,6 +1,20 @@
-# [0.11.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
+# [0.13.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
 
 - [ADDED] Kubernetes resources report added.
+
+# [0.12.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.12.0)
+
+- [ADDED] Github org integrity teams fetcher functionality added to Github org integrity permissions fetcher.
+
+# [0.11.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.1)
+
+- [FIXED] Renamed RepoMetadataEvidence `filtered_content` to `relevant_content`.
+
+# [0.11.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.11.0)
+
+- [ADDED] Github org integrity fetcher added to `permissions`.
+- [ADDED] Github org integrity forks fetcher functionality added to Github org integrity permissions fetcher.
+- [CHANGED] Github org integrity collaborators fetcher functionality added to Github org integrity permissions fetcher.
 
 # [0.10.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.10.0)
 
