@@ -14,4 +14,4 @@
 # limitations under the License.
 """Arboretum - Checking your compliance & security posture, continuously."""
 
-__version__ = '0.12.0'
+__version__ = '0.13.0'
