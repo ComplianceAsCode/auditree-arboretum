@@ -19,8 +19,8 @@ how to include the fetchers and checks from this library in your downstream proj
 ### Organization Integrity Permissions
 
 * Class: [GithubOrgPermissionFetcher][fetch-org-permissions]
-* Purpose: Writes the details of collaborators and repository forks in Github organizations to the evidence locker. This fetcher class is only meant for use with Github or Github Enterprise organizations.
-* Behavior: For each Github organization specified, Github collaborator and Github fork evidence files per collaborator type (affiliation) are stored in the locker containing details for the specified repositories in the organization. The default is to retrieve all collaborators and all forks by affiliation from all repositories in each specified Github organization.  TTL is set to 1 day.
+* Purpose: Writes the details of teams, collaborators and repository forks in Github organizations to the evidence locker. This fetcher class is only meant for use with Github or Github Enterprise organizations.
+* Behavior: For each Github organization specified Github fork, Github team, and Github collaborator evidence files are stored in the locker containing details for the specified repositories in the organization. For Github collaborators the evidence stored can be limited to specified affiliation. The default is to retrieve all teams, forks and collaborators by affiliation from all repositories in each specified Github organization. TTL is set to 1 day.
 * Configuration elements:
   * `org.permissions.org_integrity.orgs`
      * Required
