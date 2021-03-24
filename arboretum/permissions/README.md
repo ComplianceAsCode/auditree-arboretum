@@ -94,6 +94,55 @@ how to include the fetchers and checks from this library in your downstream proj
 
 ## Checks
 
+### Organization Integrity (Repository Permissions)
+
+* Class: [GithubOrgPermissionsCheck][org-permissions-check]
+* Purpose: Control the access to Github repositories containing source code.
+* Behavior: Collaborators, fork and teams are checked for every repository.
+Each direct collaborator found in a repo will be considered a failure. Each fork found in a repo will be considered a warning. As additional information the permissions check also lists the organization teams as successes.
+* Evidence depended upon:
+    * `direct` collaborators found in organization repositories.
+      * `raw/permissions/gh_direct_collaborators_<org_url_hash>.json`
+      * Gathered by the permissions GithubOrgPermissionFetcher
+    * `outside` collaborators not found within the organizations.
+      * `raw/permissions/gh_outside_collaborators_<org_url_hash>.json`
+      * Gathered by the permissions GithubOrgPermissionFetcher
+    * forks found in organization repositories.
+      * `raw/permissions/gh_forks_<org_url_hash>.json`
+      * Gathered by the permissions GithubOrgPermissionFetcher
+    * teams found in organization repositories.
+      * `raw/permissions/gh_teams_<org_url_hash>.json`
+      * Gathered by the permissions GithubOrgPermissionFetcher
+* Configuration elements:
+  * `org.permissions.org_integrity.orgs`
+     * Required
+     * List of dictionaries:
+        * `url`
+           * Required
+           * Organization URL (string).
+          
+* Example configuration:
+
+  ```json
+  {
+    "org": {
+      "permissions": {
+        "org_integrity": {
+          "orgs": [
+            {
+              "url": "https://github.com/my-org-1"
+            }
+          ]
+        }
+      }
+    }
+  }
+  ```
+* Import statement:
+   ```python
+   from arboretum.permissions.checks.test_org_permissions import GithubOrgPermissionsCheck
+   ```
+
 ### Organization Integrity (Repository Collaborators)
 
 * Class: [OrgCollaboratorsCheck][org-collaborators-check]
@@ -164,3 +213,4 @@ direct collaborators matching the exceptions are found.
 [fetch-org-permissions]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/fetchers/github/fetch_org_permissions.py
 [repository-permissions]: https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 [org-collaborators-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_collaborators.py
+[org-permissions-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_permissions.py
