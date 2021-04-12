@@ -17,6 +17,7 @@
 from compliance.check import ComplianceCheck
 from compliance.evidence import DAY, ReportEvidence, evidences
 from compliance.utils.data_parse import get_sha256_hash
+from compliance.utils.exceptions import EvidenceNotFoundError
 
 
 class OrgCollaboratorsCheck(ComplianceCheck):
@@ -66,6 +67,10 @@ class OrgCollaboratorsCheck(ComplianceCheck):
             path = f'raw/permissions/{filename}'
             evidence_paths[org_name] = path
             exceptions[org_name] = org.get('exceptions', [])
+        if not evidence_paths:
+            raise EvidenceNotFoundError(
+                'No direct collaborator evidence found!'
+            )
         with evidences(self, evidence_paths) as raws:
             self._generate_results(raws, exceptions)
 

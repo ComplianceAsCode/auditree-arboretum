@@ -1,3 +1,7 @@
+# [0.12.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.12.1)
+
+- [FIXED] Org repo direct collaborators check now ERRORS when no direct collaborator evidence is found.
+
 # [0.12.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.12.0)
 
 - [ADDED] Github org integrity teams fetcher functionality added to Github org integrity permissions fetcher.

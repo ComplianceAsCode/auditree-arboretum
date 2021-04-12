@@ -101,7 +101,8 @@ how to include the fetchers and checks from this library in your downstream proj
 * Behavior: Collaborators are checked for every repository.
 A failure is generated when direct collaborators are found in a repository. This check can be optionally
 configured to accept exceptions, a warning instead of a failure is generated for those exceptions when
-direct collaborators matching the exceptions are found.
+direct collaborators matching the exceptions are found.  If no `"direct"` collaborator type evidence is
+found then the check will ERROR.
 * Evidence depended upon:
     * `direct` collaborators found in organization repositories.
       * `raw/permissions/<gh|gl|bb>_direct_collaborators_<org_url_hash>.json`
@@ -118,7 +119,7 @@ direct collaborators matching the exceptions are found.
            * List of dictionaries:
              * `user`
                 * Required
-                * Github, Gitlab or Bitbucket user id (string). 
+                * Github, Gitlab or Bitbucket user id (string).
                 * Use to define the user to be treated as an exception.
                 * NOTE: Only Github is currently supported by this check. Gitlab and Bitbucket support coming soon...
              * `repos`
@@ -126,6 +127,11 @@ direct collaborators matching the exceptions are found.
                 * List of strings in the form of `["repo_a", "repo_b"]`.
                 * Defaults to all repositories in the organization.
                 * Use to limit the user exception to specific repositories in the organization.
+        * `collaborator_types`
+           * Optional
+           * List of strings in the form of `["all", "direct", "outside"]`.
+           * Valid list element values are `"all"`, `"direct"`, `"outside"`.
+           * List must include `"direct"` in order for check to look for direct collaborator evidence.
 * Example configuration:
 
   ```json

@@ -1,37 +1,10 @@
 {
-  "arboretum.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  },
-  "arboretum.auditree.checks.test_compliance_config.ComplianceConfigCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  },
-  "arboretum.auditree.checks.test_python_packages.PythonPackageCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  },
-  "arboretum.auditree.checks.test_locker_repo_integrity.LockerRepoIntegrityCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  },
-  "arboretum.auditree.checks.test_locker_commit_integrity.LockerCommitIntegrityCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  },
-  "arboretum.auditree.checks.test_repo_branch_commits.RepoBranchNewCommitsCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  },
-  "arboretum.auditree.checks.test_filepath_commits.FilepathNewCommitsCheck": {
-    "auditree_evidence": {
-      "auditree_control": ["arboretum.auditree"]
-    }
-  }
+  "arboretum.auditree.checks.test_abandoned_evidence.AbandonedEvidenceCheck": ["arboretum.auditree"],
+  "arboretum.auditree.checks.test_compliance_config.ComplianceConfigCheck": ["arboretum.auditree"],
+  "arboretum.auditree.checks.test_python_packages.PythonPackageCheck": ["arboretum.auditree"],
+  "arboretum.auditree.checks.test_locker_repo_integrity.LockerRepoIntegrityCheck": ["arboretum.auditree"],
+  "arboretum.auditree.checks.test_locker_commit_integrity.LockerCommitIntegrityCheck": ["arboretum.auditree"],
+  "arboretum.auditree.checks.test_repo_branch_commits.RepoBranchNewCommitsCheck": ["arboretum.auditree"],
+  "arboretum.auditree.checks.test_filepath_commits.FilepathNewCommitsCheck": ["arboretum.auditree"],
+  "arboretum.permissions.checks.test_org_collaborators.OrgCollaboratorsCheck": ["arboretum.permissions"]
 }
