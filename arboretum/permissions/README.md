@@ -96,23 +96,20 @@ how to include the fetchers and checks from this library in your downstream proj
 
 ### Organization Integrity (Repository Permissions)
 
-* Class: [GithubOrgPermissionsCheck][org-permissions-check]
-* Purpose: Control the access to Github repositories containing source code.
+* Class: [OrgPermissionsCheck][org-permissions-check]
+* Purpose: Validate the access to repositories.
 * Behavior: Collaborators, fork and teams are checked for every repository.
-Each direct collaborator found in a repo will be considered a failure. Each fork found in a repo will be considered a warning. As additional information the permissions check also lists the organization teams as successes.
+Each direct collaborator found in a repo will be considered a failure. Each fork found in a repo will be considered a warning.
 * Evidence depended upon:
     * `direct` collaborators found in organization repositories.
       * `raw/permissions/gh_direct_collaborators_<org_url_hash>.json`
-      * Gathered by the permissions GithubOrgPermissionFetcher
-    * `outside` collaborators not found within the organizations.
-      * `raw/permissions/gh_outside_collaborators_<org_url_hash>.json`
-      * Gathered by the permissions GithubOrgPermissionFetcher
+      * Gathered by the permissions OrgPermissionFetcher
     * forks found in organization repositories.
       * `raw/permissions/gh_forks_<org_url_hash>.json`
-      * Gathered by the permissions GithubOrgPermissionFetcher
+      * Gathered by the permissions OrgPermissionFetcher
     * teams found in organization repositories.
       * `raw/permissions/gh_teams_<org_url_hash>.json`
-      * Gathered by the permissions GithubOrgPermissionFetcher
+      * Gathered by the permissions OrgPermissionFetcher
 * Configuration elements:
   * `org.permissions.org_integrity.orgs`
      * Required
@@ -138,9 +135,10 @@ Each direct collaborator found in a repo will be considered a failure. Each fork
     }
   }
   ```
+  
 * Import statement:
    ```python
-   from arboretum.permissions.checks.test_org_permissions import GithubOrgPermissionsCheck
+   from arboretum.permissions.checks.test_org_permissions import OrgPermissionsCheck
    ```
 
 ### Organization Integrity (Repository Collaborators)
