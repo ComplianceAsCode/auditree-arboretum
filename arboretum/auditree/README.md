@@ -432,6 +432,50 @@ execution.  The default threshold is 30 days beyond the time to live (TTL) setti
    from arboretum.auditree.checks.test_abandoned_evidence import AbandonedEvidenceCheck
    ```
 
+### Empty Evidence
+
+* Class: [EmptyEvidenceCheck][check-empty-evidence]
+* Purpose: For every piece of evidence that has no content a failure is generated
+and reported.
+* Behavior: Performs a check that validates the content of evidence is not empty.
+Empty evidence content is based on an evidence object's `is_empty` property which
+can vary across evidences.  But the default `is_empty` criteria is as follows:
+   * Content is all whitespace.
+   * In the case of JSON, content is an empty dictionary or list (`{}`, `[]`).
+* Evidence depended upon:
+   * This check does not depend on any evidence specifically.  It acts on **all**
+   evidence contained within an evidence locker.
+* Configuration elements:
+   * `org.auditree.empty_evidence.exceptions`
+      * Optional
+      * List where the list elements are the relative evidence locker paths to
+      evidence files.
+      * Use if looking to exclude specific evidence files from being flagged as
+      failures.  All "exceptions" will still appear on the report and will be
+      treated as warnings rather than failures.
+* Example (optional) configuration:
+
+   ```json
+   {
+     "org": {
+       "auditree": {
+         "empty_evidence": {
+           "exceptions": [
+             "raw/path/to-evidence.json",
+             "raw/path/to-evidence-2.json"
+           ]
+         }
+       }
+     }
+   }
+   ```
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.checks.test_empty_evidence import EmptyEvidenceCheck
+   ```
+
 ### Compliance Configuration
 
 * Class: [ComplianceConfigCheck][check-compliance-config]
@@ -698,6 +742,7 @@ getting new commits.  This check validates that.
 [fetch-filepath-commits]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_filepath_commits.py
 [fetch-branch-protection]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_branch_protection.py
 [check-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_abandoned_evidence.py
+[check-empty-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_empty_evidence.py
 [check-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_compliance_config.py
 [check-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_python_packages.py
 [check-locker-integrity]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_locker_repo_integrity.py
