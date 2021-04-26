@@ -1,3 +1,7 @@
+# [0.13.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.13.0)
+
+- [ADDED] Auditree empty evidence check has been added.
+
 # [0.12.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.12.0)
 
 - [ADDED] Github org integrity teams fetcher functionality added to Github org integrity permissions fetcher.
