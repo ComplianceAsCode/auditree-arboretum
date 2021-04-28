@@ -77,7 +77,24 @@ to include the fetchers and checks from this library in your downstream project.
   * `org.ibm_cloud.cluster_resources.types`
     * Optional
     * List of resource types as strings
-    * See the document of the [Kubernetes resource fetcher][fetch-kube-cluster-resource] for details.
+      * NOTE: For core group API resources, the resource name must be in
+      _plural form_ (e.g., `secrets`).
+      * NOTE: For other named group resources including custom API
+        resources, the resource name must be in the following format:
+        `APIGROUP/VERSION/NAME`. You can compose this by first executing
+        `kubectl api-resources` and `kubectl api-versions` and then combining
+        the results into your resource name.  Using `cronjobs` as an example:
+
+        ```sh
+        $ kubectl api-resources -o name | fgrep cronjobs
+        cronjobs.batch
+        $ kubectl api-versions | grep batch
+        batch/v1
+        batch/v1beta1
+        ```
+
+        For this example `batch/v1` is the more stable version so we use that
+        to compose `APIGROUP/VERSION/NAME` resource name as `batch/v1/cronjobs`.
 * Expected configuration:
 
   ```json
