@@ -74,7 +74,7 @@ to include the fetchers and checks from this library in your downstream project.
     * List of accounts (string)
     * Each account is an arbitrary name describing the IBM Cloud account. It is used to match to the token provided in the
       credentials file in order for the fetcher to retrieve content from IBM Cloud for that account.
-  * `org.ibm_cloud.cluster_resources.target_resource_types`
+  * `org.ibm_cloud.cluster_resources.types`
     * Optional
     * List of resource types as strings
     * See the document of the [Kubernetes resource fetcher][fetch-kube-cluster-resource] for details.
