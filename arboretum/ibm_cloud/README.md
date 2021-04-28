@@ -65,8 +65,8 @@ to include the fetchers and checks from this library in your downstream project.
 ### Cluster Resource
 
 * Class: [ICClusterResourceFetcher][fetch-ibm-cloud-cluster-resource]
-* Purpose: Write the resources of IBM Cloud Kubernetes clusters to the evidence locker.
-* Behavior: Retrieve tokens for IBM Cloud Kubernetes clusters listed by [IBM Cloud cluster list fetcher][fetch-cluster-list] using `api_key` in `~/.credentials`, and then retrieve specified `target_resource_types` of the clusters using the tokens. This fetcher uses one `api_key` per account which owns multiple clusters, while [Kubernetes resource fetcher][fetch-kube-cluster-resource] uses one `token` per cluster. TTL is set to 1 day.
+* Purpose: Write the resources of **managed** Kubernetes clusters to the evidence locker. NOTE: Do not use this fetcher for stand-alone clusters. For Kubernetes stand-alone clusters, use the [Kubernetes cluster resource fetcher][fetch-kube-cluster-resource].
+* Behavior: Retrieve tokens for IBM Cloud Kubernetes clusters listed by [IBM Cloud cluster list fetcher][fetch-cluster-list] using `api_key` in `~/.credentials`, and then retrieve specified resources  using the tokens. TTL is set to 1 day.
 
 * Configuration elements:
   * `org.ibm_cloud.accounts`
