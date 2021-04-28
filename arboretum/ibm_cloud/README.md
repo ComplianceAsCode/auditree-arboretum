@@ -105,7 +105,7 @@ to include the fetchers and checks from this library in your downstream project.
           "myaccount1", "myaccount2"
         ],
         "cluster_resources": {
-          "target_resource_types": [
+          "types": [
             "secrets", "batch/v1/cronjobs", "apigroup.example.com/v1/mycustom"
           ]
         }
