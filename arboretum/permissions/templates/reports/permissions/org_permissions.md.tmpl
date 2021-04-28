@@ -60,25 +60,3 @@ limitations under the License.
 </ul>
 {% endfor %}
 {% endfor %}
-
-{% if all_successes|length > 0 %}
-<b>Repositories with teams:</b>
-{% endif %}
-{% for org, repoteamsdict in all_successes.items() %}
-{% for repoteams in repoteamsdict %}
-<ul>
-<details>
-<summary>{{org+'/'+repoteams.repo}}</summary>
-{% for team in repoteams.teams%}
-<ul>
-<li>{{ team }}</li>
-</ul>
-{% endfor %}
-</details>
-</ul>
-{% endfor %}
-{% endfor %}
-
-
-
-

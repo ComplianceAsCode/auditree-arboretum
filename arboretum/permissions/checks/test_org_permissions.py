@@ -18,10 +18,6 @@ from compliance.check import ComplianceCheck
 from compliance.evidence import DAY, ReportEvidence, evidences
 from compliance.utils.data_parse import get_sha256_hash
 
-from ..evidences.org_direct_collaborators import OrgDirectCollaboratorsEvidence
-from ..evidences.org_repo_forks import OrgRepoForksEvidence
-from ..evidences.org_teams import OrgTeamsEvidence
-
 
 class OrgPermissionsCheck(ComplianceCheck):
     """Monitor repository organization permissions."""
@@ -55,28 +51,54 @@ class OrgPermissionsCheck(ComplianceCheck):
         orgs = self.config.get('org.permissions.org_integrity.orgs')
         for org in orgs:
             host = org['url'].rsplit('/', 1)
-            url_hash = get_sha256_hash([org['url']], 10)
             service = 'gh'
             if 'gitlab' in host:
                 service = 'gl'
             elif 'bitbucket' in host:
                 service = 'bb'
+            url_hash = get_sha256_hash([org['url']], 10)
+            path = 'raw/permissions'
             evidence_paths = {
-                'direct': f'raw/permissions/{service}_direct_collaborators_'
+                'direct': f'{path}/{service}_direct_collaborators_'
                 + f'{url_hash}.json',
-                'forks': f'raw/permissions/{service}_forks_{url_hash}.json',
-                'teams': f'raw/permissions/{service}_teams_{url_hash}.json',
+                'outside': f'{path}/{service}_outside_collaborators_'
+                + f'{url_hash}.json',
+                'forks': f'{path}/{service}_forks_{url_hash}.json'
             }
             with evidences(self, evidence_paths) as ev:
-                dc_ev = OrgDirectCollaboratorsEvidence.from_evidence(
-                    ev['direct']
+                self.add_failures(
+                    org['url'],
+                    self._check_collabs(
+                        ev['direct'].content_as_json,
+                        ev['outside'].content_as_json
+                    )
                 )
-                f_ev = OrgRepoForksEvidence.from_evidence(ev['forks'])
-                t_ev = OrgTeamsEvidence.from_evidence(ev['teams'])
+                self.add_warnings(
+                    org['url'], self._check_forks(ev['forks'].content_as_json)
+                )
 
-                self.add_failures(org['url'], dc_ev.direct_collabs)
-                self.add_warnings(org['url'], f_ev.forks)
-                self.add_successes(org['url'], t_ev.teams)
+    def _check_collabs(self, ev_direct, ev_outside):
+        repocollabs = []
+        for repo in ev_direct:
+            collabs = []
+            for c in ev_direct[repo]:
+                c['member'] = c not in ev_outside[repo]
+                collabs.append(c)
+            if not collabs:
+                continue
+            if collabs:
+                repocollabs.append({'repo': repo, 'collabs': collabs})
+        return repocollabs
+
+    def _check_forks(self, evidence):
+        repoforks = []
+        for repo in evidence:
+            forks = [f['html_url'] for f in evidence[repo]]
+            if not forks:
+                continue
+            if forks:
+                repoforks.append({'repo': repo, 'forks': forks})
+        return repoforks
 
     def get_reports(self):
         """

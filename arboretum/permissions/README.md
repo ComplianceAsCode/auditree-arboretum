@@ -97,19 +97,19 @@ how to include the fetchers and checks from this library in your downstream proj
 ### Organization Integrity (Repository Permissions)
 
 * Class: [OrgPermissionsCheck][org-permissions-check]
-* Purpose: Validate the access to repositories.
-* Behavior: Collaborators, fork and teams are checked for every repository.
-Each direct collaborator found in a repo will be considered a failure. Each fork found in a repo will be considered a warning.
+* Purpose: Ensure that `direct` collaborators and forks do not exist in the organization repositories.
+* Behavior: Collaborators and forks are checked for every repository. A failure is generated when `direct` collaborators are found in a repository. A warning is generated for each fork found for a repository. 
+
 * Evidence depended upon:
-    * `direct` collaborators found in organization repositories.
-      * `raw/permissions/gh_direct_collaborators_<org_url_hash>.json`
-      * Gathered by the permissions OrgPermissionFetcher
-    * forks found in organization repositories.
-      * `raw/permissions/gh_forks_<org_url_hash>.json`
-      * Gathered by the permissions OrgPermissionFetcher
-    * teams found in organization repositories.
-      * `raw/permissions/gh_teams_<org_url_hash>.json`
-      * Gathered by the permissions OrgPermissionFetcher
+  * `direct` collaborators found in organization repositories.
+    * `raw/permissions/<gh|gl|bb>_direct_collaborators_<org_url_hash>.json`
+  * `outside` collaborators found in organization repositories.
+    * `raw/permissions/<gh|gl|bb>_outside_collaborators_<org_url_hash>.json`
+  * forks found in organization repositories.
+    * `raw/permissions/<gh|gl|bb>_forks_<org_url_hash>.json`
+  * Gathered by the permissions [GithubOrgPermissionFetcher][fetch-org-permissions]
+  * NOTE:  Only `gh` (Github) is currently supported by this check.
+
 * Configuration elements:
   * `org.permissions.org_integrity.orgs`
      * Required
