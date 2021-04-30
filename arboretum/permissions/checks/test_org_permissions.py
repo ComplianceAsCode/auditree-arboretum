@@ -20,7 +20,7 @@ from compliance.utils.data_parse import get_sha256_hash
 
 
 class OrgPermissionsCheck(ComplianceCheck):
-    """Monitor repository organization permissions."""
+    """Checks for repository organization/owner permissions."""
 
     @property
     def title(self):
@@ -29,7 +29,7 @@ class OrgPermissionsCheck(ComplianceCheck):
 
         :returns: the title of the checks
         """
-        return 'Report on Repository Organization Permissions'
+        return 'Repository Organization/Owner Permissions'
 
     @classmethod
     def setUpClass(cls):
@@ -40,7 +40,7 @@ class OrgPermissionsCheck(ComplianceCheck):
                     'org_permissions.md',
                     'permissions',
                     DAY,
-                    'Repository Permissions.'
+                    'Repository organization permission report.'
                 )
             ]
         )
@@ -50,32 +50,31 @@ class OrgPermissionsCheck(ComplianceCheck):
         """Check the access to organization repositories."""
         orgs = self.config.get('org.permissions.org_integrity.orgs')
         for org in orgs:
-            host = org['url'].rsplit('/', 1)
+            host, org_name = org['url'].rsplit('/', 1)
             service = 'gh'
             if 'gitlab' in host:
                 service = 'gl'
             elif 'bitbucket' in host:
                 service = 'bb'
             url_hash = get_sha256_hash([org['url']], 10)
-            path = 'raw/permissions'
             evidence_paths = {
-                'direct': f'{path}/{service}_direct_collaborators_'
+                'direct': f'raw/permissions/{service}_direct_collaborators_'
                 + f'{url_hash}.json',
-                'outside': f'{path}/{service}_outside_collaborators_'
+                'outside': f'raw/permissions/{service}_outside_collaborators_'
                 + f'{url_hash}.json',
-                'forks': f'{path}/{service}_forks_{url_hash}.json'
+                'forks': f'raw/permissions/{service}_forks_{url_hash}.json'
             }
-            with evidences(self, evidence_paths) as ev:
-                self.add_failures(
-                    org['url'],
-                    self._check_collabs(
-                        ev['direct'].content_as_json,
-                        ev['outside'].content_as_json
-                    )
-                )
-                self.add_warnings(
-                    org['url'], self._check_forks(ev['forks'].content_as_json)
-                )
+            with evidences(self, evidence_paths) as raws:
+                self._generate_results(org_name, raws)
+
+    def _generate_results(self, org, ev):
+        self.add_failures(
+            org,
+            self._check_collabs(
+                ev['direct'].content_as_json, ev['outside'].content_as_json
+            )
+        )
+        self.add_warnings(org, self._check_forks(ev['forks'].content_as_json))
 
     def _check_collabs(self, ev_direct, ev_outside):
         repocollabs = []
@@ -99,6 +98,17 @@ class OrgPermissionsCheck(ComplianceCheck):
             if forks:
                 repoforks.append({'repo': repo, 'forks': forks})
         return repoforks
+
+    def get_notification_message(self):
+        """
+        Repository Organization/Owner Permissions check notifier.
+
+        :returns: notification dictionary
+        """
+        return {
+            'subtitle': 'Repository Organization/Owner Permissions',
+            'body': None
+        }
 
     def get_reports(self):
         """

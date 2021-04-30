@@ -107,9 +107,7 @@ how to include the fetchers and checks from this library in your downstream proj
     * `raw/permissions/<gh|gl|bb>_outside_collaborators_<org_url_hash>.json`
   * forks found in organization repositories.
     * `raw/permissions/<gh|gl|bb>_forks_<org_url_hash>.json`
-  * Gathered by the permissions [GithubOrgPermissionFetcher][fetch-org-permissions]
-  * NOTE:  Only `gh` (Github) is currently supported by this check.
-
+  * NOTE: Only gh (Github) is currently supported by this check. Gitlab and Bitbucket support coming soon...
 * Configuration elements:
   * `org.permissions.org_integrity.orgs`
      * Required
@@ -137,6 +135,7 @@ how to include the fetchers and checks from this library in your downstream proj
   ```
   
 * Import statement:
+
    ```python
    from arboretum.permissions.checks.test_org_permissions import OrgPermissionsCheck
    ```
