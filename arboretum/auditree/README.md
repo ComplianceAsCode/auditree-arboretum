@@ -476,6 +476,43 @@ can vary across evidences.  But the default `is_empty` criteria is as follows:
    from arboretum.auditree.checks.test_empty_evidence import EmptyEvidenceCheck
    ```
 
+### Evidence Locker Large Files
+
+* Class: [LargeFilesCheck][check-large-files]
+* Purpose: Remote hosting services have file size constraints that if violated
+will cause a remote push of the locker to be rejected.  This check identifies
+"large" sized files so they can be dealt with prior to reaching the remote
+hosting service file size constraint.
+* Behavior: Performs a check that flags all files in the evidence locker
+(evidence and non-evidence) that exceed a large file threshold setting as
+failures and flags all files within 20% of the threshold as warnings.  The
+large file threshold defaults to 50MB.
+* Evidence depended upon:
+   * This check does not depend on any evidence specifically.  It acts on **all**
+   files contained within an evidence locker.
+* Configuration elements:
+   * `locker.large_file_threshold`
+      * Optional
+      * File size threshold in bytes as an integer
+      * Use if looking to override the default of 50MB.  Otherwise do not include.
+      * NOTE: This is the same [evidence locker][] configuration setting is used by
+      the framework to produce large file execution log INFO messages.
+* Example (optional) configuration:
+
+   ```json
+   {
+     "locker": {
+       "large_file_threshold": 50000000
+     }
+   }
+   ```
+
+* Import statement:
+
+   ```python
+   from arboretum.auditree.checks.test_locker_large_files import LargeFilesCheck
+   ```
+
 ### Compliance Configuration
 
 * Class: [ComplianceConfigCheck][check-compliance-config]
@@ -734,6 +771,7 @@ getting new commits.  This check validates that.
 [auditree-framework]: https://github.com/ComplianceAsCode/auditree-framework
 [auditree-framework documentation]: https://complianceascode.github.io/auditree-framework/
 [usage]: https://github.com/ComplianceAsCode/auditree-arboretum#usage
+[evidence locker]: https://complianceascode.github.io/auditree-framework/design-principles.html#evidence-locker
 [fetch-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_abandoned_evidence.py
 [fetch-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_compliance_config.py
 [fetch-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/fetch_python_packages.py
@@ -743,6 +781,7 @@ getting new commits.  This check validates that.
 [fetch-branch-protection]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/fetchers/github/fetch_branch_protection.py
 [check-abandoned-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_abandoned_evidence.py
 [check-empty-evidence]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_empty_evidence.py
+[check-large-files]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_locker_large_files.py
 [check-compliance-config]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_compliance_config.py
 [check-python-packages]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_python_packages.py
 [check-locker-integrity]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/auditree/checks/test_locker_repo_integrity.py

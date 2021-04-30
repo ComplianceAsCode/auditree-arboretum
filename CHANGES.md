@@ -1,3 +1,7 @@
+# [0.14.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.14.0)
+
+- [ADDED] Auditree evidence locker large file check has been added.
+
 # [0.13.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.13.0)
 
 - [ADDED] Auditree empty evidence check has been added.
