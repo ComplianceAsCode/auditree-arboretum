@@ -3,7 +3,8 @@
     "enabled": false
   },
   "locker": {
-    "repo_url": "https://github.com/my-org/my-evidence-locker-repo"
+    "repo_url": "https://github.com/my-org/my-evidence-locker-repo",
+    "large_file_threshold": 50000000
   },
   "notify": {
     "slack": {}
@@ -11,6 +12,20 @@
   "org": {
     "name": "MY-ORG",
     "auditree": {
+      "abandoned_evidence": {
+         "threshold": 1234567,
+         "exceptions": {
+           "raw/foo/evidence_bar.json": "This is a good reason",
+           "raw/foo/evidence_baz.json": "This is also a good reason"
+         },
+         "ignore_history": true
+      },
+      "empty_evidence": {
+        "exceptions": [
+          "raw/foo/evidence_bar.json",
+          "raw/foo/evidence_baz.json"
+        ]
+      },
       "repo_integrity": {
         "branches": {
           "https://github.com/ComplianceAsCode/auditree-arboretum": ["main"]
