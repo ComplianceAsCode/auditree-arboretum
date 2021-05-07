@@ -122,9 +122,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         cluster_list = cluster_list_evidence.content_as_json
         resources = {}
         for account in cluster_list:
-            api_key = getattr(
-                self.config.creds['ibm_cloud'], f'{account}_api_key'
-            )
+            api_key = self.config.creds.get('ibm_cloud', f'{account}_api_key')
             headers = {'Accept': 'application/json'}
             self.session('https://containers.cloud.ibm.com', **headers)
             access_token, refresh_token = get_tokens(api_key)
