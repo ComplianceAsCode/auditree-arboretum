@@ -119,7 +119,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         cluster_list_evidence = get_evidence_dependency(
             'raw/ibm_cloud/cluster_list.json', self.locker
         )
-        cluster_list = json.loads(cluster_list_evidence.content)
+        cluster_list = cluster_list_evidence.content_as_json
         resources = {}
         for account in cluster_list:
             api_key = getattr(
