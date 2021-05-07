@@ -138,8 +138,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
             cluster_config = {}
             for cluster in cluster_list[account]:
                 resp = self.session().get(
-                    '/global/v1/clusters/'
-                    f'{cluster["id"]}/config'
+                    f'/global/v1/clusters/{cluster["id"]}/config'
                 )
                 resp.raise_for_status()
                 cluster_config[cluster['name']] = zipfile.ZipFile(
