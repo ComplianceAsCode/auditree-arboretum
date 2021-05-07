@@ -71,7 +71,7 @@ to include the fetchers and checks from this library in your downstream project.
 * Configuration elements:
   * `org.ibm_cloud.accounts`
     * Required
-    * List of accounts (string)
+    * List of accounts as strings
     * Each account is an arbitrary name describing the IBM Cloud account. It is used to match to the token provided in the
       credentials file in order for the fetcher to retrieve content from IBM Cloud for that account.
   * `org.ibm_cloud.cluster_resources.types`
