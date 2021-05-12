@@ -60,24 +60,20 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         """Cleanup class."""
         cls.tempdir.cleanup()
 
-    def _get_iks_credentials(self, cluster, cluster_configs):
+    def _get_iks_credentials(self, cluster_config):
         """Get credentials for an IKS cluster.
 
         This function implements the procedure described in
         https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
         """
-        for name in cluster_configs[cluster['name']].namelist():
+        for name in cluster_config.namelist():
             p = pathlib.Path(name)
             if p.name.startswith('kube-config'):
-                kubeconfig = yaml.safe_load(
-                    cluster_configs[cluster['name']].read(name)
-                )
+                kubeconfig = yaml.safe_load(cluster_config.read(name))
                 cluster_token = kubeconfig['users'][0]['user'][
                     'auth-provider']['config']['id-token']
             if p.name.endswith('.pem'):
-                cluster_configs[cluster['name']].extract(
-                    name, path=self.tempdir.name
-                )
+                cluster_config.extract(name, path=self.tempdir.name)
                 ca_cert_filepath = os.path.join(self.tempdir.name, name)
         return cluster_token, ca_cert_filepath
 
@@ -123,30 +119,24 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         resources = {}
         for account in cluster_list:
             api_key = self.config.creds.get('ibm_cloud', f'{account}_api_key')
-            headers = {'Accept': 'application/json'}
-            self.session('https://containers.cloud.ibm.com', **headers)
             access_token, refresh_token = get_tokens(api_key)
-            self.session().headers.update(
-                {
-                    'Authorization': 'Bearer '
-                    f'{access_token}',
-                    'X-Auth-Refresh-Token': refresh_token
-                }
-            )
-            cluster_config = {}
-            for cluster in cluster_list[account]:
-                resp = self.session().get(
-                    f'/global/v1/clusters/{cluster["id"]}/config'
-                )
-                resp.raise_for_status()
-                cluster_config[cluster['name']] = zipfile.ZipFile(
-                    io.BytesIO(resp.content)
-                )
+            headers = {
+                'Accept': 'application/json',
+                'Authorization': f'Bearer {access_token}',
+                'X-Auth-Refresh-Token': refresh_token
+            }
+            self.session('https://containers.cloud.ibm.com', **headers)
+
             resources[account] = []
             for cluster in cluster_list[account]:
+                self.session('https://containers.cloud.ibm.com', **headers)
+                resp = self.session(
+                ).get(f'/global/v1/clusters/{cluster["id"]}/config')
+                resp.raise_for_status()
+                cluster_config = zipfile.ZipFile(io.BytesIO(resp.content))
                 if cluster['type'] == 'kubernetes':
                     cluster_token, ca_cert = self._get_iks_credentials(
-                        cluster, cluster_config)
+                        cluster_config)
                 elif cluster['type'] == 'openshift':
                     cluster_token, ca_cert = self._get_roks_credentials(
                         cluster, api_key)
