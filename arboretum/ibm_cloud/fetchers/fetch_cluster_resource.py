@@ -130,8 +130,8 @@ class ICClusterResourceFetcher(ComplianceFetcher):
             resources[account] = []
             for cluster in cluster_list[account]:
                 self.session('https://containers.cloud.ibm.com', **headers)
-                resp = self.session(
-                ).get(f'/global/v1/clusters/{cluster["id"]}/config')
+                config_url = f'/global/v1/clusters/{cluster["id"]}/config'
+                resp = self.session().get(config_url)
                 resp.raise_for_status()
                 cluster_config = zipfile.ZipFile(io.BytesIO(resp.content))
                 if cluster['type'] == 'kubernetes':
