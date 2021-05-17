@@ -94,6 +94,52 @@ how to include the fetchers and checks from this library in your downstream proj
 
 ## Checks
 
+### Organization Integrity (Repository Permissions)
+
+* Class: [OrgPermissionsCheck][org-permissions-check]
+* Purpose: Ensure that `direct` collaborators and forks do not exist in the organization repositories.
+* Behavior: Collaborators and forks are checked for every repository. 
+A failure is generated when `direct` collaborators are found in a repository. A warning is generated for each fork found for a repository. 
+* Evidence depended upon:
+  * `direct` collaborators found in organization repositories.
+    * `raw/permissions/<gh|gl|bb>_direct_collaborators_<org_url_hash>.json`
+  * `outside` collaborators found in organization repositories.
+    * `raw/permissions/<gh|gl|bb>_outside_collaborators_<org_url_hash>.json`
+  * forks found in organization repositories.
+    * `raw/permissions/<gh|gl|bb>_forks_<org_url_hash>.json`
+  * NOTE: Only gh (Github) is currently supported by this check. Gitlab and Bitbucket support coming soon...
+* Configuration elements:
+  * `org.permissions.org_integrity.orgs`
+     * Required
+     * List of dictionaries:
+        * `url`
+           * Required
+           * Organization URL (string).
+          
+* Example configuration:
+
+  ```json
+  {
+    "org": {
+      "permissions": {
+        "org_integrity": {
+          "orgs": [
+            {
+              "url": "https://github.com/my-org-1"
+            }
+          ]
+        }
+      }
+    }
+  }
+  ```
+  
+* Import statement:
+
+   ```python
+   from arboretum.permissions.checks.test_org_permissions import OrgPermissionsCheck
+   ```
+
 ### Organization Integrity (Repository Collaborators)
 
 * Class: [OrgCollaboratorsCheck][org-collaborators-check]
@@ -164,3 +210,4 @@ direct collaborators matching the exceptions are found.
 [fetch-org-permissions]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/fetchers/github/fetch_org_permissions.py
 [repository-permissions]: https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 [org-collaborators-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_collaborators.py
+[org-permissions-check]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/permissions/checks/test_org_permissions.py
