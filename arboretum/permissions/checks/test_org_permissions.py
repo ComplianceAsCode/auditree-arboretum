@@ -69,10 +69,7 @@ class OrgPermissionsCheck(ComplianceCheck):
 
         :returns: notification dictionary
         """
-        return {
-            'subtitle': 'Repository Organization/Owner Permissions',
-            'body': None
-        }
+        return {'body': None}
 
     def get_reports(self):
         """
