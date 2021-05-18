@@ -101,10 +101,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
             allow_redirects=False
         )
         location = resp.headers['Location']
-        keyword = 'access_token='
-        start = location.find(keyword)
-        end = location.find('&', start)
-        cluster_token = location[start + len(keyword):end]
+        cluster_token = location.split('access_token=', 1)[1].split('&', 1)[0]
         s.headers.update = ({'X-CSRF-Token': None})
 
         return cluster_token, None
