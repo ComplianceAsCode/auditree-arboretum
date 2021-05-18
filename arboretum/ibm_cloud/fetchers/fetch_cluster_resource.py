@@ -16,7 +16,6 @@
 
 import io
 import json
-import os
 import pathlib
 import tempfile
 import zipfile
@@ -73,8 +72,9 @@ class ICClusterResourceFetcher(ComplianceFetcher):
                 usr = kubeconfig['users'][0]['user']
                 cluster_token = usr['auth-provider']['config']['id-token']
             if p.name.endswith('.pem'):
-                cluster_config.extract(name, path=self.tempdir.name)
-                ca_cert_filepath = os.path.join(self.tempdir.name, name)
+                t = pathlib.Path(self.tempdir.name)
+                cluster_config.extract(name, path=t)
+                ca_cert_filepath = t / name
         return cluster_token, ca_cert_filepath
 
     def _get_roks_credentials(self, cluster, api_key):
