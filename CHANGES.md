@@ -1,3 +1,7 @@
+# [0.16.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.16.0)
+
+- [ADDED] IBM Cloud cluster resources fetcher added.
+
 # [0.15.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.15.0)
 
 - [ADDED] Github org permissions check added to `permissions`.
