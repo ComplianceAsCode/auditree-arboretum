@@ -103,7 +103,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         location = resp.headers['Location']
         cluster_token = location.split('access_token=', 1)[1].split('&', 1)[0]
 
-        return cluster_token, None
+        return cluster_token
 
     @store_raw_evidence('ibm_cloud/cluster_resources.json')
     def fetch_cluster_resource(self):
@@ -135,9 +135,10 @@ class ICClusterResourceFetcher(ComplianceFetcher):
                         cluster_config
                     )
                 elif cluster['type'] == 'openshift':
-                    cluster_token, ca_cert = self._get_roks_credentials(
+                    cluster_token = self._get_roks_credentials(
                         cluster, api_key
                     )
+                    ca_cert = None
                 self.session(cluster['serverURL'], **headers)
                 cluster['resources'] = get_cluster_resources(
                     self.session(),
