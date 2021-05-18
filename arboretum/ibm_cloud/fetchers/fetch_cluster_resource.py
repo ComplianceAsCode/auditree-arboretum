@@ -134,11 +134,11 @@ class ICClusterResourceFetcher(ComplianceFetcher):
                 if cluster['type'] == 'kubernetes':
                     cluster_token, ca_cert = self._get_iks_credentials(
                         cluster_config
-                        )
+                    )
                 elif cluster['type'] == 'openshift':
                     cluster_token, ca_cert = self._get_roks_credentials(
                         cluster, api_key
-                        )
+                    )
                 self.session(cluster['serverURL'], **headers)
                 cluster['resources'] = get_cluster_resources(
                     self.session(),
