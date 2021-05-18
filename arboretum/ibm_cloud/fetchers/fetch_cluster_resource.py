@@ -59,6 +59,51 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         """Cleanup class."""
         cls.tempdir.cleanup()
 
+    @store_raw_evidence('ibm_cloud/cluster_resources.json')
+    def fetch_cluster_resource(self):
+        """Fetch cluster resources."""
+        cluster_list_evidence = get_evidence_dependency(
+            'raw/ibm_cloud/cluster_list.json', self.locker
+        )
+        cluster_list = cluster_list_evidence.content_as_json
+        resources = {}
+        for account in cluster_list:
+            api_key = self.config.creds.get('ibm_cloud', f'{account}_api_key')
+            access_token, refresh_token = get_tokens(api_key)
+            headers = {
+                'Accept': 'application/json',
+                'Authorization': f'Bearer {access_token}',
+                'X-Auth-Refresh-Token': refresh_token
+            }
+            self.session('https://containers.cloud.ibm.com', **headers)
+
+            resources[account] = []
+            for cluster in cluster_list[account]:
+                self.session('https://containers.cloud.ibm.com', **headers)
+                config_url = f'/global/v1/clusters/{cluster["id"]}/config'
+                resp = self.session().get(config_url)
+                resp.raise_for_status()
+                cluster_config = zipfile.ZipFile(io.BytesIO(resp.content))
+                if cluster['type'] == 'kubernetes':
+                    cluster_token, ca_cert = self._get_iks_credentials(
+                        cluster_config
+                    )
+                elif cluster['type'] == 'openshift':
+                    cluster_token = self._get_roks_credentials(
+                        cluster, api_key
+                    )
+                    ca_cert = None
+                self.session(cluster['serverURL'], **headers)
+                cluster['resources'] = get_cluster_resources(
+                    self.session(),
+                    cluster_token,
+                    self.resource_types,
+                    ca_cert
+                )
+                resources[account].append(cluster)
+
+        return json.dumps(resources)
+
     def _get_iks_credentials(self, cluster_config):
         """Get credentials for an IKS cluster.
 
@@ -104,48 +149,3 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         cluster_token = location.split('access_token=', 1)[1].split('&', 1)[0]
 
         return cluster_token
-
-    @store_raw_evidence('ibm_cloud/cluster_resources.json')
-    def fetch_cluster_resource(self):
-        """Fetch cluster resources."""
-        cluster_list_evidence = get_evidence_dependency(
-            'raw/ibm_cloud/cluster_list.json', self.locker
-        )
-        cluster_list = cluster_list_evidence.content_as_json
-        resources = {}
-        for account in cluster_list:
-            api_key = self.config.creds.get('ibm_cloud', f'{account}_api_key')
-            access_token, refresh_token = get_tokens(api_key)
-            headers = {
-                'Accept': 'application/json',
-                'Authorization': f'Bearer {access_token}',
-                'X-Auth-Refresh-Token': refresh_token
-            }
-            self.session('https://containers.cloud.ibm.com', **headers)
-
-            resources[account] = []
-            for cluster in cluster_list[account]:
-                self.session('https://containers.cloud.ibm.com', **headers)
-                config_url = f'/global/v1/clusters/{cluster["id"]}/config'
-                resp = self.session().get(config_url)
-                resp.raise_for_status()
-                cluster_config = zipfile.ZipFile(io.BytesIO(resp.content))
-                if cluster['type'] == 'kubernetes':
-                    cluster_token, ca_cert = self._get_iks_credentials(
-                        cluster_config
-                    )
-                elif cluster['type'] == 'openshift':
-                    cluster_token = self._get_roks_credentials(
-                        cluster, api_key
-                    )
-                    ca_cert = None
-                self.session(cluster['serverURL'], **headers)
-                cluster['resources'] = get_cluster_resources(
-                    self.session(),
-                    cluster_token,
-                    self.resource_types,
-                    ca_cert
-                )
-                resources[account].append(cluster)
-
-        return json.dumps(resources)
