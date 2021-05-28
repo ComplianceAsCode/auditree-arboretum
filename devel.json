@@ -86,7 +86,10 @@
       ]
     },
     "ibm_cloud": {
-      "accounts": ["my_ic_account_one", "my_ic_account_two"]
+      "accounts": ["my_ic_account_one", "my_ic_account_two"],
+      "cluster_resources": {
+        "types": ["pods"]
+      }
     },
     "kubernetes": {
       "cluster_resources": {

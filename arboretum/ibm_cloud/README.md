@@ -62,6 +62,85 @@ to include the fetchers and checks from this library in your downstream project.
    from arboretum.ibm_cloud.fetchers.fetch_cluster_list import ClusterListFetcher
    ```
 
+### Cluster Resource
+
+* Class: [ICClusterResourceFetcher][fetch-ibm-cloud-cluster-resource]
+* Purpose: Write the resources of **managed** Kubernetes clusters to the evidence locker.
+* Behavior: Retrieve managed Kubernetes cluster resource data based on clusters gathered by the [IBM Cloud cluster list fetcher][fetch-cluster-list].  TTL is set to 1 day.
+* NOTE: 
+   * Do not use this fetcher for stand-alone clusters. For Kubernetes stand-alone clusters, use the [Kubernetes cluster resource fetcher][fetch-kube-cluster-resource].
+   * This fetcher is dependent on evidence gathered by the [IBM Cloud cluster list fetcher][fetch-cluster-list], 
+ i.e. importing the IBM Cloud cluster list fetcher is a prerequisite for the IKS cluster resource fetcher to work.
+
+* Configuration elements:
+  * `org.ibm_cloud.accounts`
+    * Required
+    * List of accounts as strings
+    * Each account is an arbitrary name describing the IBM Cloud account. It is used to match to the token provided in the
+      credentials file in order for the fetcher to retrieve content from IBM Cloud for that account.
+  * `org.ibm_cloud.cluster_resources.types`
+    * Optional
+    * List of resource types as strings
+      * NOTE: For core group API resources, the resource name must be in
+      _plural form_ (e.g., `secrets`).
+      * NOTE: For other named group resources including custom API
+        resources, the resource name must be in the following format:
+        `APIGROUP/VERSION/NAME`. You can compose this by first executing
+        `kubectl api-resources` and `kubectl api-versions` and then combining
+        the results into your resource name.  Using `cronjobs` as an example:
+
+        ```sh
+        $ kubectl api-resources -o name | fgrep cronjobs
+        cronjobs.batch
+        $ kubectl api-versions | grep batch
+        batch/v1
+        batch/v1beta1
+        ```
+
+        For this example `batch/v1` is the more stable version so we use that
+        to compose `APIGROUP/VERSION/NAME` resource name as `batch/v1/cronjobs`.
+* Expected configuration:
+
+  ```json
+  {
+    "org": {
+      "ibm_cloud": {
+        "accounts": [
+          "myaccount1", "myaccount2"
+        ],
+        "cluster_resources": {
+          "types": [
+            "secrets", "batch/v1/cronjobs", "apigroup.example.com/v1/mycustom"
+          ]
+        }
+      }
+    }
+  }
+  ```
+
+* Required credentials:
+  * `ibm_cloud` credentials with read/view permissions are needed for this fetcher to successfully retrieve the evidence.
+    * `XXX_api_key`: API key string for account `XXX`.
+    * Example credential file entry:
+
+      ```ini
+      [ibm_cloud]
+      acct_a_api_key=your-ibm-cloud-api-key-for-acct-a
+      acct_b_api_key=your-ibm-cloud-api-key-for-acct-b
+      ```
+
+    * NOTE: API keys can be generated using the [IBM Cloud CLI][ic-api-key-create] or [IBM Cloud Console][ibm-cloud-gen-api-console]. Example to create an API key with IBM Cloud CLI is:
+
+      ```sh
+      ibmcloud iam api-key-create your-iks-api-key-for-acct-x
+      ```
+
+* Import statement:
+
+   ```python
+   from arboretum.ibm_cloud.fetchers.fetch_cluster_resource import ICClusterResourceFetcher
+   ```
+
 ## Checks
 
 Checks coming soon...
@@ -73,3 +152,5 @@ Checks coming soon...
 [fetch-cluster-list]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/ibm_cloud/fetchers/fetch_cluster_list.py
 [ibm-cloud-api]: https://containers.cloud.ibm.com/
 [ibm-cloud-gen-api-console]: https://cloud.ibm.com/docs/account?topic=account-userapikey#create_user_key
+[fetch-ibm-cloud-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/ibm_cloud/fetchers/fetch_cluster_resource.py
+[fetch-kube-cluster-resource]: https://github.com/ComplianceAsCode/auditree-arboretum/tree/main/arboretum/kubernetes#cluster-resource
