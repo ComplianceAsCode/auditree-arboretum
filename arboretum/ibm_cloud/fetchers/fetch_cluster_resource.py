@@ -116,7 +116,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
                 kubeconfig = yaml.safe_load(cluster_config.read(name))
                 usr = kubeconfig['users'][0]['user']
                 cluster_token = usr['auth-provider']['config']['id-token']
-            if p.name.endswith('.pem'):
+            if p.suffix == '.pem':
                 t = pathlib.Path(self.tempdir.name)
                 cluster_config.extract(name, path=t)
                 ca_cert_filepath = t / name
