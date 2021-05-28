@@ -111,7 +111,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         https://cloud.ibm.com/apidocs/kubernetes#getclusterconfig
         """
         for name in cluster_config.namelist():
-            p = pathlib.Path(name)
+            p = pathlib.PurePath(name)
             if p.name.startswith('kube-config'):
                 kubeconfig = yaml.safe_load(cluster_config.read(name))
                 usr = kubeconfig['users'][0]['user']
