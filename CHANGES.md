@@ -1,3 +1,7 @@
+# [0.16.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.16.1)
+
+- [CHANGED] Replace yapf by block code formatter.
+
 # [0.16.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.16.0)
 
 - [ADDED] IBM Cloud cluster resources fetcher added.

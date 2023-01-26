@@ -8,9 +8,9 @@ If you would like to contribute fetchers, checks, or harvest reports please refe
 
 ## Code formatting and style
 
-Please ensure all code contributions are formatted by `yapf` and pass all `flake8` linter requirements.
+Please ensure all code contributions are formatted by `black` and pass all `flake8` linter requirements.
 CI/CD will run `yapf` and `flake8` on all new commits and reject changes if there are failures.  If you
-run `make develop` to setup and maintain your virtual environment then `yapf` and `flake8` will be executed
+run `make develop` to setup and maintain your virtual environment then `black` and `flake8` will be executed
 automatically as part of all git commits.  If you'd like to run things manually you can do so locally by using:
 
 ```shell
