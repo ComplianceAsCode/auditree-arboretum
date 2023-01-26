@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +30,7 @@ class EmptyEvidenceCheck(ComplianceCheck):
 
         :returns: the title of the checks
         """
-        return 'Empty Evidence'
+        return "Empty Evidence"
 
     @classmethod
     def setUpClass(cls):
@@ -39,10 +38,10 @@ class EmptyEvidenceCheck(ComplianceCheck):
         cls.config.add_evidences(
             [
                 ReportEvidence(
-                    'empty_evidence.md',
-                    'auditree',
+                    "empty_evidence.md",
+                    "auditree",
                     DAY,
-                    'Evidence locker empty evidence report.'
+                    "Evidence locker empty evidence report.",
                 )
             ]
         )
@@ -50,14 +49,12 @@ class EmptyEvidenceCheck(ComplianceCheck):
 
     def test_empty_evidence(self):
         """Check for evidence that has no content."""
-        exceptions = self.config.get(
-            'org.auditree.empty_evidence.exceptions', []
-        )
+        exceptions = self.config.get("org.auditree.empty_evidence.exceptions", [])
         for ev_path in self.locker.get_empty_evidences():
             if ev_path not in exceptions:
-                self.add_failures('Empty Evidence', f'`{ev_path}`')
+                self.add_failures("Empty Evidence", f"`{ev_path}`")
             else:
-                self.add_warnings('Expected Empty Evidence', f'`{ev_path}`')
+                self.add_warnings("Expected Empty Evidence", f"`{ev_path}`")
 
     def get_reports(self):
         """
@@ -65,7 +62,7 @@ class EmptyEvidenceCheck(ComplianceCheck):
 
         :returns: the report(s) generated for this check.
         """
-        return ['auditree/empty_evidence.md']
+        return ["auditree/empty_evidence.md"]
 
     def get_notification_message(self):
         """
@@ -73,4 +70,4 @@ class EmptyEvidenceCheck(ComplianceCheck):
 
         :returns: notification dictionary.
         """
-        return {'body': None}
+        return {"body": None}

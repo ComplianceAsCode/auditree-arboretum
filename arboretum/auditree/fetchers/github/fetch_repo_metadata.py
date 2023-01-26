@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,32 +30,26 @@ class GithubRepoMetaDataFetcher(ComplianceFetcher):
     def fetch_gh_repo_details(self):
         """Fetch Github repository metadata."""
         repo_urls = self.config.get(
-            'org.auditree.repo_integrity.repos',
-            [self.config.get('locker.repo_url')]
+            "org.auditree.repo_integrity.repos", [self.config.get("locker.repo_url")]
         )
         current_url = None
         github = None
         for repo_url in repo_urls:
             parsed = urlparse(repo_url)
-            base_url = f'{parsed.scheme}://{parsed.hostname}'
-            repo = parsed.path.strip('/')
-            file_prefix = repo.lower().replace('/', '_').replace('-', '_')
-            path = ['auditree', f'gh_{file_prefix}_repo_metadata.json']
+            base_url = f"{parsed.scheme}://{parsed.hostname}"
+            repo = parsed.path.strip("/")
+            file_prefix = repo.lower().replace("/", "_").replace("-", "_")
+            path = ["auditree", f"gh_{file_prefix}_repo_metadata.json"]
             if base_url != current_url:
                 github = Github(self.config.creds, base_url)
                 current_url = base_url
             self.config.add_evidences(
                 [
                     RepoMetadataEvidence(
-                        path[1],
-                        path[0],
-                        DAY,
-                        f'Github {repo} repo metadata details'
+                        path[1], path[0], DAY, f"Github {repo} repo metadata details"
                     )
                 ]
             )
             with raw_evidence(self.locker, os.path.join(*path)) as evidence:
                 if evidence:
-                    evidence.set_content(
-                        json.dumps(github.get_repo_details(repo))
-                    )
+                    evidence.set_content(json.dumps(github.get_repo_details(repo)))

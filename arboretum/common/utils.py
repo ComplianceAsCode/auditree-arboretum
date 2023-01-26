@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +22,12 @@ def parse_seconds(seconds):
 
     :returns: "D days, H hours, M minutes, S seconds" string
     """
-    intervals = [
-        ('days', DAY), ('hours', HOUR), ('minutes', 60), ('seconds', 1)
-    ]
+    intervals = [("days", DAY), ("hours", HOUR), ("minutes", 60), ("seconds", 1)]
     formatted = []
     for interval in intervals:
         q, r = divmod(seconds, interval[1])
         if q:
             unit = interval[0][:-1] if q == 1 else interval[0]
-            formatted.append(f'{q} {unit}')
+            formatted.append(f"{q} {unit}")
         seconds = r
-    return ', '.join(formatted)
+    return ", ".join(formatted)

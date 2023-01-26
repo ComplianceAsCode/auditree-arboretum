@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,30 +31,28 @@ class ClusterResourceFetcher(ComplianceFetcher):
         cls.config.add_evidences(
             [
                 RawEvidence(
-                    'cluster_resources.json',
-                    'kubernetes',
+                    "cluster_resources.json",
+                    "kubernetes",
                     DAY,
-                    'Kubernetes cluster resources'
+                    "Kubernetes cluster resources",
                 )
             ]
         )
         cls.resource_types = cls.config.get(
-            'org.kubernetes.cluster_resources.types', RESOURCE_TYPES_DEFAULT
+            "org.kubernetes.cluster_resources.types", RESOURCE_TYPES_DEFAULT
         )
         return cls
 
-    @store_raw_evidence('kubernetes/cluster_resources.json')
+    @store_raw_evidence("kubernetes/cluster_resources.json")
     def fetch_cluster_resources(self):
         """Fetch cluster resources."""
-        clusters = self.config.get('org.kubernetes.cluster_resources.clusters')
+        clusters = self.config.get("org.kubernetes.cluster_resources.clusters")
         for cluster in clusters:
-            token = self.config.creds.get(
-                'kubernetes', f'{cluster["label"]}_token'
-            )
-            cluster['resources'] = get_cluster_resources(
-                self.session(cluster['server']),
+            token = self.config.creds.get("kubernetes", f'{cluster["label"]}_token')
+            cluster["resources"] = get_cluster_resources(
+                self.session(cluster["server"]),
                 token,
                 self.resource_types,
-                verify=False
+                verify=False,
             )
         return json.dumps(clusters)

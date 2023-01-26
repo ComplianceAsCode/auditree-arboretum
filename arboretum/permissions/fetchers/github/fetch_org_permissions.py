@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,60 +22,48 @@ class GithubOrgPermissionsFetcher(collabs.GithubOrgCollaboratorsFetcher):
 
     def fetch_repo_forks(self):
         """Fetch Github repository forks."""
-        for config in self.config.get('org.permissions.org_integrity.orgs'):
-            host, org = config['url'].rsplit('/', 1)
-            url_hash = collabs.get_sha256_hash([config['url']], 10)
-            path = ['permissions', f'gh_forks_{url_hash}.json']
-            description = f'Forks of repos in the {org} GH org'
+        for config in self.config.get("org.permissions.org_integrity.orgs"):
+            host, org = config["url"].rsplit("/", 1)
+            url_hash = collabs.get_sha256_hash([config["url"]], 10)
+            path = ["permissions", f"gh_forks_{url_hash}.json"]
+            description = f"Forks of repos in the {org} GH org"
             self.config.add_evidences(
-                [
-                    collabs.RawEvidence(
-                        path[1], path[0], collabs.DAY, description
-                    )
-                ]
+                [collabs.RawEvidence(path[1], path[0], collabs.DAY, description)]
             )
-            with collabs.raw_evidence(self.locker, '/'.join(path)) as evidence:
+            with collabs.raw_evidence(self.locker, "/".join(path)) as evidence:
                 if evidence:
                     if host not in self.gh_pool:
                         self.gh_pool[host] = collabs.Github(base_url=host)
-                    if not config.get('repos'):
-                        repos = self.gh_pool[host].paginate_api(
-                            f'orgs/{org}/repos'
-                        )
-                        config['repos'] = [repo['name'] for repo in repos]
+                    if not config.get("repos"):
+                        repos = self.gh_pool[host].paginate_api(f"orgs/{org}/repos")
+                        config["repos"] = [repo["name"] for repo in repos]
                     forks = {}
-                    for repo in config['repos']:
+                    for repo in config["repos"]:
                         forks[repo] = self.gh_pool[host].paginate_api(
-                            f'repos/{org}/{repo}/forks'
+                            f"repos/{org}/{repo}/forks"
                         )
                     evidence.set_content(json.dumps(forks))
 
     def fetch_repo_teams(self):
         """Fetch Github repository teams."""
-        for config in self.config.get('org.permissions.org_integrity.orgs'):
-            host, org = config['url'].rsplit('/', 1)
-            url_hash = collabs.get_sha256_hash([config['url']], 10)
-            path = ['permissions', f'gh_teams_{url_hash}.json']
-            description = f'Repo access for GH teams in the {org} GH org'
+        for config in self.config.get("org.permissions.org_integrity.orgs"):
+            host, org = config["url"].rsplit("/", 1)
+            url_hash = collabs.get_sha256_hash([config["url"]], 10)
+            path = ["permissions", f"gh_teams_{url_hash}.json"]
+            description = f"Repo access for GH teams in the {org} GH org"
             self.config.add_evidences(
-                [
-                    collabs.RawEvidence(
-                        path[1], path[0], collabs.DAY, description
-                    )
-                ]
+                [collabs.RawEvidence(path[1], path[0], collabs.DAY, description)]
             )
-            with collabs.raw_evidence(self.locker, '/'.join(path)) as evidence:
+            with collabs.raw_evidence(self.locker, "/".join(path)) as evidence:
                 if evidence:
                     if host not in self.gh_pool:
                         self.gh_pool[host] = collabs.Github(base_url=host)
-                    if not config.get('repos'):
-                        repos = self.gh_pool[host].paginate_api(
-                            f'orgs/{org}/repos'
-                        )
-                        config['repos'] = [repo['name'] for repo in repos]
+                    if not config.get("repos"):
+                        repos = self.gh_pool[host].paginate_api(f"orgs/{org}/repos")
+                        config["repos"] = [repo["name"] for repo in repos]
                     teams = {}
-                    for repo in config['repos']:
+                    for repo in config["repos"]:
                         teams[repo] = self.gh_pool[host].paginate_api(
-                            f'repos/{org}/{repo}/teams'
+                            f"repos/{org}/{repo}/teams"
                         )
                     evidence.set_content(json.dumps(teams))

@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,20 +28,20 @@ class KubernetesUtilTest(unittest.TestCase):
         """Initialize test objects."""
         self.session = MagicMock()
         self.resp = MagicMock()
-        self.data = {'foo', 'bar'}
-        self.resp.json = MagicMock(return_value={'items': self.data})
+        self.data = {"foo", "bar"}
+        self.resp.json = MagicMock(return_value={"items": self.data})
 
     def test_get_cluster_resources_success_core_api(self):
         """Ensure that core API resources can be retrieved."""
         self.resp.raise_for_status = MagicMock()
         self.session.get = MagicMock(return_value=self.resp)
-        resource_type = 'r1'
+        resource_type = "r1"
         verify = True
         resources = get_cluster_resources(
-            self.session, '', [resource_type], verify=verify
+            self.session, "", [resource_type], verify=verify
         )
         self.session.get.assert_called_once_with(
-            f'api/v1/{resource_type}', verify=verify
+            f"api/v1/{resource_type}", verify=verify
         )
         self.resp.raise_for_status.assert_called_once()
         self.assertEqual(resources, {resource_type: self.data})
@@ -51,14 +50,12 @@ class KubernetesUtilTest(unittest.TestCase):
         """Ensure that custom resources can be retrieved."""
         self.resp.raise_for_status = MagicMock()
         self.session.get = MagicMock(return_value=self.resp)
-        resource_type = 'example.com/v1alpha1/mycustomtype'
+        resource_type = "example.com/v1alpha1/mycustomtype"
         verify = True
         resources = get_cluster_resources(
-            self.session, '', [resource_type], verify=verify
+            self.session, "", [resource_type], verify=verify
         )
-        self.session.get.assert_called_once_with(
-            f'apis/{resource_type}', verify=verify
-        )
+        self.session.get.assert_called_once_with(f"apis/{resource_type}", verify=verify)
         self.resp.raise_for_status.assert_called_once()
         self.assertEqual(resources, {resource_type: self.data})
 
@@ -67,12 +64,12 @@ class KubernetesUtilTest(unittest.TestCase):
         self.resp.raise_for_status = MagicMock(side_effect=HTTPError())
         self.resp.status_code = 404
         self.session.get = MagicMock(return_value=self.resp)
-        resource_types = ['r1']
+        resource_types = ["r1"]
         verify = True
         resources = get_cluster_resources(
-            self.session, '', resource_types, verify=verify
+            self.session, "", resource_types, verify=verify
         )
-        self.session.get.assert_called_once_with('api/v1/r1', verify=verify)
+        self.session.get.assert_called_once_with("api/v1/r1", verify=verify)
         self.resp.raise_for_status.assert_called_once()
         self.assertEqual(resources, {})
 
@@ -81,9 +78,7 @@ class KubernetesUtilTest(unittest.TestCase):
         self.resp.raise_for_status = MagicMock(side_effect=HTTPError())
         self.resp.status_code = 500
         self.session.get = MagicMock(return_value=self.resp)
-        resource_types = ['r1']
+        resource_types = ["r1"]
         verify = True
         with self.assertRaises(HTTPError):
-            get_cluster_resources(
-                self.session, '', resource_types, verify=verify
-            )
+            get_cluster_resources(self.session, "", resource_types, verify=verify)

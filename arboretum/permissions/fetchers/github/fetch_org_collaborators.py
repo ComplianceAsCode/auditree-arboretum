@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,30 +34,26 @@ class GithubOrgCollaboratorsFetcher(ComplianceFetcher):
 
     def fetch_gh_org_collaborators(self):
         """Fetch collaborators from GH organization repositories."""
-        for config in self.config.get('org.permissions.org_integrity.orgs'):
-            host, org = config['url'].rsplit('/', 1)
-            for aff in config.get('collaborator_types', GH_ALL_COLLABORATORS):
-                url_hash = get_sha256_hash([config['url']], 10)
-                json_file = f'gh_{aff}_collaborators_{url_hash}.json'
-                path = ['permissions', json_file]
-                description = (
-                    f'{aff.title()} collaborators of the {org} GH org'
-                )
+        for config in self.config.get("org.permissions.org_integrity.orgs"):
+            host, org = config["url"].rsplit("/", 1)
+            for aff in config.get("collaborator_types", GH_ALL_COLLABORATORS):
+                url_hash = get_sha256_hash([config["url"]], 10)
+                json_file = f"gh_{aff}_collaborators_{url_hash}.json"
+                path = ["permissions", json_file]
+                description = f"{aff.title()} collaborators of the {org} GH org"
                 self.config.add_evidences(
                     [RawEvidence(path[1], path[0], DAY, description)]
                 )
-                with raw_evidence(self.locker, '/'.join(path)) as evidence:
+                with raw_evidence(self.locker, "/".join(path)) as evidence:
                     if evidence:
                         if host not in self.gh_pool:
                             self.gh_pool[host] = Github(base_url=host)
-                        if not config.get('repos'):
-                            repos = self.gh_pool[host].paginate_api(
-                                f'orgs/{org}/repos'
-                            )
-                            config['repos'] = [repo['name'] for repo in repos]
+                        if not config.get("repos"):
+                            repos = self.gh_pool[host].paginate_api(f"orgs/{org}/repos")
+                            config["repos"] = [repo["name"] for repo in repos]
                         collabs = {}
-                        for repo in config['repos']:
-                            collabs_url = f'repos/{org}/{repo}/collaborators'
+                        for repo in config["repos"]:
+                            collabs_url = f"repos/{org}/{repo}/collaborators"
                             collabs[repo] = self.gh_pool[host].paginate_api(
                                 collabs_url, affiliation=aff
                             )

@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +13,7 @@
 # limitations under the License.
 """Utility module for IBM Cloud IAM."""
 
-from arboretum.common.ibm_constants import (
-    IAM_API_KEY_GRANT_TYPE, IAM_TOKEN_URL
-)
+from arboretum.common.ibm_constants import IAM_API_KEY_GRANT_TYPE, IAM_TOKEN_URL
 
 import requests
 
@@ -32,15 +29,15 @@ def get_tokens(api_key):
     :returns: a tuple containing the access token and the refresh token
     """
     headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json'
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
     }
     resp = requests.post(
         IAM_TOKEN_URL,
         headers=headers,
-        auth=('bx', 'bx'),
-        data=f'grant_type={IAM_API_KEY_GRANT_TYPE}&apikey={api_key}'
+        auth=("bx", "bx"),
+        data=f"grant_type={IAM_API_KEY_GRANT_TYPE}&apikey={api_key}",
     )
     resp.raise_for_status()
     tokens = resp.json()
-    return tokens['access_token'], tokens['refresh_token']
+    return tokens["access_token"], tokens["refresh_token"]

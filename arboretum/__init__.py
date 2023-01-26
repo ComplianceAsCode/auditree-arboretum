@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,4 +13,4 @@
 # limitations under the License.
 """Arboretum - Checking your compliance & security posture, continuously."""
 
-__version__ = '0.16.0'
+__version__ = "0.16.0"

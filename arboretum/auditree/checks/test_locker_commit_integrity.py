@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +16,7 @@
 from urllib.parse import urlparse
 
 from arboretum.auditree.evidences.repo_branch_protection import (
-    RepoBranchProtectionEvidence
+    RepoBranchProtectionEvidence,
 )
 from arboretum.auditree.evidences.repo_commit import RepoCommitEvidence
 
@@ -35,7 +34,7 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
 
         :returns: the title of the checks
         """
-        return 'Locker Commit Integrity'
+        return "Locker Commit Integrity"
 
     @classmethod
     def setUpClass(cls):
@@ -43,10 +42,10 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
         cls.config.add_evidences(
             [
                 ReportEvidence(
-                    'locker_commit_integrity.md',
-                    'auditree',
+                    "locker_commit_integrity.md",
+                    "auditree",
                     DAY,
-                    'Evidence locker commit integrity report.'
+                    "Evidence locker commit integrity report.",
                 )
             ]
         )
@@ -55,75 +54,72 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
     def test_recent_commit_integrity(self):
         """Check that recent commits are signed."""
         locker_branches = self.config.get(
-            'org.auditree.locker_integrity.branches',
+            "org.auditree.locker_integrity.branches",
             self.config.get(
-                'org.auditree.repo_integrity.branches',
-                {self.config.get('locker.repo_url'): ['master']}
-            )
+                "org.auditree.repo_integrity.branches",
+                {self.config.get("locker.repo_url"): ["master"]},
+            ),
         )
         for locker_url, branches in locker_branches.items():
             parsed = urlparse(locker_url)
-            service = 'gh'
-            if 'gitlab' in parsed.hostname:
-                service = 'gl'
-            elif 'bitbucket' in parsed.hostname:
-                service = 'bb'
-            repo = parsed.path.strip('/')
+            service = "gh"
+            if "gitlab" in parsed.hostname:
+                service = "gl"
+            elif "bitbucket" in parsed.hostname:
+                service = "bb"
+            repo = parsed.path.strip("/")
             for branch in branches:
                 filename = [
                     service,
-                    repo.lower().replace('/', '_').replace('-', '_'),
-                    branch.lower().replace('-', '_'),
-                    'recent_commits.json'
+                    repo.lower().replace("/", "_").replace("-", "_"),
+                    branch.lower().replace("-", "_"),
+                    "recent_commits.json",
                 ]
                 path = f'raw/auditree/{"_".join(filename)}'
                 with evidences(self, path) as raw:
                     commits = RepoCommitEvidence.from_evidence(raw)
                     for commit in commits.signed_status:
-                        if not commit['signed']:
+                        if not commit["signed"]:
                             self.add_failures(
-                                'Locker Recent Commits - (Unsigned)',
+                                "Locker Recent Commits - (Unsigned)",
                                 (
                                     f'[{commit["sha"][:8]}]({commit["url"]}) '
-                                    f'commit in `{locker_url}` '
-                                    f'`{branch}` branch.'
-                                )
+                                    f"commit in `{locker_url}` "
+                                    f"`{branch}` branch."
+                                ),
                             )
 
     def test_branch_protection_commit_integrity(self):
         """Check that branch protection requires signed commits."""
         locker_branches = self.config.get(
-            'org.auditree.locker_integrity.branches',
+            "org.auditree.locker_integrity.branches",
             self.config.get(
-                'org.auditree.repo_integrity.branches',
-                {self.config.get('locker.repo_url'): ['master']}
-            )
+                "org.auditree.repo_integrity.branches",
+                {self.config.get("locker.repo_url"): ["master"]},
+            ),
         )
         for locker_url, branches in locker_branches.items():
             parsed = urlparse(locker_url)
-            service = 'gh'
-            if 'gitlab' in parsed.hostname:
-                service = 'gl'
-            elif 'bitbucket' in parsed.hostname:
-                service = 'bb'
-            repo = parsed.path.strip('/')
+            service = "gh"
+            if "gitlab" in parsed.hostname:
+                service = "gl"
+            elif "bitbucket" in parsed.hostname:
+                service = "bb"
+            repo = parsed.path.strip("/")
             for branch in branches:
                 filename = [
                     service,
-                    repo.lower().replace('/', '_').replace('-', '_'),
-                    branch.lower().replace('-', '_'),
-                    'branch_protection.json'
+                    repo.lower().replace("/", "_").replace("-", "_"),
+                    branch.lower().replace("-", "_"),
+                    "branch_protection.json",
                 ]
                 path = f'raw/auditree/{"_".join(filename)}'
                 with evidences(self, path) as raw:
                     evidence = RepoBranchProtectionEvidence.from_evidence(raw)
                     if not evidence.signed_commits_required:
                         self.add_failures(
-                            (
-                                'Locker Branch Protection - '
-                                '(Signed Commits Disabled)'
-                            ),
-                            f'`{locker_url}` `{branch}` branch.'
+                            ("Locker Branch Protection - " "(Signed Commits Disabled)"),
+                            f"`{locker_url}` `{branch}` branch.",
                         )
 
     def get_reports(self):
@@ -132,7 +128,7 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
 
         :returns: the report(s) generated for this check
         """
-        return ['auditree/locker_commit_integrity.md']
+        return ["auditree/locker_commit_integrity.md"]
 
     def msg_recent_commit_integrity(self):
         """
@@ -140,7 +136,7 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
 
         :returns: notification dictionary
         """
-        return {'subtitle': 'Locker signed commits', 'body': None}
+        return {"subtitle": "Locker signed commits", "body": None}
 
     def msg_branch_protection_commit_integrity(self):
         """
@@ -148,4 +144,4 @@ class LockerCommitIntegrityCheck(ComplianceCheck):
 
         :returns: notification dictionary
         """
-        return {'subtitle': 'Locker require commit signatures', 'body': None}
+        return {"subtitle": "Locker require commit signatures", "body": None}

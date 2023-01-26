@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,15 +29,15 @@ def get_cluster_resources(session, token, resource_types, verify=True):
     :param verify: path to a CA certificate, or True/False. Set to False to
       skip TLS server certificate verification.  Defaults to True.
     """
-    session.headers.update({'Authorization': f'Bearer {token}'})
+    session.headers.update({"Authorization": f"Bearer {token}"})
     resources = {}
     for resource_type in resource_types:
-        resource_is_named_group = re.match(r'[^/]+/[^/]+/[^/]+', resource_type)
-        base_url = 'apis' if resource_is_named_group else 'api/v1'
+        resource_is_named_group = re.match(r"[^/]+/[^/]+/[^/]+", resource_type)
+        base_url = "apis" if resource_is_named_group else "api/v1"
         try:
-            resp = session.get(f'{base_url}/{resource_type}', verify=verify)
+            resp = session.get(f"{base_url}/{resource_type}", verify=verify)
             resp.raise_for_status()
-            resources[resource_type] = resp.json()['items']
+            resources[resource_type] = resp.json()["items"]
         except HTTPError:
             if resp.status_code != 404:
                 raise

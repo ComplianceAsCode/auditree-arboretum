@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,21 +23,21 @@ class CommonUtilsTest(unittest.TestCase):
 
     def test_singular_form(self):
         """Ensure that singular form is returned when expected."""
-        self.assertEqual(parse_seconds(86400), '1 day')
-        self.assertEqual(parse_seconds(3600), '1 hour')
-        self.assertEqual(parse_seconds(60), '1 minute')
-        self.assertEqual(parse_seconds(1), '1 second')
+        self.assertEqual(parse_seconds(86400), "1 day")
+        self.assertEqual(parse_seconds(3600), "1 hour")
+        self.assertEqual(parse_seconds(60), "1 minute")
+        self.assertEqual(parse_seconds(1), "1 second")
 
     def test_plural_form(self):
         """Ensure that plural form is returned when expected."""
-        self.assertEqual(parse_seconds(172800), '2 days')
-        self.assertEqual(parse_seconds(7200), '2 hours')
-        self.assertEqual(parse_seconds(120), '2 minutes')
-        self.assertEqual(parse_seconds(2), '2 seconds')
+        self.assertEqual(parse_seconds(172800), "2 days")
+        self.assertEqual(parse_seconds(7200), "2 hours")
+        self.assertEqual(parse_seconds(120), "2 minutes")
+        self.assertEqual(parse_seconds(2), "2 seconds")
 
     def test_free_form_mix(self):
         """Ensure that proper string is returned when expected."""
-        self.assertEqual(parse_seconds(86410), '1 day, 10 seconds')
+        self.assertEqual(parse_seconds(86410), "1 day, 10 seconds")
         self.assertEqual(
-            parse_seconds(123456), '1 day, 10 hours, 17 minutes, 36 seconds'
+            parse_seconds(123456), "1 day, 10 hours, 17 minutes, 36 seconds"
         )

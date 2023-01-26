@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,16 +23,16 @@ class RepoCommitEvidenceTest(unittest.TestCase):
 
     def test_no_content(self):
         """Ensure properties requiring content return None when no content."""
-        evidence = RepoCommitEvidence('gh_foo.json', 'bar')
+        evidence = RepoCommitEvidence("gh_foo.json", "bar")
         self.assertIsNone(evidence.signed_status)
         self.assertIsNone(evidence.author_info)
         self.assertIsNone(evidence.as_a_list)
 
     def test_gl_not_implemented(self):
         """Ensure NotImplementedError raised for Gitlab."""
-        evidence = RepoCommitEvidence('gl_foo.json', 'bar')
+        evidence = RepoCommitEvidence("gl_foo.json", "bar")
         evidence.set_content('{"matters": "not"}')
-        gl_err_msg = 'Support for Gitlab coming soon...'
+        gl_err_msg = "Support for Gitlab coming soon..."
         with self.assertRaises(NotImplementedError) as ss:
             _ = evidence.signed_status
         self.assertEqual(str(ss.exception), gl_err_msg)
@@ -43,9 +42,9 @@ class RepoCommitEvidenceTest(unittest.TestCase):
 
     def test_bb_not_implemented(self):
         """Ensure NotImplementedError raised for Bitbucket."""
-        evidence = RepoCommitEvidence('bb_foo.json', 'bar')
+        evidence = RepoCommitEvidence("bb_foo.json", "bar")
         evidence.set_content('{"matters": "not"}')
-        gl_err_msg = 'Support for Bitbucket coming soon...'
+        gl_err_msg = "Support for Bitbucket coming soon..."
         with self.assertRaises(NotImplementedError) as ss:
             _ = evidence.signed_status
         self.assertEqual(str(ss.exception), gl_err_msg)
@@ -55,41 +54,31 @@ class RepoCommitEvidenceTest(unittest.TestCase):
 
     def test_as_a_list(self):
         """Ensure dict returned when content is present."""
-        evidence = RepoCommitEvidence('gh_foo.json', 'bar')
+        evidence = RepoCommitEvidence("gh_foo.json", "bar")
         evidence.set_content('[{"foo": "bar"}]')
-        self.assertEqual(evidence.as_a_list, [{'foo': 'bar'}])
+        self.assertEqual(evidence.as_a_list, [{"foo": "bar"}])
 
     def test_signed_status(self):
         """Ensure commit signed details returned."""
-        evidence = RepoCommitEvidence('gh_foo.json', 'bar')
-        evidence.set_content(
-            open('./test/fixtures/gh_repo_commits.json').read()
-        )
+        evidence = RepoCommitEvidence("gh_foo.json", "bar")
+        evidence.set_content(open("./test/fixtures/gh_repo_commits.json").read())
         self.assertEqual(
             evidence.signed_status,
-            [
-                {
-                    'sha': 'a123456789',
-                    'url': 'https://the-commit-url',
-                    'signed': True
-                }
-            ]
+            [{"sha": "a123456789", "url": "https://the-commit-url", "signed": True}],
         )
 
     def test_author_info(self):
         """Ensure commit author details returned."""
-        evidence = RepoCommitEvidence('gh_foo.json', 'bar')
-        evidence.set_content(
-            open('./test/fixtures/gh_repo_commits.json').read()
-        )
+        evidence = RepoCommitEvidence("gh_foo.json", "bar")
+        evidence.set_content(open("./test/fixtures/gh_repo_commits.json").read())
         self.assertEqual(
             evidence.author_info,
             [
                 {
-                    'sha': 'a123456789',
-                    'url': 'https://the-commit-url',
-                    'author': 'The Dude',
-                    'datetime': '2020-08-20T12:12:12Z'
+                    "sha": "a123456789",
+                    "url": "https://the-commit-url",
+                    "author": "The Dude",
+                    "datetime": "2020-08-20T12:12:12Z",
                 }
-            ]
+            ],
         )
