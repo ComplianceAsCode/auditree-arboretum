@@ -130,7 +130,7 @@ class ICClusterResourceFetcher(ComplianceFetcher):
         oauth_server = token_endpoint.split("/")[2]
         s = self.session(f"https://{oauth_server}")
         token_path = (
-            "/oauth/authorize?client_id="
+            "/oauth/authorize?client_id="  # nosec B105
             "openshift-challenging-client&response_type=token"
         )
         resp = s.get(

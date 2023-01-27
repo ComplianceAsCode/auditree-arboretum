@@ -14,7 +14,7 @@
 """Common IBM constants."""
 
 # IBM Cloud token retrieval URL
-IAM_TOKEN_URL = "https://iam.cloud.ibm.com/identity/token"
+IAM_TOKEN_URL = "https://iam.cloud.ibm.com/identity/token"  # nosec B105
 
 # IAM token API KEY grant type
 IAM_API_KEY_GRANT_TYPE = "urn:ibm:params:oauth:grant-type:apikey"

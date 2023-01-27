@@ -13,9 +13,9 @@
 # limitations under the License.
 """Python PyPI release evidence."""
 
-from xml.etree.ElementTree import fromstring
-
 from compliance.evidence import RawEvidence
+
+from defusedxml.ElementTree import fromstring
 
 
 class PackageReleaseEvidence(RawEvidence):
