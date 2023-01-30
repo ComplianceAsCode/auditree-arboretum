@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,10 +29,7 @@ class ComplianceConfigFetcher(ComplianceFetcher):
         - Evidence is valid for the next two hours (for the check)
         """
         evidence = RawEvidence(
-            'compliance_config.json',
-            'auditree',
-            2 * HOUR,
-            'Compliance Configuration'
+            "compliance_config.json", "auditree", 2 * HOUR, "Compliance Configuration"
         )
         evidence.set_content(json.dumps(self.config.raw_config))
         self.locker.add_evidence(evidence)

@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +34,7 @@ class ComplianceConfigCheck(ComplianceCheck):
 
         :returns: the title of the checks
         """
-        return 'Compliance Configuration'
+        return "Compliance Configuration"
 
     @classmethod
     def setUpClass(cls):
@@ -43,29 +42,26 @@ class ComplianceConfigCheck(ComplianceCheck):
         cls.config.add_evidences(
             [
                 ReportEvidence(
-                    'compliance_config.md',
-                    'auditree',
+                    "compliance_config.md",
+                    "auditree",
                     DAY,
-                    'Compliance repository configuration settings report.'
+                    "Compliance repository configuration settings report.",
                 )
             ]
         )
 
         return cls
 
-    @with_raw_evidences('auditree/compliance_config.json')
+    @with_raw_evidences("auditree/compliance_config.json")
     def test_compliance_configuration(self, evidence):
         """Check that current config matches with config evidence."""
         evidence_config = json.loads(evidence.content)
         if evidence_config != self.config.raw_config:
-            evidence = json.dumps(evidence_config, indent=2).split('\n')
-            config = json.dumps(self.config.raw_config, indent=2).split('\n')
+            evidence = json.dumps(evidence_config, indent=2).split("\n")
+            config = json.dumps(self.config.raw_config, indent=2).split("\n")
             self.add_failures(
-                'Differences found',
-                {
-                    'Fetcher Configuration': evidence,
-                    'Check Configuration': config
-                }
+                "Differences found",
+                {"Fetcher Configuration": evidence, "Check Configuration": config},
             )
 
     def get_reports(self):
@@ -74,7 +70,7 @@ class ComplianceConfigCheck(ComplianceCheck):
 
         :returns: the report(s) generated for this check
         """
-        return ['auditree/compliance_config.md']
+        return ["auditree/compliance_config.md"]
 
     def get_notification_message(self):
         """
@@ -82,4 +78,4 @@ class ComplianceConfigCheck(ComplianceCheck):
 
         :returns: notification dictionary.
         """
-        return {'body': None}
+        return {"body": None}

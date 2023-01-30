@@ -17,6 +17,8 @@
 develop:
 	pip install -q -e .[dev] --upgrade --upgrade-strategy eager
 	pre-commit install
+
+update-pre-commit:
 	pre-commit autoupdate
 
 install:
@@ -27,15 +29,10 @@ uninstall:
 	pip uninstall auditree-arboretum
 
 code-format:
-	pre-commit run yapf --all-files
+	pre-commit run black --all-files
 
 code-lint:
 	pre-commit run flake8 --all-files
 
 test::
 	pytest --cov arboretum test -v
-
-docs:
-	# Build the API docs from the source code - overwrites those files, which are ignored by git
-	sphinx-apidoc -o doc-source arboretum
-	sphinx-build doc-source doc

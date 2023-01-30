@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,10 @@
 """Common IBM constants."""
 
 # IBM Cloud token retrieval URL
-IAM_TOKEN_URL = 'https://iam.cloud.ibm.com/identity/token'
+IAM_TOKEN_URL = "https://iam.cloud.ibm.com/identity/token"  # nosec B105
 
 # IAM token API KEY grant type
-IAM_API_KEY_GRANT_TYPE = 'urn:ibm:params:oauth:grant-type:apikey'
+IAM_API_KEY_GRANT_TYPE = "urn:ibm:params:oauth:grant-type:apikey"
 
 # IBM Cloud containers API base URL
-IC_CONTAINERS_BASE_URL = 'https://containers.cloud.ibm.com'
+IC_CONTAINERS_BASE_URL = "https://containers.cloud.ibm.com"

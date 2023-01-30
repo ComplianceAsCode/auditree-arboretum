@@ -67,9 +67,9 @@ to include the fetchers and checks from this library in your downstream project.
 * Class: [ICClusterResourceFetcher][fetch-ibm-cloud-cluster-resource]
 * Purpose: Write the resources of **managed** Kubernetes clusters to the evidence locker.
 * Behavior: Retrieve managed Kubernetes cluster resource data based on clusters gathered by the [IBM Cloud cluster list fetcher][fetch-cluster-list].  TTL is set to 1 day.
-* NOTE: 
+* NOTE:
    * Do not use this fetcher for stand-alone clusters. For Kubernetes stand-alone clusters, use the [Kubernetes cluster resource fetcher][fetch-kube-cluster-resource].
-   * This fetcher is dependent on evidence gathered by the [IBM Cloud cluster list fetcher][fetch-cluster-list], 
+   * This fetcher is dependent on evidence gathered by the [IBM Cloud cluster list fetcher][fetch-cluster-list],
  i.e. importing the IBM Cloud cluster list fetcher is a prerequisite for the IKS cluster resource fetcher to work.
 
 * Configuration elements:

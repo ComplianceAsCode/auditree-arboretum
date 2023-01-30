@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +13,9 @@
 # limitations under the License.
 """Python PyPI release evidence."""
 
-from xml.etree.ElementTree import fromstring
-
 from compliance.evidence import RawEvidence
+
+from defusedxml.ElementTree import fromstring
 
 
 class PackageReleaseEvidence(RawEvidence):
@@ -32,7 +31,7 @@ class PackageReleaseEvidence(RawEvidence):
         """
         if not self.content:
             return
-        if not hasattr(self, '_latest_release'):
+        if not hasattr(self, "_latest_release"):
             root = fromstring(self.content)
-            self._latest_release = root[0].find('item').find('title').text
+            self._latest_release = root[0].find("item").find("title").text
         return self._latest_release

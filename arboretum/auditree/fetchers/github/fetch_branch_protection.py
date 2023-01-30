@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +18,7 @@ import os
 from urllib.parse import urlparse
 
 from arboretum.auditree.evidences.repo_branch_protection import (
-    RepoBranchProtectionEvidence
+    RepoBranchProtectionEvidence,
 )
 
 from compliance.evidence import DAY, raw_evidence
@@ -33,22 +32,22 @@ class GithubRepoBranchProtectionFetcher(ComplianceFetcher):
     def fetch_gh_repo_branch_protection_details(self):
         """Fetch Github repository branch protection metadata."""
         branches = self.config.get(
-            'org.auditree.repo_integrity.branches',
-            {self.config.get('locker.repo_url'): ['master']}
+            "org.auditree.repo_integrity.branches",
+            {self.config.get("locker.repo_url"): ["master"]},
         )
         current_url = None
         github = None
         for repo_url, repo_branches in branches.items():
             parsed = urlparse(repo_url)
-            base_url = f'{parsed.scheme}://{parsed.hostname}'
-            repo = parsed.path.strip('/')
+            base_url = f"{parsed.scheme}://{parsed.hostname}"
+            repo = parsed.path.strip("/")
             for branch in repo_branches:
                 file_prefix_parts = [
-                    repo.lower().replace('/', '_').replace('-', '_'),
-                    branch.lower().replace('-', '_')
+                    repo.lower().replace("/", "_").replace("-", "_"),
+                    branch.lower().replace("-", "_"),
                 ]
-                file_prefix = '_'.join(file_prefix_parts)
-                path = ['auditree', f'gh_{file_prefix}_branch_protection.json']
+                file_prefix = "_".join(file_prefix_parts)
+                path = ["auditree", f"gh_{file_prefix}_branch_protection.json"]
                 if base_url != current_url:
                     github = Github(self.config.creds, base_url)
                     current_url = base_url
@@ -59,9 +58,9 @@ class GithubRepoBranchProtectionFetcher(ComplianceFetcher):
                             path[0],
                             DAY,
                             (
-                                f'Github branch protection for {repo} repo '
-                                f'{branch} branch'
-                            )
+                                f"Github branch protection for {repo} repo "
+                                f"{branch} branch"
+                            ),
                         )
                     ]
                 )
@@ -70,8 +69,6 @@ class GithubRepoBranchProtectionFetcher(ComplianceFetcher):
                     if evidence:
                         evidence.set_content(
                             json.dumps(
-                                github.get_branch_protection_details(
-                                    repo, branch
-                                )
+                                github.get_branch_protection_details(repo, branch)
                             )
                         )

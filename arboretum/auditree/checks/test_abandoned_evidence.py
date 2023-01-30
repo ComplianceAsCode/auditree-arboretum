@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +21,9 @@ from arboretum.common.utils import parse_seconds
 from compliance.check import ComplianceCheck
 from compliance.evidence import DAY, ReportEvidence
 from compliance.locker import (
-    AE_DEFAULT, EvidenceNotFoundError, HistoricalEvidenceNotFoundError
+    AE_DEFAULT,
+    EvidenceNotFoundError,
+    HistoricalEvidenceNotFoundError,
 )
 
 
@@ -41,7 +42,7 @@ class AbandonedEvidenceCheck(ComplianceCheck):
 
         :returns: the title of the checks
         """
-        return getattr(self, '_title', 'Abandoned Evidence')
+        return getattr(self, "_title", "Abandoned Evidence")
 
     @property
     def formatted_threshold(self):
@@ -51,9 +52,7 @@ class AbandonedEvidenceCheck(ComplianceCheck):
         :returns: the AE threshold as 'd days, h hours, m minutes, s seconds'
         """
         return parse_seconds(
-            self.config.get(
-                'org.auditree.abandoned_evidence.threshold', AE_DEFAULT
-            )
+            self.config.get("org.auditree.abandoned_evidence.threshold", AE_DEFAULT)
         )
 
     @classmethod
@@ -62,10 +61,10 @@ class AbandonedEvidenceCheck(ComplianceCheck):
         cls.config.add_evidences(
             [
                 ReportEvidence(
-                    'abandoned_evidence.md',
-                    'auditree',
+                    "abandoned_evidence.md",
+                    "auditree",
                     DAY,
-                    'Evidence locker abandoned evidence report.'
+                    "Evidence locker abandoned evidence report.",
                 )
             ]
         )
@@ -74,12 +73,12 @@ class AbandonedEvidenceCheck(ComplianceCheck):
     def test_abandoned_evidence(self):
         """Check for evidence that may have been abandoned."""
         ignore_history = self.config.get(
-            'org.auditree.abandoned_evidence.ignore_history', False
+            "org.auditree.abandoned_evidence.ignore_history", False
         )
         if ignore_history:
             self._test_without_history()
         else:
-            ae_path = 'raw/auditree/abandoned_evidence.json'
+            ae_path = "raw/auditree/abandoned_evidence.json"
             current_evidence = None
             previous_evidence = None
             try:
@@ -96,49 +95,47 @@ class AbandonedEvidenceCheck(ComplianceCheck):
                 self._test_with_history(current_evidence, previous_evidence)
 
     def _test_with_history(self, current_evidence, previous_evidence=None):
-        self._title = 'Latest Abandoned Evidence'
+        self._title = "Latest Abandoned Evidence"
         current = json.loads(current_evidence.content)
-        previous = {'abandoned': [], 'exceptions': {}}
+        previous = {"abandoned": [], "exceptions": {}}
         if previous_evidence:
             previous = json.loads(previous_evidence.content)
-        for ae_path in current['abandoned']:
-            if ae_path not in previous['abandoned']:
+        for ae_path in current["abandoned"]:
+            if ae_path not in previous["abandoned"]:
                 metadata = self.locker.get_evidence_metadata(ae_path) or {}
                 ae = {
-                    'ae_path': ae_path,
-                    'last_update': metadata.get('last_update', 'UNAVAILABLE')
+                    "ae_path": ae_path,
+                    "last_update": metadata.get("last_update", "UNAVAILABLE"),
                 }
-                self.add_failures('Abandoned evidence', ae)
-        for ae_path, reason in current['exceptions'].items():
-            if ae_path not in previous['exceptions'].keys():
+                self.add_failures("Abandoned evidence", ae)
+        for ae_path, reason in current["exceptions"].items():
+            if ae_path not in previous["exceptions"].keys():
                 metadata = self.locker.get_evidence_metadata(ae_path) or {}
                 ae = {
-                    'ae_path': ae_path,
-                    'last_update': metadata.get('last_update', 'UNAVAILABLE'),
-                    'exception_reason': reason
+                    "ae_path": ae_path,
+                    "last_update": metadata.get("last_update", "UNAVAILABLE"),
+                    "exception_reason": reason,
                 }
-                self.add_warnings('Exceptions', ae)
+                self.add_warnings("Exceptions", ae)
 
     def _test_without_history(self):
         """For backward compatibility."""
         ae_paths = self.locker.get_abandoned_evidences(
-            self.config.get(
-                'org.auditree.abandoned_evidence.threshold', AE_DEFAULT
-            )
+            self.config.get("org.auditree.abandoned_evidence.threshold", AE_DEFAULT)
         )
-        exceptions_path = 'org.auditree.abandoned_evidence.exceptions'
+        exceptions_path = "org.auditree.abandoned_evidence.exceptions"
         exceptions = self.config.get(exceptions_path, {})
         for ae_path in ae_paths:
             metadata = self.locker.get_evidence_metadata(ae_path) or {}
             ae = {
-                'ae_path': ae_path,
-                'last_update': metadata.get('last_update', 'UNAVAILABLE')
+                "ae_path": ae_path,
+                "last_update": metadata.get("last_update", "UNAVAILABLE"),
             }
             if ae_path in exceptions.keys():
-                ae['exception_reason'] = exceptions[ae_path]
-                self.add_warnings('Exceptions', ae)
+                ae["exception_reason"] = exceptions[ae_path]
+                self.add_warnings("Exceptions", ae)
             else:
-                self.add_failures('Abandoned evidence', ae)
+                self.add_failures("Abandoned evidence", ae)
 
     def get_reports(self):
         """
@@ -146,7 +143,7 @@ class AbandonedEvidenceCheck(ComplianceCheck):
 
         :returns: the report(s) generated for this check.
         """
-        return ['auditree/abandoned_evidence.md']
+        return ["auditree/abandoned_evidence.md"]
 
     def get_notification_message(self):
         """
@@ -154,4 +151,4 @@ class AbandonedEvidenceCheck(ComplianceCheck):
 
         :returns: notification dictionary.
         """
-        return {'body': None}
+        return {"body": None}

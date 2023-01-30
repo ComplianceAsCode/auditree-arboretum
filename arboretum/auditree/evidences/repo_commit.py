@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,11 +26,11 @@ class RepoCommitEvidence(RawEvidence):
         """Provide verified/signed status for each commit as a list."""
         if self.content:
             ss_factory = {
-                'gh': self._get_gh_signed_status,
-                'gl': self._get_gl_signed_status,
-                'bb': self._get_bb_signed_status
+                "gh": self._get_gh_signed_status,
+                "gl": self._get_gl_signed_status,
+                "bb": self._get_bb_signed_status,
             }
-            if not hasattr(self, '_signed_status'):
+            if not hasattr(self, "_signed_status"):
                 self._signed_status = ss_factory[self.name[:2]]()
             return self._signed_status
 
@@ -40,11 +39,11 @@ class RepoCommitEvidence(RawEvidence):
         """Provide author name and date/time for each commit as a list."""
         if self.content:
             ai_factory = {
-                'gh': self._get_gh_author_info,
-                'gl': self._get_gl_author_info,
-                'bb': self._get_bb_author_info
+                "gh": self._get_gh_author_info,
+                "gl": self._get_gl_author_info,
+                "bb": self._get_bb_author_info,
             }
-            if not hasattr(self, '_author_info'):
+            if not hasattr(self, "_author_info"):
                 self._author_info = ai_factory[self.name[:2]]()
             return self._author_info
 
@@ -52,7 +51,7 @@ class RepoCommitEvidence(RawEvidence):
     def as_a_list(self):
         """Provide recent commits content as a list."""
         if self.content:
-            if not hasattr(self, '_as_a_list'):
+            if not hasattr(self, "_as_a_list"):
                 self._as_a_list = json.loads(self.content)
             return self._as_a_list
 
@@ -61,34 +60,34 @@ class RepoCommitEvidence(RawEvidence):
         for commit in self.as_a_list:
             commits.append(
                 {
-                    'sha': commit['sha'],
-                    'url': commit['html_url'],
-                    'signed': commit['commit']['verification']['verified']
+                    "sha": commit["sha"],
+                    "url": commit["html_url"],
+                    "signed": commit["commit"]["verification"]["verified"],
                 }
             )
         return commits
 
     def _get_gl_signed_status(self):
-        raise NotImplementedError('Support for Gitlab coming soon...')
+        raise NotImplementedError("Support for Gitlab coming soon...")
 
     def _get_bb_signed_status(self):
-        raise NotImplementedError('Support for Bitbucket coming soon...')
+        raise NotImplementedError("Support for Bitbucket coming soon...")
 
     def _get_gh_author_info(self):
         commits = []
         for commit in self.as_a_list:
             commits.append(
                 {
-                    'sha': commit['sha'],
-                    'url': commit['html_url'],
-                    'author': commit['commit']['author']['name'],
-                    'datetime': commit['commit']['author']['date']
+                    "sha": commit["sha"],
+                    "url": commit["html_url"],
+                    "author": commit["commit"]["author"]["name"],
+                    "datetime": commit["commit"]["author"]["date"],
                 }
             )
         return commits
 
     def _get_gl_author_info(self):
-        raise NotImplementedError('Support for Gitlab coming soon...')
+        raise NotImplementedError("Support for Gitlab coming soon...")
 
     def _get_bb_author_info(self):
-        raise NotImplementedError('Support for Bitbucket coming soon...')
+        raise NotImplementedError("Support for Bitbucket coming soon...")

@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,21 +31,19 @@ class GithubFilePathCommitsFetcher(ComplianceFetcher):
 
     def fetch_gh_repo_branch_file_path_recent_commits_details(self):
         """Fetch Github repository branch file path recent commits metadata."""
-        filepaths = self.config.get('org.auditree.repo_integrity.filepaths')
+        filepaths = self.config.get("org.auditree.repo_integrity.filepaths")
         current_url = None
         github = None
         for repo_url, repo_branches in filepaths.items():
             parsed = urlparse(repo_url)
-            base_url = f'{parsed.scheme}://{parsed.hostname}'
-            repo = parsed.path.strip('/')
+            base_url = f"{parsed.scheme}://{parsed.hostname}"
+            repo = parsed.path.strip("/")
             for branch, repo_filepaths in repo_branches.items():
                 for filepath in repo_filepaths:
-                    ev_file_prefix = f'{repo}_{branch}_{filepath}'.lower()
-                    for symbol in [' ', '/', '-', '.']:
-                        ev_file_prefix = ev_file_prefix.replace(symbol, '_')
-                    path = [
-                        'auditree', f'gh_{ev_file_prefix}_recent_commits.json'
-                    ]
+                    ev_file_prefix = f"{repo}_{branch}_{filepath}".lower()
+                    for symbol in [" ", "/", "-", "."]:
+                        ev_file_prefix = ev_file_prefix.replace(symbol, "_")
+                    path = ["auditree", f"gh_{ev_file_prefix}_recent_commits.json"]
                     if base_url != current_url:
                         github = Github(self.config.creds, base_url)
                         current_url = base_url
@@ -57,25 +54,22 @@ class GithubFilePathCommitsFetcher(ComplianceFetcher):
                                 path[0],
                                 DAY,
                                 (
-                                    f'Github recent commits for {repo} repo '
-                                    f'{branch} branch, {filepath} file path'
-                                )
+                                    f"Github recent commits for {repo} repo "
+                                    f"{branch} branch, {filepath} file path"
+                                ),
                             )
                         ]
                     )
                     joined_path = os.path.join(*path)
                     with raw_evidence(self.locker, joined_path) as evidence:
                         if evidence:
-                            meta = self.locker.get_evidence_metadata(
-                                evidence.path
-                            )
+                            meta = self.locker.get_evidence_metadata(evidence.path)
                             if meta is None:
                                 meta = {}
                             utcnow = datetime.utcnow()
                             now = utcnow.strftime(LOCKER_DTTM_FORMAT)
                             since = datetime.strptime(
-                                meta.get('last_update', now),
-                                LOCKER_DTTM_FORMAT
+                                meta.get("last_update", now), LOCKER_DTTM_FORMAT
                             )
                             evidence.set_content(
                                 json.dumps(

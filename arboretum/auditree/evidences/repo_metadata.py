@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,11 +29,11 @@ class RepoMetadataEvidence(RawEvidence):
         """Provide the repo size."""
         if self.content:
             rs_factory = {
-                'gh': self._get_gh_repo_size,
-                'gl': self._get_gl_repo_size,
-                'bb': self._get_bb_repo_size
+                "gh": self._get_gh_repo_size,
+                "gl": self._get_gl_repo_size,
+                "bb": self._get_bb_repo_size,
             }
-            if not hasattr(self, '_size'):
+            if not hasattr(self, "_size"):
                 self._size = rs_factory[self.name[:2]]()
             return self._size
 
@@ -42,7 +41,7 @@ class RepoMetadataEvidence(RawEvidence):
     def relevant_content(self):
         """Provide evidence content minus the ignored fields as JSON."""
         if self.content:
-            if not hasattr(self, '_relevant_content'):
+            if not hasattr(self, "_relevant_content"):
                 metadata = json.loads(self.content)
                 for field in IGNORE_REPO_METADATA[self.name[:2]]:
                     try:
@@ -53,10 +52,10 @@ class RepoMetadataEvidence(RawEvidence):
             return self._relevant_content
 
     def _get_gh_repo_size(self):
-        return json.loads(self.content)['size']
+        return json.loads(self.content)["size"]
 
     def _get_gl_repo_size(self):
-        raise NotImplementedError('Support for Gitlab coming soon...')
+        raise NotImplementedError("Support for Gitlab coming soon...")
 
     def _get_bb_repo_size(self):
-        raise NotImplementedError('Support for Bitbucket coming soon...')
+        raise NotImplementedError("Support for Bitbucket coming soon...")

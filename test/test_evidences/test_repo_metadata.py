@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,40 +24,36 @@ class RepoMetadataEvidenceTest(unittest.TestCase):
 
     def test_no_content(self):
         """Ensure properties requiring content return None when no content."""
-        evidence = RepoMetadataEvidence('gh_foo.json', 'bar')
+        evidence = RepoMetadataEvidence("gh_foo.json", "bar")
         self.assertIsNone(evidence.repo_size)
         self.assertIsNone(evidence.relevant_content)
 
     def test_gl_not_implemented(self):
         """Ensure NotImplementedError raised for Gitlab."""
-        evidence = RepoMetadataEvidence('gl_foo.json', 'bar')
+        evidence = RepoMetadataEvidence("gl_foo.json", "bar")
         evidence.set_content('{"matters": "not"}')
-        gl_err_msg = 'Support for Gitlab coming soon...'
+        gl_err_msg = "Support for Gitlab coming soon..."
         with self.assertRaises(NotImplementedError) as rs:
             _ = evidence.repo_size
         self.assertEqual(str(rs.exception), gl_err_msg)
 
     def test_bb_not_implemented(self):
         """Ensure NotImplementedError raised for Bitbucket."""
-        evidence = RepoMetadataEvidence('bb_foo.json', 'bar')
+        evidence = RepoMetadataEvidence("bb_foo.json", "bar")
         evidence.set_content('{"matters": "not"}')
-        gl_err_msg = 'Support for Bitbucket coming soon...'
+        gl_err_msg = "Support for Bitbucket coming soon..."
         with self.assertRaises(NotImplementedError) as rs:
             _ = evidence.repo_size
         self.assertEqual(str(rs.exception), gl_err_msg)
 
     def test_repo_size(self):
         """Ensure repo size is returned."""
-        evidence = RepoMetadataEvidence('gh_foo.json', 'bar')
-        evidence.set_content(
-            open('./test/fixtures/gh_repo_metadata.json').read()
-        )
+        evidence = RepoMetadataEvidence("gh_foo.json", "bar")
+        evidence.set_content(open("./test/fixtures/gh_repo_metadata.json").read())
         self.assertEqual(evidence.repo_size, 12345)
 
     def test_relevant_content(self):
         """Ensure all IGNORED_REPO_METADATA fields are parsed out."""
-        evidence = RepoMetadataEvidence('gh_foo.json', 'bar')
-        evidence.set_content(
-            open('./test/fixtures/gh_repo_metadata.json').read()
-        )
-        self.assertEqual(json.loads(evidence.relevant_content), {'foo': 'bar'})
+        evidence = RepoMetadataEvidence("gh_foo.json", "bar")
+        evidence.set_content(open("./test/fixtures/gh_repo_metadata.json").read())
+        self.assertEqual(json.loads(evidence.relevant_content), {"foo": "bar"})

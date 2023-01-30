@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,11 +26,11 @@ class RepoBranchProtectionEvidence(RawEvidence):
         """Provide branch protection enforcement status for admins."""
         if self.content:
             ae_factory = {
-                'gh': self._get_gh_admin_enforce,
-                'gl': self._get_gl_admin_enforce,
-                'bb': self._get_bb_admin_enforce
+                "gh": self._get_gh_admin_enforce,
+                "gl": self._get_gl_admin_enforce,
+                "bb": self._get_bb_admin_enforce,
             }
-            if not hasattr(self, '_admin_enforce'):
+            if not hasattr(self, "_admin_enforce"):
                 self._admin_enforce = ae_factory[self.name[:2]]()
             return self._admin_enforce
 
@@ -40,11 +39,11 @@ class RepoBranchProtectionEvidence(RawEvidence):
         """Provide signed commits requirement status."""
         if self.content:
             sc_factory = {
-                'gh': self._get_gh_signed_commits_required,
-                'gl': self._get_gl_signed_commits_required,
-                'bb': self._get_bb_signed_commits_required
+                "gh": self._get_gh_signed_commits_required,
+                "gl": self._get_gl_signed_commits_required,
+                "bb": self._get_bb_signed_commits_required,
             }
-            if not hasattr(self, '_signed_commits_required'):
+            if not hasattr(self, "_signed_commits_required"):
                 self._signed_commits_required = sc_factory[self.name[:2]]()
             return self._signed_commits_required
 
@@ -52,25 +51,25 @@ class RepoBranchProtectionEvidence(RawEvidence):
     def as_a_dict(self):
         """Provide branch protection content as a dictionary."""
         if self.content:
-            if not hasattr(self, '_as_a_dict'):
+            if not hasattr(self, "_as_a_dict"):
                 self._as_a_dict = json.loads(self.content)
             return self._as_a_dict
 
     def _get_gh_admin_enforce(self):
-        return self.as_a_dict.get('enforce_admins', {}).get('enabled', False)
+        return self.as_a_dict.get("enforce_admins", {}).get("enabled", False)
 
     def _get_gl_admin_enforce(self):
-        raise NotImplementedError('Support for Gitlab coming soon...')
+        raise NotImplementedError("Support for Gitlab coming soon...")
 
     def _get_bb_admin_enforce(self):
-        raise NotImplementedError('Support for Bitbucket coming soon...')
+        raise NotImplementedError("Support for Bitbucket coming soon...")
 
     def _get_gh_signed_commits_required(self):
-        sigs = self.as_a_dict.get('required_signatures', {})
-        return sigs.get('enabled', False)
+        sigs = self.as_a_dict.get("required_signatures", {})
+        return sigs.get("enabled", False)
 
     def _get_gl_signed_commits_required(self):
-        raise NotImplementedError('Support for Gitlab coming soon...')
+        raise NotImplementedError("Support for Gitlab coming soon...")
 
     def _get_bb_signed_commits_required(self):
-        raise NotImplementedError('Support for Bitbucket coming soon...')
+        raise NotImplementedError("Support for Bitbucket coming soon...")

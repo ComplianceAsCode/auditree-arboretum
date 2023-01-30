@@ -98,8 +98,8 @@ how to include the fetchers and checks from this library in your downstream proj
 
 * Class: [OrgPermissionsCheck][org-permissions-check]
 * Purpose: Ensure that `direct` collaborators and forks do not exist in the organization repositories.
-* Behavior: Collaborators and forks are checked for every repository. 
-A failure is generated when `direct` collaborators are found in a repository. A warning is generated for each fork found for a repository. 
+* Behavior: Collaborators and forks are checked for every repository.
+A failure is generated when `direct` collaborators are found in a repository. A warning is generated for each fork found for a repository.
 * Evidence depended upon:
   * `direct` collaborators found in organization repositories.
     * `raw/permissions/<gh|gl|bb>_direct_collaborators_<org_url_hash>.json`
@@ -115,7 +115,7 @@ A failure is generated when `direct` collaborators are found in a repository. A 
         * `url`
            * Required
            * Organization URL (string).
-          
+
 * Example configuration:
 
   ```json
@@ -133,7 +133,7 @@ A failure is generated when `direct` collaborators are found in a repository. A 
     }
   }
   ```
-  
+
 * Import statement:
 
    ```python
@@ -164,7 +164,7 @@ direct collaborators matching the exceptions are found.
            * List of dictionaries:
              * `user`
                 * Required
-                * Github, Gitlab or Bitbucket user id (string). 
+                * Github, Gitlab or Bitbucket user id (string).
                 * Use to define the user to be treated as an exception.
                 * NOTE: Only Github is currently supported by this check. Gitlab and Bitbucket support coming soon...
              * `repos`

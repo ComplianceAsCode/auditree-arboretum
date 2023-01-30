@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,22 +31,22 @@ class ClusterListFetcher(ComplianceFetcher):
         cls.config.add_evidences(
             [
                 RawEvidence(
-                    'cluster_list.json',
-                    'ibm_cloud',
+                    "cluster_list.json",
+                    "ibm_cloud",
                     DAY,
-                    'IBM Cloud cluster list inventory'
+                    "IBM Cloud cluster list inventory",
                 )
             ]
         )
-        headers = {'Accept': 'application/json'}
+        headers = {"Accept": "application/json"}
         cls.session(IC_CONTAINERS_BASE_URL, **headers)
 
         return cls
 
-    @store_raw_evidence('ibm_cloud/cluster_list.json')
+    @store_raw_evidence("ibm_cloud/cluster_list.json")
     def fetch_cluster_list(self):
         """Fetch IBM Cloud cluster list."""
-        accounts = self.config.get('org.ibm_cloud.accounts')
+        accounts = self.config.get("org.ibm_cloud.accounts")
         cluster_list = {}
         for account in accounts:
             cluster_list[account] = self._get_cluster_list(account)
@@ -56,12 +55,12 @@ class ClusterListFetcher(ComplianceFetcher):
     def _get_cluster_list(self, account):
 
         # get credential for the account
-        api_key = getattr(self.config.creds['ibm_cloud'], f'{account}_api_key')
+        api_key = getattr(self.config.creds["ibm_cloud"], f"{account}_api_key")
         # get cluster list
         # https://cloud.ibm.com/apidocs/kubernetes#getclusters
         self.session().headers.update(
-            {'Authorization': f'Bearer {get_tokens(api_key)[0]}'}
+            {"Authorization": f"Bearer {get_tokens(api_key)[0]}"}
         )
-        resp = self.session().get('/global/v1/clusters')
+        resp = self.session().get("/global/v1/clusters")
         resp.raise_for_status()
         return resp.json()

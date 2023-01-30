@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +15,7 @@
 
 import json
 
-from arboretum.auditree.evidences.python_package_release import (
-    PackageReleaseEvidence
-)
+from arboretum.auditree.evidences.python_package_release import PackageReleaseEvidence
 from arboretum.common.constants import PYPI_RSS_BASE_URL
 
 from compliance.evidence import DAY, RawEvidence, store_raw_evidence
@@ -36,32 +33,27 @@ class PythonPackageFetcher(ComplianceFetcher):
         cls.config.add_evidences(
             [
                 RawEvidence(
-                    'python_packages.json',
-                    'auditree',
-                    DAY,
-                    'Python Package List'
+                    "python_packages.json", "auditree", DAY, "Python Package List"
                 ),
                 PackageReleaseEvidence(
-                    'auditree_arboretum_releases.xml',
-                    'auditree',
+                    "auditree_arboretum_releases.xml",
+                    "auditree",
                     DAY,
-                    'Auditree Arboretum PyPI releases'
+                    "Auditree Arboretum PyPI releases",
                 ),
                 PackageReleaseEvidence(
-                    'auditree_framework_releases.xml',
-                    'auditree',
+                    "auditree_framework_releases.xml",
+                    "auditree",
                     DAY,
-                    'Auditree Framework PyPI releases'
-                )
+                    "Auditree Framework PyPI releases",
+                ),
             ]
         )
-        headers = {
-            'Content-Type': 'application/xml', 'Accept': 'application/xml'
-        }
+        headers = {"Content-Type": "application/xml", "Accept": "application/xml"}
         cls.session(PYPI_RSS_BASE_URL, **headers)
         return cls
 
-    @store_raw_evidence('auditree/python_packages.json')
+    @store_raw_evidence("auditree/python_packages.json")
     def fetch_python_package_list(self):
         """Fetch the Python packages in the current virtual environment."""
         packages = {}
@@ -70,22 +62,22 @@ class PythonPackageFetcher(ComplianceFetcher):
 
         return json.dumps(packages)
 
-    @store_raw_evidence('auditree/auditree_arboretum_releases.xml')
+    @store_raw_evidence("auditree/auditree_arboretum_releases.xml")
     def fetch_auditree_arboretum_releases(self):
         """Fetch the auditree-arboretum package releases."""
-        return self._fetch_pypi_releases('auditree-arboretum')
+        return self._fetch_pypi_releases("auditree-arboretum")
 
-    @store_raw_evidence('auditree/auditree_framework_releases.xml')
+    @store_raw_evidence("auditree/auditree_framework_releases.xml")
     def fetch_auditree_framework_releases(self):
         """Fetch the auditree-framework package releases."""
-        return self._fetch_pypi_releases('auditree-framework')
+        return self._fetch_pypi_releases("auditree-framework")
 
-    @store_raw_evidence('auditree/auditree_harvest_releases.xml')
+    @store_raw_evidence("auditree/auditree_harvest_releases.xml")
     def fetch_auditree_harvest_releases(self):
         """Fetch the auditree-harvest package releases."""
-        return self._fetch_pypi_releases('auditree-harvest')
+        return self._fetch_pypi_releases("auditree-harvest")
 
     def _fetch_pypi_releases(self, package_name):
-        resp = self.session().get(f'{package_name}/releases.xml')
+        resp = self.session().get(f"{package_name}/releases.xml")
         resp.raise_for_status()
         return resp.text

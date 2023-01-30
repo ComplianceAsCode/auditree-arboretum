@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,29 +32,28 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
     def fetch_gh_repo_branch_recent_commits_details(self):
         """Fetch Github repository branch recent commits metadata."""
         branches = self.config.get(
-            'org.auditree.repo_integrity.branches',
-            {self.config.get('locker.repo_url'): ['master']}
+            "org.auditree.repo_integrity.branches",
+            {self.config.get("locker.repo_url"): ["master"]},
         )
         current_url = None
         github = None
         for repo_url, repo_branches in branches.items():
             parsed = urlparse(repo_url)
-            base_url = f'{parsed.scheme}://{parsed.hostname}'
-            repo = parsed.path.strip('/')
+            base_url = f"{parsed.scheme}://{parsed.hostname}"
+            repo = parsed.path.strip("/")
             for branch in repo_branches:
                 file_prefix_parts = [
-                    repo.lower().replace('/', '_').replace('-', '_'),
-                    branch.lower().replace('-', '_')
+                    repo.lower().replace("/", "_").replace("-", "_"),
+                    branch.lower().replace("-", "_"),
                 ]
-                file_prefix = '_'.join(file_prefix_parts)
-                path = ['auditree', f'gh_{file_prefix}_recent_commits.json']
+                file_prefix = "_".join(file_prefix_parts)
+                path = ["auditree", f"gh_{file_prefix}_recent_commits.json"]
                 if base_url != current_url:
                     github = Github(self.config.creds, base_url)
                     current_url = base_url
                 ttl = DAY
                 # To ensure signed commits check picks up locker commits
-                if (repo_url == self.locker.repo_url
-                        and branch == self.locker.branch):
+                if repo_url == self.locker.repo_url and branch == self.locker.branch:
                     ttl = DAY * 2
                 self.config.add_evidences(
                     [
@@ -64,9 +62,9 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
                             path[0],
                             ttl,
                             (
-                                f'Github recent commits for {repo} repo '
-                                f'{branch} branch'
-                            )
+                                f"Github recent commits for {repo} repo "
+                                f"{branch} branch"
+                            ),
                         )
                     ]
                 )
@@ -78,10 +76,8 @@ class GithubRepoCommitsFetcher(ComplianceFetcher):
                             meta = {}
                         now = datetime.utcnow().strftime(LOCKER_DTTM_FORMAT)
                         since = datetime.strptime(
-                            meta.get('last_update', now), LOCKER_DTTM_FORMAT
+                            meta.get("last_update", now), LOCKER_DTTM_FORMAT
                         )
                         evidence.set_content(
-                            json.dumps(
-                                github.get_commit_details(repo, since, branch)
-                            )
+                            json.dumps(github.get_commit_details(repo, since, branch))
                         )
