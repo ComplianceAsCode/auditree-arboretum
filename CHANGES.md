@@ -1,5 +1,6 @@
-# [0.16.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.16.1)
+# [0.17.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.17.0)
 
+- [ADDED] Azure fetchers.
 - [CHANGED] Replace yapf by block code formatter.
 
 # [0.16.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.16.0)
