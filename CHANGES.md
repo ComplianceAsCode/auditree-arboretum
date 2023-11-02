@@ -1,3 +1,7 @@
+# [0.17.1](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.17.1)
+
+- [CHANGED] Bump pyyaml version.
+
 # [0.17.0](https://github.com/ComplianceAsCode/auditree-arboretum/releases/tag/v0.17.0)
 
 - [ADDED] Azure fetchers.
